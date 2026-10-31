@@ -8,9 +8,6 @@ The projects began as separate solutions to separate problems: creating huge off
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
-</tr>
-</table>
-
 ## The system
 
 ```text

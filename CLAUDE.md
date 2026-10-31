@@ -39,7 +39,7 @@ Documentation fixes (broken links, stale versions, typos) are fine when Jim asks
 
 **Code-hardening workflow (agreed 2026-10-31):** go page by page in the order of the umbrella README. For each script: review and test here, report findings ranked by importance, change nothing until Jim approves. Jim chose to bundle approved fixes for one script into a single release (e.g. mb2tpkx v1.1) rather than one version per fix. Build in a dev folder, test here (including a byte-for-byte regression against the current version where output files exist), then hand off for Jim's live Windows/ArcGIS Earth test. Post to main only after he accepts.
 
-**Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading.
+**Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading. The session's git proxy also refuses branch deletion, so ask Jim to delete finished test branches on GitHub (Branches page).
 
 Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX can.
 
@@ -50,7 +50,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | Repo | Role | Current version | Continuity file |
 |---|---|---|---|
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
-| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx (protected baseline), Master 4 v3 | `CONTINUITY.md` (snapshot 2026-10-10) |
+| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3 | `CONTINUITY.md` (snapshot 2026-10-10) |
 | `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Extent Tool v2, Batch Factory v1, PRAVE/ME Tracker v1 | none (README + `docs/`) |
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.0 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.0 (commissioned 2026-10-29) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
@@ -74,7 +74,7 @@ ArcGIS Earth     -> the common renderer
 ### Key facts per repo
 
 **QGIS MBTiles -> TPKX**
-- `mb2tpkx.py`: 256x256 PNG/JPEG Web Mercator raster MBTiles -> Esri Compact Cache V2 TPKX, bytes copied unchanged, TMS rows flipped to XYZ. Needs Pillow. Does not download imagery or build missing zooms. Baseline SHA-256 values are in its `CONTINUITY.md`; do not change without explicit authorization.
+- `mb2tpkx.py`: 256x256 PNG/JPEG Web Mercator raster MBTiles -> Esri Compact Cache V2 TPKX, bytes copied unchanged, TMS rows flipped to XYZ. Needs Pillow. Does not download imagery or build missing zooms. **v1.1 released 2026-10-31** (hardening only; see `MB2TPKX_V1.1_CHANGES.md` in that repo). v1.1 `mb2tpkx.py` SHA-256 `b2efa752a6f386b6bada84532efe8ee56fed3c9863fa3c6dd76f51129e85f785`; `.bat` unchanged. Baselines are also in its `CONTINUITY.md` and `TECHNICAL.md`; do not change without explicit authorization.
 - Field-proven in ArcGIS Earth at 4 GB, 20+ GB and 40 GB-class packages.
 - **Master 4:** one whole-degree box entered as `west, east, south, north` (e.g. `82w, 81w, 30n, 31n`), split into 100 cells of 0.1 degrees. Cell number = (first decimal of |lat|) x 10 + (first decimal of |lon|) + 1, so `30.56N 81.34W` is cell 54. Outputs: `Master4_<box>_Extents.txt` (100 rows + `MASTER` row, EPSG:3857) and `Master4_<box>_Grid.tif`. Optional Cell 55 Z10-Z20 synthetic demo TPKX, default No.
 - Filename pattern: `W082W081N031N030-055-GHY-Z20.tpkx`. This numbering and naming is shared infrastructure (Parcel100 uses it). Do not change it casually.
@@ -133,8 +133,9 @@ From the older continuity files. None of these is approved just by appearing her
 
 ## 6. Open items
 
-- **mb2tpkx v1.1 - awaiting Jim's live test (2026-10-31).** Fixes: writes to `<name>.tpkx.partial` and renames only on success (failed/cancelled runs leave nothing; previously a valid-looking partial TPKX was left and blocked reruns); source path URL-escaped so `#`/`%` names open read-only (previously `#` truncated the path, dropped `mode=ro` and created a stray empty file); one-line ERROR messages instead of tracebacks; DB connection closed; prints `mb2tpkx 1.1` at start. Conversion core unchanged line for line. Tests: 27/27 synthetic; Jim's real `bryceville_7_layer_mbtile.mbtiles` (6,461 JPEG tiles Z8-Z20, 14 bundles) converted identically by v1.0 and v1.1 - all bundles byte-identical, only the random iteminfo GUID differs, and all 6,461 tiles independently verified at the correct XYZ slot. Test build on branch `mb2tpkx-v1.1-test` at `test-builds/mb2tpkx_v1.1_TEST.zip`; dev copy in `/home/claude/dev/mb2tpkx_v1.1/` (lost on reset - rebuild from the description above if needed). On acceptance: replace `mb2tpkx.py` and `mb2tpkx.zip` on main, update the SHA-256 baseline in that repo's CONTINUITY.md and TECHNICAL.md, delete the test branch. `.bat` is unchanged.
-- **Hardening queue after mb2tpkx:** Master4_Grid_Maker.py, then Chartplotting (Extent Tool .pyw, PRAVE/ME Tracker .py, Batch Factory C# add-in - inside zips only), EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
+- **Test branch `mb2tpkx-v1.1-test`** in QGIS-Mbtile-to-ArcGIS-Earth-TPKX is obsolete; Jim to delete it on GitHub (proxy blocks deletion from here).
+- **Hardening next: Master4_Grid_Maker.py.**
+- **Hardening queue after Master 4:** Chartplotting (Extent Tool .pyw, PRAVE/ME Tracker .py, Batch Factory C# add-in - inside zips only), EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
 
 - **Object Factory v1.0 package (raised 2026-10-31, Jim deferred):** the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
@@ -150,3 +151,4 @@ From the older continuity files. None of these is approved just by appearing her
   - Point-Maps: updated project-family section of `CONTINUITY.md`.
   - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
   - EarthStick and Chartplotting needed no changes. Created this file.
+  - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.

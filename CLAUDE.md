@@ -37,6 +37,12 @@ The older continuity files in each repo were written by ChatGPT for ChatGPT. The
 
 Documentation fixes (broken links, stale versions, typos) are fine when Jim asks for an errors pass. Code, release zips and PDFs are not touched without explicit direction.
 
+**Code-hardening workflow (agreed 2026-10-31):** go page by page in the order of the umbrella README. For each script: review and test here, report findings ranked by importance, change nothing until Jim approves. Jim chose to bundle approved fixes for one script into a single release (e.g. mb2tpkx v1.1) rather than one version per fix. Build in a dev folder, test here (including a byte-for-byte regression against the current version where output files exist), then hand off for Jim's live Windows/ArcGIS Earth test. Post to main only after he accepts.
+
+**Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading.
+
+Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX can.
+
 ---
 
 ## 3. The seven repos
@@ -126,6 +132,9 @@ From the older continuity files. None of these is approved just by appearing her
 ---
 
 ## 6. Open items
+
+- **mb2tpkx v1.1 - awaiting Jim's live test (2026-10-31).** Fixes: writes to `<name>.tpkx.partial` and renames only on success (failed/cancelled runs leave nothing; previously a valid-looking partial TPKX was left and blocked reruns); source path URL-escaped so `#`/`%` names open read-only (previously `#` truncated the path, dropped `mode=ro` and created a stray empty file); one-line ERROR messages instead of tracebacks; DB connection closed; prints `mb2tpkx 1.1` at start. Conversion core unchanged line for line. Tests: 27/27 synthetic; Jim's real `bryceville_7_layer_mbtile.mbtiles` (6,461 JPEG tiles Z8-Z20, 14 bundles) converted identically by v1.0 and v1.1 - all bundles byte-identical, only the random iteminfo GUID differs, and all 6,461 tiles independently verified at the correct XYZ slot. Test build on branch `mb2tpkx-v1.1-test` at `test-builds/mb2tpkx_v1.1_TEST.zip`; dev copy in `/home/claude/dev/mb2tpkx_v1.1/` (lost on reset - rebuild from the description above if needed). On acceptance: replace `mb2tpkx.py` and `mb2tpkx.zip` on main, update the SHA-256 baseline in that repo's CONTINUITY.md and TECHNICAL.md, delete the test branch. `.bat` is unchanged.
+- **Hardening queue after mb2tpkx:** Master4_Grid_Maker.py, then Chartplotting (Extent Tool .pyw, PRAVE/ME Tracker .py, Batch Factory C# add-in - inside zips only), EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
 
 - **Object Factory v1.0 package (raised 2026-10-31, Jim deferred):** the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.

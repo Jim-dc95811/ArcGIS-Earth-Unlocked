@@ -133,7 +133,6 @@ From the older continuity files. None of these is approved just by appearing her
 
 ## 6. Open items
 
-- **Test branch `mb2tpkx-v1.1-test`** in QGIS-Mbtile-to-ArcGIS-Earth-TPKX is obsolete; Jim to delete it on GitHub (proxy blocks deletion from here).
 - **Hardening next: Master4_Grid_Maker.py.**
 - **Hardening queue after Master 4:** Chartplotting (Extent Tool .pyw, PRAVE/ME Tracker .py, Batch Factory C# add-in - inside zips only), EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
 

@@ -8,14 +8,6 @@ The projects began as separate solutions to separate problems: creating huge off
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
-<table>
-<tr>
-<td align="center" width="50%"><a href="https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX"><img src="https://raw.githubusercontent.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/main/images/ChatGPT%20Image%20Sep%2027%2C%202026%2C%2010_58_45%20PM.png" alt="Offline ArcGIS Earth map workflow" width="100%"></a><br><b>OFFLINE MAPS</b></td>
-<td align="center" width="50%"><a href="https://github.com/Jim-dc95811/EarthStick"><img src="https://raw.githubusercontent.com/Jim-dc95811/EarthStick/main/assets/EarthStick_controls.svg" alt="EarthStick joystick controls" width="100%"></a><br><b>DIRECT NAVIGATION</b></td>
-</tr>
-<tr>
-<td align="center" width="50%"><a href="https://github.com/Jim-dc95811/Parcel100"><img src="https://raw.githubusercontent.com/Jim-dc95811/Parcel100/main/docs/images/parcel100_acres_popup.svg" alt="Parcel100 clickable parcel data in ArcGIS Earth" width="100%"></a><br><b>OPERATIONAL GIS DATA</b></td>
-<td align="center" width="50%"><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory"><img src="https://raw.githubusercontent.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/main/assets/Pin_Drop_2D_Map_sampler.jpg" alt="ArcGIS Earth geographic object" width="100%"></a><br><b>GEOGRAPHIC OBJECTS</b></td>
 </tr>
 </table>
 

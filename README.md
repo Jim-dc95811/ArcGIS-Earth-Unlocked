@@ -95,7 +95,7 @@ Repository: [ArcGIS-Earth-Object-Factory](https://github.com/Jim-dc95811/ArcGIS-
 
 Object Factory is the active object-authoring and experimentation center.
 
-Current v1.0 primitives:
+Current v1.1 primitives:
 - one-off PNG geographic objects
 - 11 built-in presets
 - batch object sets

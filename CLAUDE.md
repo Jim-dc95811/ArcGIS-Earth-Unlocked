@@ -155,6 +155,7 @@ ArcGIS Earth     -> the common renderer
 - Do not claim large real TPKX packages were validated in ArcGIS Pro unless separately tested there.
 - Public GIS availability does not mean unrestricted redistribution. Repos distribute tools, not agency datasets.
 - No life-safety or certification claims.
+- **Jim's position (2026-11-01):** he cannot control what others do with these ideas; the imagery and overlay sources users choose are between them and those providers. His work is public, non-commercial and for public safety. Keep the existing practice (tools not data, link to sources rather than re-host, credit them, the repos' 'users are responsible for source terms' wording) and do not keep re-raising terms of use; mention a specific term only if it is concrete and directly relevant.
 - Generated artwork in the repos is illustrative, not authoritative geometry.
 
 ---

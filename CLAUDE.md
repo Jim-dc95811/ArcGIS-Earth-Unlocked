@@ -52,7 +52,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
 | `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10) |
 | `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Extent Tool v2, Batch Factory v1, PRAVE/ME Tracker v1.1, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`) |
-| `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.0 (protected baseline) | `CONTINUITY.md` |
+| `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.1 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.0 (commissioned 2026-10-29) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.3 | `CONTINUITY.md` |
 | `Parcel100` | Master 4 box -> up to 100 parcel GeoJSON cells | 1.4 | `CONTINUITY.md` |
@@ -84,7 +84,8 @@ ArcGIS Earth     -> the common renderer
 **EarthStick 1.0**
 - Thrustmaster TCA Sidestick Airbus Edition (Windows name `T.A320 Pilot`), WinMM/ctypes, standard library only.
 - Neutral controls = hover. Button 4 (red) zoom in/descend, Button 3 (black) zoom out/climb, all other buttons unassigned.
-- Release zip SHA-256 `8b399d70df582c448ed2bfdf532d5dcc17f579187f99a4d165bd06ef1cb0c292` (verified 2026-10-31). Constants and recovery behavior are locked; see its `CONTINUITY.md`.
+- **1.1 released 2026-10-31** (hardening; flying identical to 1.0): waits for the joystick at startup, proxy-free localhost API opener, startup wait prints reason, single post-error prompt. `releases/EarthStick_v1.1.zip` SHA-256 `505295a68e041bec7ae921f2c71b5240816946a8d5bb5f48459f3b237819c52e`; `EarthStick.py` `84894c2f2d6c857ba71b2153126cb274254e3dbf23099ca1b821dbc2ca7400c7`. `releases/EarthStick_v1.0.zip` (`8b399d70...`) kept for existing links; README presents only 1.1. Change doc `docs/EARTHSTICK_V1.1_CHANGES.md`. Constants and recovery behavior are locked; see its `CONTINUITY.md`.
+- Test rig: `es_rig.py` pattern - load EarthStick.py via exec into a module, replace `WinJoystick` with a scripted class, `time` with a sleep-driven fake clock, `os.name` with 'nt', and point `CAMERA_URL` at a local mock camera API; compare the PUT stream between versions.
 
 **Object Factory 1.0**
 - v1.0 = accepted v0.2.2 TEST build, promoted with only three text changes (version string, one error message, startup status). v1.0 source SHA-256 `e77e1866e7a87b9824ed6bb1cd0f830f52adb1a2872efe48ede13a581018aa00`, which exists only in commit `b65a54c`; Jim removed the loose file from the repo root on 10/30.
@@ -141,11 +142,11 @@ From the older continuity files. None of these is approved just by appearing her
 ## 6. Open items
 
 - **Test branch `master4-v3.1-test`** in QGIS-Mbtile-to-ArcGIS-Earth-TPKX is obsolete; Jim to delete it on GitHub.
-- **EarthStick 1.1 - awaiting Jim's live joystick test (2026-10-31; protected baseline, Jim authorized fixes 1-4).** (1) joystick missing at startup -> waits via existing `wait_for_joystick_reconnect` (v1.0 exited, contradicting TROUBLESHOOTING.md); (2) local API calls use `build_opener(ProxyHandler({}))` - urllib otherwise honors the Windows/agency proxy even for localhost and v1.0 waited forever; (3) startup API wait prints the reason once per change; (4) no `input()` after an error (the .bat already pauses); .bat title 1.1 (CRLF kept). Controls, constants, movement/zoom laws and recovery unchanged. Tests: scripted joystick + deterministic clock + mock camera API -> 335 camera writes identical v1.0 vs v1.1; unplugged-at-start, proxy, port-8000-conflict, exit-prompt scenarios. Branch `earthstick-v1.1-test`, `test-builds/EarthStick_v1.1_TEST.zip` (2 files at root like the v1.0 release); dev copy `/home/claude/dev/earthstick_v1.1/`. On acceptance: replace `EarthStick.py`, `EarthStick.bat`, `releases/` zip (decide name with Jim: v1.0 zip path is linked from README), update README/CONTINUITY/docs (TECHNICAL_NOTES, TROUBLESHOOTING startup + proxy), add change doc, SHA-256 in README 'Release details'.
+- **Test branch `earthstick-v1.1-test`** in EarthStick is obsolete; Jim to delete it (also old `earthstick-v0.6..0.9-test` branches predate this work).
 - **PRAVE/ME Tracker v1.2 - ready (2026-10-31).** Only change: same proxy bypass for the Automation API (`_LOCAL_OPENER`). Regression with Jim's Gold tester identical to v1.1; with a proxy set v1.1 drew 0, v1.2 all 7. Branch `prave-v1.2-test`. On acceptance: replace `downloads/PRAVE_ME_Tracker_v1.zip`, extend the change doc (v1.2 section) and README/guide version mentions.
 - **PRAVE/ME Tracker: radio field test pending.** Jim started v1.1 on Windows (came up normally) and accepted it for release; the Raveon radio test incl. unplug/replug is still to do. Update `docs/PRAVE_ME_TRACKER_V1.1_CHANGES.md` 'Live status' when he reports back.
 - **Parked (Jim's call, 2026-10-31):** Extent Tool v2 findings - stale SAVE/COPY after HOME edit, silent save failure under pythonw, launcher needs python.exe on PATH, clipboard timeout dumps script, window too big for small screens. Batch Factory findings (code read only; needs ArcGIS Pro 3.7 SDK to build) - Cancel ignores 2-min settle, duplicate labels caught late, closing window mid-batch. Raise again only if Jim asks.
-- **Hardening queue after the tracker:** EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
+- **Hardening queue next:** Object Factory, PointLayer.py, Parcel100.py.
 
 - **Object Factory v1.0 package (raised 2026-10-31, Jim deferred):** the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
@@ -162,5 +163,6 @@ From the older continuity files. None of these is approved just by appearing her
   - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
   - EarthStick and Chartplotting needed no changes. Created this file.
   - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.
+  - **EarthStick 1.1 released** after Jim's live flight test (startup joystick wait, proxy bypass, wait reason, single prompt; 335 scripted camera writes identical to 1.0). Tracker v1.2 (proxy bypass only) built and on branch `prave-v1.2-test`, awaiting Jim's go.
   - **PRAVE/ME Tracker v1.1 released** (launchers fixed, units kept through reconnect, pyserial/icon/no-fix/API logging fixes) and **PRAVE/RMC Tester v1.0 Gold added** with a bench-testing guide section. Extent Tool and Batch Factory findings parked by Jim.
   - **Master 4 Grid Maker v3.1 released** after Jim's live acceptance (grid TIF, Cell 55 demo and TXT checked in ArcGIS Earth/Notepad). 42/42 tests; TXT+TIF byte-identical to v3. Locked-TIF message and re-prompt verified here only. Added `MASTER4_V3.1_CHANGES.md`; updated checksums in README, MASTER4_GRID_MAKER.md, TECHNICAL.md, CONTINUITY.md, 00_USER_MANUALS.md.

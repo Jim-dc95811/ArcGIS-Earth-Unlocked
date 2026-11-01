@@ -2,7 +2,7 @@
 
 **Written by Claude, for Claude.** Read this first after any session reset. It is the fastest way to get fully caught up on Jim's ArcGIS Earth Unlocked project family and how to work with him.
 
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01
 
 Update this file whenever something durable changes: a release, an accepted test, a new rule, a decision, an open item opened or closed. Keep it current rather than long. History belongs in the session log at the bottom, kept short.
 
@@ -10,11 +10,12 @@ Update this file whenever something durable changes: a release, an accepted test
 
 ## 1. Resume procedure
 
-1. Clone all seven public repos (list in section 3) into one working folder.
+1. Clone all seven public repos (list in section 3) into one working folder (this session used `/home/claude/repos/<Repo>`; `tools/linkcheck.py` expects that root).
 2. To push, each repo must be attached to the session with write access first (`add_repo` with `access: push`). Without that, the git proxy returns 403 even though `list_repos` shows `can_push: true`.
 3. Read this file, then the repo-specific continuity file for whatever repo the task touches (section 3 says where each one lives).
 4. Before editing, `git fetch` and check that nothing new landed upstream. Jim edits on GitHub directly and often.
 5. Check section 6 (open items) before proposing new work.
+6. Re-run `python3 tools/linkcheck.py` after any doc change (only known failures: three links inside the preserved `legacy/Earth_Beacon_v1.0/README_original.md`).
 
 The older continuity files in each repo were written by ChatGPT for ChatGPT. They are still valuable and mostly accurate, but some are dated snapshots. Where they conflict with this file, this file is newer; where they conflict with the live repo, the live repo wins.
 
@@ -24,6 +25,7 @@ The older continuity files in each repo were written by ChatGPT for ChatGPT. The
 
 - **Owner:** Jim Gaddy, GitHub `Jim-dc95811`. Public-safety / fire-service background, decades of hands-on computer and electronics work. Not a traditional programmer; a relentless tester who trusts measured behavior over theory.
 - **Mission:** "Create new map makers." "Do not make the user learn GIS before they can use geography."
+- **Audience and goal (Jim, 2026-11-01):** open-source sharing of this knowledge with everyone. Jim works for a state government fire department, the primary consumers of this information; the project has expanded to a general-public appeal and to the GIS community. He has met pushback from parts of the GIS community. Pages are written for YouTube visitors with no GitHub experience. A video focused on objects (Object Factory) is planned.
 - **Primary environment:** Windows 11, Python 3.14.x, ArcGIS Earth desktop (Automation API at `http://localhost:8000`), ArcGIS Earth Mobile on Android, QGIS. All tools are Windows/Python with `.bat` launchers.
 
 **Minimal Build Rule (non-negotiable):**
@@ -35,13 +37,22 @@ The older continuity files in each repo were written by ChatGPT for ChatGPT. The
 - Keep **verified**, **owner-observed**, **inferred** and **conceptual** clearly separate. "Unknown" beats pretending.
 - No new dependencies unless they solve a demonstrated need.
 
-Documentation fixes (broken links, stale versions, typos) are fine when Jim asks for an errors pass. Code, release zips and PDFs are not touched without explicit direction.
+Documentation fixes (broken links, stale versions, typos) are fine when Jim asks for an errors pass. Code and release zips are not touched without explicit direction. Manual PDFs are now generated from their Markdown (see section 2a), except Jim's own tester PDF, which stays unmodified.
 
 **Code-hardening workflow (agreed 2026-10-31):** go page by page in the order of the umbrella README. For each script: review and test here, report findings ranked by importance, change nothing until Jim approves. Jim chose to bundle approved fixes for one script into a single release (e.g. mb2tpkx v1.1) rather than one version per fix. Build in a dev folder, test here (including a byte-for-byte regression against the current version where output files exist), then hand off for Jim's live Windows/ArcGIS Earth test. Post to main only after he accepts.
 
-**Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading. The session's git proxy also refuses branch deletion, so ask Jim to delete finished test branches on GitHub (Branches page).
+**Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading. The session's git proxy also refuses branch deletion, so ask Jim to delete finished test branches on GitHub (Branches page). If the stop hook demands a push before Jim's input is in, park work on a side branch, never on main.
 
 Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX can.
+
+### 2a. Page and documentation standard (approved by Jim 2026-11-01)
+
+- **"Link, link, pic":** for every tool on every page: `### **⬇️ [DOWNLOAD <TOOL> vX](zip)**`, then `**📖 [User manual](...)**`, then one plain line, then a screenshot that opens the YouTube video (caption ends "▶️ Watch the video (YouTube).") Where there is no video, the picture stands alone. Same layout on a repo's GitHub Pages site if it has one (only Chartplotting has `index.html`).
+- **Screenshots** come from Jim (3840x2160 PNGs; his displayed coordinates are x1.92). Crop to the app/map, save as ~1400 px JPG (PNG for UI windows) in that repo's `images/` or `assets/`, and preview with Playwright when a site is involved (1280 and 390 px). Never use a screenshot that is already on another page without asking.
+- **Videos:** MBTiles converter `C71n8TAByuE`, Master 4 `zNt-I4KgAy8`, Batch Factory `KGckjaOu0hY`, EarthStick / PointLayer / Object Factory `5Wn14qlC7n4`, Parcel100 `_hMB_TOODOQ`, PRAVE/ME Tracker `JKWJmEIBP_I`.
+- **Unlocked front page** order: title, one plain sentence, quote, "The project pages" (6 numbered links), "Download the tools" (8 tools; zips via `github.com/.../raw/main/...`; pictures open the tool's page; local copies in `images/` at 1000 px), "Start with what you want to do" table (Jim: keep), "How the pieces fit", Independence, mission. PRAVE/RMC tester stays off the front page (Jim).
+- **Manual PDFs** are generated from the Markdown manual with `tools/md2pdf.py` (python-markdown + Playwright Chromium; run with `GH_BASE=https://github.com/Jim-dc95811/<repo>/blob/main/ REPO_ROOT=.` from the repo root so relative links become GitHub links). Regenerate the PDF whenever its manual changes. Each manual opens with a "printable copy" link to its PDF.
+- **Corruption check:** several uploads in these repos were truncated at about 15 KB. Before trusting any binary, open it (PIL / `pdfinfo` / `unzip -t`).
 
 ---
 
@@ -50,8 +61,8 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | Repo | Role | Current version | Continuity file |
 |---|---|---|---|
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
-| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10) |
-| `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Batch Factory v1 (Extent Tool v2 retired 2026-11-01), PRAVE/ME Tracker v1.2, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`) |
+| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10, dated notes since) |
+| `ArcGIS-Earth-Offline-Maps-Chartplotting` | ArcGIS Pro TPKX route (Batch Factory), mobile offline, chartplotting, PRAVE/ME tracker; GitHub Pages site `index.html` | Batch Factory v1 (Extent Tool v2 retired 2026-11-01), PRAVE/ME Tracker v1.2, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`; this file) |
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.1 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.1 (released 2026-10-31) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.4 | `CONTINUITY.md` |
@@ -80,17 +91,18 @@ ArcGIS Earth     -> the common renderer
 - Filename pattern: `W082W081N031N030-055-GHY-Z20.tpkx`. This numbering and naming is shared infrastructure (Parcel100 uses it). Do not change it casually.
 - **Operation Map Florida:** statewide enhanced Z17 overview packages (seven-layer FFS-style recipe). Rule: "Measure three times, form once" - do not build the statewide numbered index until all Z17 extents are locked.
 - Android: ~2 GB Z17 TPKX is the practical ceiling; copy from SD card to internal storage before opening.
+- Manuals: `MB2TPKX_USER_MANUAL.md` (new 2026-11-01) and `MASTER4_GRID_MAKER.md`, each with a generated PDF of the same base name as before (`mb2tpkx_User_Manual.pdf`, `Master4_Grid_Maker_User_Manual.pdf`).
 
-**EarthStick 1.0**
+**EarthStick 1.1**
 - Thrustmaster TCA Sidestick Airbus Edition (Windows name `T.A320 Pilot`), WinMM/ctypes, standard library only.
 - Neutral controls = hover. Button 4 (red) zoom in/descend, Button 3 (black) zoom out/climb, all other buttons unassigned.
 - **1.1 released 2026-10-31** (hardening; flying identical to 1.0): waits for the joystick at startup, proxy-free localhost API opener, startup wait prints reason, single post-error prompt. `releases/EarthStick_v1.1.zip` SHA-256 `505295a68e041bec7ae921f2c71b5240816946a8d5bb5f48459f3b237819c52e`; `EarthStick.py` `84894c2f2d6c857ba71b2153126cb274254e3dbf23099ca1b821dbc2ca7400c7`. `releases/EarthStick_v1.0.zip` (`8b399d70...`) kept for existing links; README presents only 1.1. Change doc `docs/EARTHSTICK_V1.1_CHANGES.md`. Constants and recovery behavior are locked; see its `CONTINUITY.md`.
 - Test rig: `es_rig.py` pattern - load EarthStick.py via exec into a module, replace `WinJoystick` with a scripted class, `time` with a sleep-driven fake clock, `os.name` with 'nt', and point `CAMERA_URL` at a local mock camera API; compare the PUT stream between versions.
 
-**Object Factory 1.0**
+**Object Factory 1.1**
 - v1.0 = accepted v0.2.2 TEST build, promoted with only three text changes (version string, one error message, startup status). v1.0 source SHA-256 `e77e1866e7a87b9824ed6bb1cd0f830f52adb1a2872efe48ede13a581018aa00`, which exists only in commit `b65a54c`; Jim removed the loose file from the repo root on 10/30.
 - **v1.1 released 2026-10-31** (hardening; outputs identical to v1.0): `releases/ArcGIS_Earth_Object_Factory_v1.1.zip` (folder `Object_Factory_v1.1/`, SHA-256 `927ed4bf...`), source `source/Object_Factory_v1.1.py` (`f94a2034a9e3348d81a2a2061619201fd795d36930c2b64797ebb2611f5b6b70`), change doc `docs/OBJECT_FACTORY_V1.1_CHANGES.md`. v0.2.2 TEST zip removed from current files. Jim accepted on live proof (POF screenshot); he considers working output sufficient and did not run `--selftest` - don't keep pressing for it. Clipboard from Google Maps right-click is THE coordinate method; never reintroduce ArcGIS Earth camera pickup.
-- 11 presets: object, helicopter, fuel, bird, hazard, home, staging, water, firetruck, camera, medical. PNGs normalized to 256 px or less on a working copy; originals never modified. Labels off by default; Info or No Popup.
+- 11 presets: object, helicopter, fuel, bird, hazard, home, staging, water, firetruck, camera, medical. PNGs normalized to 256 px or less on a working copy; originals never modified. Labels off by default; popup Info or None. Batch aliases: pin, heli, gas, gas_pump, warning, base, truck, viewpoint, hospital; unknown type -> object. Default outputs on the Desktop.
 - Batch format: `type|name|lat|lon|alt_m|icon|description|url|link_text|scale|altitude_mode|tether|popup|label`, with comma shorthand `type,lat,lon[,alt][,name]`.
 - This repo was formerly `Earth-Beacon`. Standalone Beacon Maker v1.0 source/docs are preserved in `legacy/Earth_Beacon_v1.0/`; it is no longer a separate download (retired 2026-10-31).
 - Known cosmetic issue: ArcGIS Earth's native KML popup box is larger than wanted. That is viewer behavior, not a bug in the factory.
@@ -109,6 +121,7 @@ ArcGIS Earth     -> the common renderer
 - Gold field layout: PRAVE lat 3, lon 4, district 8, RSSI 12, individual 13; display `district-NNN`. Sanity filters: lat 20-70N, west longitudes only. Never touches the Windows clock.
 - Settings above HERE BE DRAGONS: `INPUT_PORT` (COM12), `INPUT_BAUD` 19200, `ICON_FOLDER` `C:\MyData\PRAVE_ME\Icons` (six firetruck_rssi_*.png, not distributed).
 - **Bench tester:** Jim's `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold` (.py/.bat/PDF) published unmodified as `downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip` (dev log omitted). RMC 1 Hz at 30.419107,-81.926499; units 7-101..7-106 = RSSI blank,-115,-105,-95,-85,-75. Also defaults to COM12, so tester and tracker need opposite ports of a pair. Its PDF predates the ArcGIS Earth tracker (says COM3, TimeKeeper icon path, Google Earth placemarks, clock sync) - differences documented in `docs/PRAVE_ME_TRACKER.md` instead of editing his PDF.
+- **Batch Factory** (same repo): ArcGIS Pro 3.7 add-in, .NET 10 (`net10.0-windows`), built on the user's PC by `BUILD_INSTALL.bat` -> `Factory/BUILD_QUIET.ps1` -> Add-In Installation Utility; appears on the Add-In tab as **Open Factory**. Jim confirmed the install steps (open ArcGIS Pro FIRST, then run the BAT; restart Pro after installing). Its extent regex rejects Master 4 TXT rows that still carry the trailing `.tpkx` name - docs tell users to delete it.
 - Test rig used here: Gold tester -> pty -> tracker -> mock Automation API (GET/PUT camera, POST/DELETE drawings). pyserial is not pip-installable in this sandbox; clone github.com/pyserial/pyserial tag v3.5 and use PYTHONPATH.
 
 **Parcel100 1.5**
@@ -134,7 +147,8 @@ ArcGIS Earth     -> the common renderer
 From the older continuity files. None of these is approved just by appearing here:
 - Clipboard -> QR -> email pin-drop utility (verify ArcGIS Earth app-link syntax first).
 - Object Factory: Camera/Viewpoint objects with a separate always-on-top viewer, 3D models, scenario/progressive reveal logic.
-- Parcel100: source profiles, field-profile save/load, resume validation, adaptive batch size, GPS-driven cell loading.
+- Parcel100: source profiles, field-profile save/load, GPS-driven cell loading. (Resume validation and batch splitting shipped in 1.5.)
+- Batch Factory: accept Master 4 TXT rows as they are and use their file names (needs Jim's OK and an ArcGIS Pro 3.7 build/test on his PC).
 - PointLayer: non-hydrant tests, more symbols, better LOD suggestions.
 - Master 4 "55-44" radio shorthand concept (untested).
 - Classroom multi-joystick selector.
@@ -143,31 +157,19 @@ From the older continuity files. None of these is approved just by appearing her
 
 ## 6. Open items
 
-- **PRAVE/ME Tracker: radio field test still pending** for v1.1/v1.2 behavior (Jim confirmed startup only). v1.2 released 2026-10-31 (proxy bypass only); change doc `docs/PRAVE_ME_TRACKER_V1.1_CHANGES.md` now covers v1.1 + v1.2.
-- **Parked (Jim's call, 2026-10-31):** ~~Extent Tool v2 findings~~ (moot: Extent Tool retired 2026-11-01) - stale SAVE/COPY after HOME edit, silent save failure under pythonw, launcher needs python.exe on PATH, clipboard timeout dumps script, window too big for small screens. Batch Factory findings (code read only; needs ArcGIS Pro 3.7 SDK to build) - Cancel ignores 2-min settle, duplicate labels caught late, closing window mid-batch. Raise again only if Jim asks.
-- **Branches:** all seven repos have only `main` (checked 2026-11-01 after Jim's cleanup).
-- **Beacon Maker retired as a separate download (2026-10-31, Jim's decision).** Download button, README links and `releases/Beacon_Maker_v1.0.zip` removed (zip stays in git history); `legacy/Earth_Beacon_v1.0/` kept as the historical record; README: 'Earth Beacon started this project; its beacon is now the Beacon tab.' The factory beacon matches Beacon Maker's apart from whitespace inside <coordinates>. Beacon Maker 1.1 dropped (never published; its test zip sits on the `object-factory-v1.1-test` branch only).
-
-- ~~Object Factory v1.0 package~~ resolved by v1.1 (2026-10-31). Old note: the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
+- **PRAVE (Jim: "addressed later"):** radio field test of tracker v1.1/v1.2 (only startup confirmed); then a PDF of `docs/PRAVE_ME_TRACKER.md`; a screenshot for the PRAVE/RMC tester on the Chartplotting page.
+- **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
+- **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
+- **Branches:** all seven repos have only `main` (checked 2026-11-01).
 
 ---
 
 ## 7. Session log
 
-- **2026-10-31:** First Claude session. Cloned all seven repos and read every continuity file. Documentation errors pass, pushed to five repos (docs only, no code or packages):
-  - Unlocked: removed stray `</tr></table>`.
-  - Object Factory: fixed truncated intro sentence, broken v1.0 source link (now pinned to `b65a54c`), CONTINUITY/MAPWORLD links (now `internal/`), guide download link, self-test script name; added a superseded-items note to `internal/CONTINUITY.md`; updated repo name in `MAPWORLD.md`.
-  - Parcel100: fixed misplaced value in field-results table, "above"/"below" reference, listed `docs/` PDF, SECURITY.md version 1.1 -> 1.4.
-  - Point-Maps: updated project-family section of `CONTINUITY.md`.
-  - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
-  - EarthStick and Chartplotting needed no changes. Created this file.
-  - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.
-  - **2026-11-01:** Page standardization started (Jim: YouTube visitors with no GitHub experience; classic web presentation). Chartplotting first: user-manual link under each download (tester PDF copied to `docs/`). **TPKX Extent Tool v2 retired** (Jim: conflicts with Master 4): zip + guide removed (Git history), README/index.html/WORKFLOW/BATCH_FACTORY point to Master 4 Grid Maker. FINDING (code read only): Batch Factory's ExtentRegex rejects Master 4 TXT rows because of the trailing `.tpkx` name; docs tell users to delete it; a Factory fix needs Jim's OK + Pro SDK build. Jim approved the pattern ("Link, link, pic"): **PAGE STANDARD for every repo = download link, then 📖 User manual link, then one line, then screenshot (clickable to the YouTube video where one exists)**, same on README and on the GitHub Pages site if the repo has one. Screenshots: crop to the app/window (Jim's PNGs are 3840x2160; display coords x1.92), save to `images/`, ~1400 px wide; preview the site with Playwright at 1280 and 390 px. Done on all seven pages 2026-11-01 (Chartplotting README + site, MBTiles, Parcel100, EarthStick, Point-Maps, Object Factory; Unlocked front page = download gallery of 8 tools, pictures open the tool's page, long explanation trimmed to table + 'How the pieces fit' + Independence + mission at Jim's request). PRAVE/RMC tester stays on the Chartplotting page only (Jim); its screenshot is still pending. Corrupt images found and removed with Jim's OK: MBTiles (Cell 55 jpg + 4 webp), Point-Maps (3 assets). PointLayer and Object Factory screenshots link to the EarthStick/flight video 5Wn14qlC7n4 (Jim's choice). Site manual links point at `docs/*.md` - check they work on github.io.
-  - **2026-11-01:** **User manual audit** (Jim: check each manual makes sense, correct info/references, edit as I see fit). Every manual checked against current code (GUI labels, defaults, messages, launchers, package contents) and corrected; all pushed to main. PDFs are now GENERATED from the Markdown manual with `scratchpad/md2pdf.py` (python-markdown + Playwright Chromium; env GH_BASE=https://github.com/Jim-dc95811/<repo>/blob/main/ and REPO_ROOT=. rewrite relative links to GitHub). Regenerate the PDF whenever its Markdown changes: Parcel100 `Parcel100_User_Manual.pdf` (was v1.1), Point-Maps `docs/PointLayer_User_Guide.pdf` (was corrupt), Object Factory `docs/ArcGIS_Earth_Object_Factory_v1.1_User_Manual.pdf` (replaces corrupt v1.0 PDF), EarthStick `docs/EarthStick_User_Guide.pdf` (was 1.0, partly unreadable), MBTiles `mb2tpkx_User_Manual.pdf` from new `MB2TPKX_USER_MANUAL.md` and `Master4_Grid_Maker_User_Manual.pdf` from `MASTER4_GRID_MAKER.md` (had v3 checksums). Jim's tester PDF left untouched. Corrupt `Parcel100/docs/images/parcel100_acres_popup.svg` removed. Chartplotting site manual links now point to github.com blob pages. Batch Factory guide gained an install section (Pro 3.7, .NET 10 SDK, BUILD_INSTALL.bat) - from reading the build scripts, not a Windows test.
-  - **2026-11-01:** **Parcel100 1.5 released** after Jim's live test ("confirmed working well"): his discovery/chooser + discovery fixes A-C + build fixes 1-4. `.py` `ba0627bc...`; 100 cells byte-identical to 1.4; change doc `docs/PARCEL100_V1.5_CHANGES.md`. Workflow switched to v1.5 zip (bot commit `4afb643`); v1.4 zip kept. All seven repos' hardening passes done except parked items.
-  - **2026-11-01:** **PointLayer 1.4 released** after Jim's live test (all works good); Jim deleted the test branch.
-  - **Object Factory v1.1 released** (clipboard N/S/E/W + DMS readback, overwrite prompt, safe writes, batch fixes, clean package); **Beacon Maker retired** as a separate download.
-  - **EarthStick 1.1 released** after Jim's live flight test (startup joystick wait, proxy bypass, wait reason, single prompt; 335 scripted camera writes identical to 1.0). **Tracker v1.2 released** (proxy bypass only).
-  - **PRAVE/ME Tracker v1.1 released** (launchers fixed, units kept through reconnect, pyserial/icon/no-fix/API logging fixes) and **PRAVE/RMC Tester v1.0 Gold added** with a bench-testing guide section. Extent Tool and Batch Factory findings parked by Jim.
-  - **Master 4 Grid Maker v3.1 released** after Jim's live acceptance (grid TIF, Cell 55 demo and TXT checked in ArcGIS Earth/Notepad). 42/42 tests; TXT+TIF byte-identical to v3. Locked-TIF message and re-prompt verified here only. Added `MASTER4_V3.1_CHANGES.md`; updated checksums in README, MASTER4_GRID_MAKER.md, TECHNICAL.md, CONTINUITY.md, 00_USER_MANUALS.md.
+- **2026-10-31 (first Claude session):** cloned the seven repos, read every continuity file, created this file. Documentation errors pass on five repos. Code hardening began, one release per tool after Jim's live test: **mb2tpkx v1.1**, **Master 4 v3.1**, **PRAVE/ME Tracker v1.1 + v1.2** (PRAVE/RMC Tester v1.0 Gold published unmodified), **EarthStick 1.1**, **Object Factory v1.1** (Beacon Maker retired as a separate download). Extent Tool and Batch Factory findings parked.
+- **2026-11-01:**
+  - **PointLayer 1.4** and **Parcel100 1.5** released after Jim's live tests (Parcel100 1.5 = Jim's discovery/chooser + discovery fixes A-C + build fixes 1-4; workflow switched to the v1.5 zip). Hardening pass complete on all seven repos except parked items.
+  - **Page standardization** ("link, link, pic", section 2a) on all seven pages, plus the Chartplotting site. **TPKX Extent Tool v2 retired** (Jim: conflicts with Master 4). Corrupt files found and removed with Jim's OK: MBTiles (Cell 55 JPG + 4 WebP), Point-Maps (3 assets), Parcel100 (1 SVG). Unlocked front page rebuilt (download gallery, 6 project-page links, trimmed explanation).
+  - **User manual audit:** every manual checked against current code and corrected; PDFs regenerated from Markdown for Parcel100, PointLayer (was corrupt), Object Factory (v1.1 PDF replaces corrupt v1.0), EarthStick, mb2tpkx (new `MB2TPKX_USER_MANUAL.md`), Master 4, and the Batch Factory (new PDF; install section confirmed by Jim). Chartplotting site manual links now open GitHub blob pages. `tools/md2pdf.py` and `tools/linkcheck.py` added to this repo.
+  - Jim deleted all leftover test branches.

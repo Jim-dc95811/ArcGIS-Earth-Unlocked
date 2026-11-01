@@ -54,7 +54,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Extent Tool v2, Batch Factory v1, PRAVE/ME Tracker v1.2, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`) |
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.1 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.1 (released 2026-10-31) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
-| `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.3 | `CONTINUITY.md` |
+| `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.4 | `CONTINUITY.md` |
 | `Parcel100` | Master 4 box -> up to 100 parcel GeoJSON cells | 1.4 | `CONTINUITY.md` |
 
 Jim also has private repos outside this family. They are not covered here.
@@ -96,7 +96,9 @@ ArcGIS Earth     -> the common renderer
 - Known cosmetic issue: ArcGIS Earth's native KML popup box is larger than wanted. That is viewer behavior, not a bug in the factory.
 - ChatGPT was given broad design authority over the Object Factory build. Do not assume Claude has the same authority; ask.
 
-**PointLayer 1.3**
+**PointLayer 1.4** (released 2026-11-01; hardening, normal output identical to 1.3)
+- `releases/PointLayer_v1.4.zip` (`1987c1ef...`), `PointLayer.py` SHA-256 `d09a4fae215a2fdd2e8a19faaac99140966e782a6ea93e69c8679e3b57ed3c67`; 1.3 zip kept for links. Change doc `docs/POINTLAYER_V1.4_CHANGES.md`. 1.4: completeness check (OID always requested, missing re-requested once, write-and-warn), XML control-char stripping, zero-area Region widening, no-location count, overwrite prompt + .partial, PNG check. Internet requests keep the system proxy on purpose.
+- Test rig: `pl_rig.py`/`test_pl14.py` pattern - stub tkinter, mock FeatureServer (layer 458) with knobs for dropped features, null geometry, control chars, single point/same latitude, no OID field.
 - Accepts a service root or layer URL, discovers point layers (Nassau hydrants are layer 458, not 0). Downloads the whole layer via `returnIdsOnly` + batches. Geometry from `outSR=4326`, never from attribute fields named Lat/Lon/X/Y.
 - Accepted LODs: Nassau 3,250 features -> 12,000; Duval 30,688 -> 30,000. Starting points, not laws.
 - Say "3,250 features were published and downloaded", never "the county has 3,250 hydrants".
@@ -147,7 +149,6 @@ From the older continuity files. None of these is approved just by appearing her
 - **Parked (Jim's call, 2026-10-31):** Extent Tool v2 findings - stale SAVE/COPY after HOME edit, silent save failure under pythonw, launcher needs python.exe on PATH, clipboard timeout dumps script, window too big for small screens. Batch Factory findings (code read only; needs ArcGIS Pro 3.7 SDK to build) - Cancel ignores 2-min settle, duplicate labels caught late, closing window mid-batch. Raise again only if Jim asks.
 - **Test branch `object-factory-v1.1-test`** (also holds the dropped Beacon Maker 1.1 zip) is obsolete; Jim to delete it, plus the older Object Factory branches (`github-finalize`, `ignore-me`, `release-object-factory-v1*`).
 - **Beacon Maker retired as a separate download (2026-10-31, Jim's decision).** Download button, README links and `releases/Beacon_Maker_v1.0.zip` removed (zip stays in git history); `legacy/Earth_Beacon_v1.0/` kept as the historical record; README: 'Earth Beacon started this project; its beacon is now the Beacon tab.' The factory beacon matches Beacon Maker's apart from whitespace inside <coordinates>. Beacon Maker 1.1 dropped (never published; its test zip sits on the `object-factory-v1.1-test` branch only).
-- **PointLayer 1.4 - awaiting Jim's live test (2026-11-01; fixes 1-6 approved, 'write and warn').** (1) `download_all_features()`: always requests the OID field (not written), checks every ID, re-requests missing once, warns with count + up to 10 IDs (count-only fallback when no OID field); (2) `xml_text` strips XML-illegal control chars, applied to KML names/aliases/values; (3) `region_bounds()` widens a zero-area Region (one point / same lat / same lon) to the other span or 0.01 deg - normal layers unchanged; (4) records without location counted in completion message; (5) overwrite prompt + `.partial` writes (GeoJSON 'name' still = final stem); (6) custom icon PNG signature check. Proxy deliberately NOT bypassed - PointLayer talks to internet services. Tests 17/17 vs mock FeatureServer: KMZ entries + GeoJSON byte-identical to 1.3 for 3,250 and 30,688-point layers, unicode/&/< values, single field. Branch `pointlayer-v1.4-test`, `test-builds/PointLayer_v1.4_TEST.zip` (4 files at root like v1.3). Release rule in this repo: every code change gets a new version; README/CHANGELOG/CONTINUITY/docs list versions.
 - **Hardening queue next:** Parcel100.py.
 
 - ~~Object Factory v1.0 package~~ resolved by v1.1 (2026-10-31). Old note: the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
@@ -165,6 +166,7 @@ From the older continuity files. None of these is approved just by appearing her
   - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
   - EarthStick and Chartplotting needed no changes. Created this file.
   - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.
+  - **2026-11-01:** **PointLayer 1.4 released** after Jim's live test (all works good); Jim deleted the test branch.
   - **Object Factory v1.1 released** (clipboard N/S/E/W + DMS readback, overwrite prompt, safe writes, batch fixes, clean package); **Beacon Maker retired** as a separate download.
   - **EarthStick 1.1 released** after Jim's live flight test (startup joystick wait, proxy bypass, wait reason, single prompt; 335 scripted camera writes identical to 1.0). **Tracker v1.2 released** (proxy bypass only).
   - **PRAVE/ME Tracker v1.1 released** (launchers fixed, units kept through reconnect, pyserial/icon/no-fix/API logging fixes) and **PRAVE/RMC Tester v1.0 Gold added** with a bench-testing guide section. Extent Tool and Batch Factory findings parked by Jim.

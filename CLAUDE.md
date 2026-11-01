@@ -55,7 +55,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.1 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.1 (released 2026-10-31) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.4 | `CONTINUITY.md` |
-| `Parcel100` | Master 4 box -> up to 100 parcel GeoJSON cells | 1.4 | `CONTINUITY.md` |
+| `Parcel100` | Master 4 box -> up to 100 parcel GeoJSON cells | 1.5 | `CONTINUITY.md` |
 
 Jim also has private repos outside this family. They are not covered here.
 
@@ -111,10 +111,10 @@ ArcGIS Earth     -> the common renderer
 - **Bench tester:** Jim's `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold` (.py/.bat/PDF) published unmodified as `downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip` (dev log omitted). RMC 1 Hz at 30.419107,-81.926499; units 7-101..7-106 = RSSI blank,-115,-105,-95,-85,-75. Also defaults to COM12, so tester and tracker need opposite ports of a pair. Its PDF predates the ArcGIS Earth tracker (says COM3, TimeKeeper icon path, Google Earth placemarks, clock sync) - differences documented in `docs/PRAVE_ME_TRACKER.md` instead of editing his PDF.
 - Test rig used here: Gold tester -> pty -> tracker -> mock Automation API (GET/PUT camera, POST/DELETE drawings). pyserial is not pip-installable in this sandbox; clone github.com/pyserial/pyserial tag v3.5 and use PYTHONPATH.
 
-**Parcel100 1.4**
+**Parcel100 1.5**
 - Standard library only. Florida source: `services5.arcgis.com/GcvM6vDlR2gM4x31/.../FL_Parcels/FeatureServer/0`. Recommended fields: OWN_NAME, PHY_ADDR1, PHY_CITY, PHY_ZIPCD, PARCEL_ID, Acres.
-- Output `W082W081N031N030-004-Parcels.geojson`. Resume skips any existing expected filename without validating it.
-- A GitHub Actions workflow rebuilds `downloads/Parcel100_v1.4.zip` whenever `Parcel100.py`, `Parcel100.bat` or `PACKAGE_README.txt` change on main. README/doc edits do not trigger it.
+- Output `W082W081N031N030-004-Parcels.geojson`. Since 1.5: `.partial` writes; resume skips an existing cell only if it loads as a FeatureCollection, otherwise rebuilds it. Per-parcel completeness check (OID field requested, not written; missing re-asked once; write and warn). Timed-out batches split in half. Accepts service roots with a polygon-layer chooser.
+- A GitHub Actions workflow rebuilds `downloads/Parcel100_v1.5.zip` (changed from v1.4 at the 1.5 release) whenever `Parcel100.py`, `Parcel100.bat` or `PACKAGE_README.txt` change on main. README/doc edits do not trigger it. The bot zip's own SHA changes every rebuild (timestamps); check the `.py` inside instead. Bump the workflow's file name at every version change.
 - The root `Parcel100_User_Manual.pdf` is an older release; `USER_MANUAL.md` is current.
 
 ---
@@ -149,7 +149,7 @@ From the older continuity files. None of these is approved just by appearing her
 - **Parked (Jim's call, 2026-10-31):** Extent Tool v2 findings - stale SAVE/COPY after HOME edit, silent save failure under pythonw, launcher needs python.exe on PATH, clipboard timeout dumps script, window too big for small screens. Batch Factory findings (code read only; needs ArcGIS Pro 3.7 SDK to build) - Cancel ignores 2-min settle, duplicate labels caught late, closing window mid-batch. Raise again only if Jim asks.
 - **Test branch `object-factory-v1.1-test`** (also holds the dropped Beacon Maker 1.1 zip) is obsolete; Jim to delete it, plus the older Object Factory branches (`github-finalize`, `ignore-me`, `release-object-factory-v1*`).
 - **Beacon Maker retired as a separate download (2026-10-31, Jim's decision).** Download button, README links and `releases/Beacon_Maker_v1.0.zip` removed (zip stays in git history); `legacy/Earth_Beacon_v1.0/` kept as the historical record; README: 'Earth Beacon started this project; its beacon is now the Beacon tab.' The factory beacon matches Beacon Maker's apart from whitespace inside <coordinates>. Beacon Maker 1.1 dropped (never published; its test zip sits on the `object-factory-v1.1-test` branch only).
-- **Parcel100 1.5 (in progress, 2026-11-01):** Jim's own 1.5 (service-root discovery + polygon-layer chooser, never released; his branch `parcel100-v1.5-test`) merged with discovery fixes A-C and build fixes 1-4 (Jim: "approve all", write and warn). TEST build on branch `parcel100-v1.5-hardened-test` (`test-build/`), `.py` SHA `ba0627bc...`, zip `3e7d6711...`. Normal output byte-identical to 1.4 (100 cells, source URL port normalized). Awaiting Jim's live test. At publish: change doc, CHANGELOG/CONTINUITY/README/USER_MANUAL, `downloads/Parcel100_v1.5.zip` (keep v1.4 zip), and FIX `.github/workflows/build-package.yml` first - it is hardcoded to v1.4 and would overwrite `downloads/Parcel100_v1.4.zip` with 1.5 code on push to main. Jim to delete both 1.5 test branches afterwards. Dev copy `/home/claude/dev/parcel100_v1.5/`, rigs `scratchpad/p100/rig15.py`, `scratchpad/p15/disc15.py`.
+- **Test branches `parcel100-v1.5-test` and `parcel100-v1.5-hardened-test`** in Parcel100 are obsolete after the 1.5 release; Jim to delete them.
 
 - ~~Object Factory v1.0 package~~ resolved by v1.1 (2026-10-31). Old note: the v1.0 download is the v0.2.2 TEST zip, which shows "0.2.2 TEST" in the app and contains two `__pycache__` files, while the v1.0 manual/PDF describe `Object_Factory_v1.0.py`. Offered to build `ArcGIS_Earth_Object_Factory_v1.0.zip` from the exact `b65a54c` source (no cache files) and repoint docs. Jim said we'll come back to this page. Needs his live test before it's called accepted.
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
@@ -166,6 +166,7 @@ From the older continuity files. None of these is approved just by appearing her
   - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
   - EarthStick and Chartplotting needed no changes. Created this file.
   - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.
+  - **2026-11-01:** **Parcel100 1.5 released** after Jim's live test ("confirmed working well"): his discovery/chooser + discovery fixes A-C + build fixes 1-4. `.py` `ba0627bc...`; 100 cells byte-identical to 1.4; change doc `docs/PARCEL100_V1.5_CHANGES.md`. Workflow switched to v1.5 zip (bot commit `4afb643`); v1.4 zip kept. All seven repos' hardening passes done except parked items.
   - **2026-11-01:** **PointLayer 1.4 released** after Jim's live test (all works good); Jim deleted the test branch.
   - **Object Factory v1.1 released** (clipboard N/S/E/W + DMS readback, overwrite prompt, safe writes, batch fixes, clean package); **Beacon Maker retired** as a separate download.
   - **EarthStick 1.1 released** after Jim's live flight test (startup joystick wait, proxy bypass, wait reason, single prompt; 335 scripted camera writes identical to 1.0). **Tracker v1.2 released** (proxy bypass only).

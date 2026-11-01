@@ -53,7 +53,7 @@ Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth,
 
 [![A Jacksonville beacon and an airborne fire-truck object.](images/object_factory.jpg)](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)
 
-*A Jacksonville beacon and an airborne fire-truck object. [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory).*
+*A Jacksonville beacon and an airborne fire-truck object. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory).*
 
 ### **⬇️ [DOWNLOAD POINTLAYER v1.4](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v1.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/USER_GUIDE.md)**
@@ -62,7 +62,7 @@ Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KM
 
 [![Nassau County hydrants around Callahan, Florida, with one hydrant's details open.](images/pointlayer.jpg)](https://github.com/Jim-dc95811/Point-Maps)
 
-*Nassau County hydrants around Callahan, Florida, with one hydrant's details open. [More about this tool](https://github.com/Jim-dc95811/Point-Maps).*
+*Nassau County hydrants around Callahan, Florida, with one hydrant's details open. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Point-Maps).*
 
 ### **⬇️ [DOWNLOAD PARCEL100 v1.5](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v1.5.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Parcel100/blob/main/USER_MANUAL.md)**

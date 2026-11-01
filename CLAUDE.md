@@ -69,7 +69,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - Blocked: PyPI for some packages (pyserial: clone from GitHub instead), YouTube (thumbnails and pages), raw.githubusercontent.com. `gh run list` works; `gh api .../pages` is refused.
 - GitHub Actions in Parcel100 commits a rebuilt zip after pushes to main; pull before the next edit.
 - Repos must be attached with `add_repo(access: push)` before pushing; branch deletion is refused (Jim deletes branches).
-- `tools/test-rigs/` in this repo holds the regression rigs; `tools/md2pdf.py` makes manual PDFs; `tools/linkcheck.py` checks every link in all seven repos.
+- **Claude Toolbox (`tools/`, Jim's idea 2026-11-01): check `tools/README.md` before writing a helper from scratch.** It holds `linkcheck.py`, `check_binaries.py`, `md2pdf.py`, `crop_screenshot.py` and `test-rigs/`. Add new reusable helpers there and list them in its README.
 
 ---
 

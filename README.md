@@ -6,6 +6,17 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
+## The project pages
+
+This family of projects has **6 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
+
+1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
+2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
+3. **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
+4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
+5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
+6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
+
 ## Download the tools
 
 Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User manual** for step-by-step instructions. Click a picture to see that tool's page.

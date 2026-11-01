@@ -54,6 +54,23 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - **Manual PDFs** are generated from the Markdown manual with `tools/md2pdf.py` (python-markdown + Playwright Chromium; run with `GH_BASE=https://github.com/Jim-dc95811/<repo>/blob/main/ REPO_ROOT=.` from the repo root so relative links become GitHub links). Regenerate the PDF whenever its manual changes. Each manual opens with a "printable copy" link to its PDF.
 - **Corruption check:** several uploads in these repos were truncated at about 15 KB. Before trusting any binary, open it (PIL / `pdfinfo` / `unzip -t`).
 
+### 2b. Working with Jim (observed)
+
+- He answers tersely: "engage" = go ahead; "approve all" / "1.4 yes 1-6" = approve the listed findings; "works good" or a screenshot = live acceptance. Do not press for self-tests after that.
+- Best format for decisions: findings ranked by importance, each with a plain one-line consequence, then a single recommendation. He usually picks the recommendation.
+- He wants to be told when something is broken even if he did not ask (corrupt files, stale PDFs, wrong versions), then decides what to do.
+- Plain words: he is not a programmer. Name buttons and files exactly; skip code detail unless asked.
+- "Confirm X" means check it with a tool (e.g. `git ls-remote`, link check), not from memory.
+- He edits on GitHub himself between turns: always `git pull` before editing, and re-check what you claim is there.
+
+### 2c. Sandbox facts (this cloud workspace)
+
+- No `python3-tk`: stub Tkinter (see `tools/test-rigs/README.md`). Pillow, python-markdown, pandoc, poppler (`pdfinfo`, `pdftotext`, `pdftoppm`) and Playwright Chromium are available.
+- Blocked: PyPI for some packages (pyserial: clone from GitHub instead), YouTube (thumbnails and pages), raw.githubusercontent.com. `gh run list` works; `gh api .../pages` is refused.
+- GitHub Actions in Parcel100 commits a rebuilt zip after pushes to main; pull before the next edit.
+- Repos must be attached with `add_repo(access: push)` before pushing; branch deletion is refused (Jim deletes branches).
+- `tools/test-rigs/` in this repo holds the regression rigs; `tools/md2pdf.py` makes manual PDFs; `tools/linkcheck.py` checks every link in all seven repos.
+
 ---
 
 ## 3. The seven repos

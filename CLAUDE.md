@@ -51,7 +51,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 |---|---|---|---|
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
 | `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10) |
-| `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Extent Tool v2, Batch Factory v1, PRAVE/ME Tracker v1 | none (README + `docs/`) |
+| `ArcGIS-Earth-Offline-Maps-Chartplotting` | Earlier ArcGIS Pro TPKX route, mobile offline, chartplotting, PRAVE/ME tracker | Extent Tool v2, Batch Factory v1, PRAVE/ME Tracker v1.1, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`) |
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.0 (protected baseline) | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.0 (commissioned 2026-10-29) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.3 | `CONTINUITY.md` |
@@ -101,6 +101,13 @@ ArcGIS Earth     -> the common renderer
 - Say "3,250 features were published and downloaded", never "the county has 3,250 hydrants".
 - Multi-tier duplicate-symbol LOD was tested and rejected. Do not reintroduce without discussion.
 
+**PRAVE/ME Tracker 1.1** (Chartplotting repo; still in active field use)
+- Download stays `downloads/PRAVE_ME_Tracker_v1.zip` (README and `index.html` link to it); folder `PRAVE_ME_Tracker/` with `.py`, `START_TRACKER.bat`, `SELF_TEST.bat`. v1.1 `.py` SHA-256 `c1f2416c037dae7fada6b930b008a092290cc088b98b28f56936ab1ce27a23c4`. Change doc `docs/PRAVE_ME_TRACKER_V1.1_CHANGES.md`.
+- Gold field layout: PRAVE lat 3, lon 4, district 8, RSSI 12, individual 13; display `district-NNN`. Sanity filters: lat 20-70N, west longitudes only. Never touches the Windows clock.
+- Settings above HERE BE DRAGONS: `INPUT_PORT` (COM12), `INPUT_BAUD` 19200, `ICON_FOLDER` `C:\MyData\PRAVE_ME\Icons` (six firetruck_rssi_*.png, not distributed).
+- **Bench tester:** Jim's `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold` (.py/.bat/PDF) published unmodified as `downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip` (dev log omitted). RMC 1 Hz at 30.419107,-81.926499; units 7-101..7-106 = RSSI blank,-115,-105,-95,-85,-75. Also defaults to COM12, so tester and tracker need opposite ports of a pair. Its PDF predates the ArcGIS Earth tracker (says COM3, TimeKeeper icon path, Google Earth placemarks, clock sync) - differences documented in `docs/PRAVE_ME_TRACKER.md` instead of editing his PDF.
+- Test rig used here: Gold tester -> pty -> tracker -> mock Automation API (GET/PUT camera, POST/DELETE drawings). pyserial is not pip-installable in this sandbox; clone github.com/pyserial/pyserial tag v3.5 and use PYTHONPATH.
+
 **Parcel100 1.4**
 - Standard library only. Florida source: `services5.arcgis.com/GcvM6vDlR2gM4x31/.../FL_Parcels/FeatureServer/0`. Recommended fields: OWN_NAME, PHY_ADDR1, PHY_CITY, PHY_ZIPCD, PARCEL_ID, Acres.
 - Output `W082W081N031N030-004-Parcels.geojson`. Resume skips any existing expected filename without validating it.
@@ -134,7 +141,8 @@ From the older continuity files. None of these is approved just by appearing her
 ## 6. Open items
 
 - **Test branch `master4-v3.1-test`** in QGIS-Mbtile-to-ArcGIS-Earth-TPKX is obsolete; Jim to delete it on GitHub.
-- **PRAVE/ME Tracker v1.1 - awaiting Jim's live test (2026-10-31).** Tracker is still in active field use; Jim chose to concentrate on it. Fixes: (1) published `PRAVE_ME_Tracker_v1.zip` had both `.bat` files as one line with literal `\n` text - unusable on Windows; rebuilt with CRLF line breaks, content unchanged; (2) serial reconnect no longer wipes all PRAVE drawings and the state file (Jim chose 'keep trucks'): startup clean runs once, units/counters live in a `TrackerState` that survives reconnects; (3) missing pyserial reported once, exit 1 (was an endless 5 s retry loop); (4) startup ICON_WARNING if icon folder/files missing, per-level fallback warning once; API failures logged as API_BAD only (were also counted/logged as RMC_BAD/PRAVE_BAD); RMC status V raises `RMCNoFix` (a ValueError subclass) and logs GPS_NO_FIX/GPS_FIX_RESTORED once each instead of RMC_BAD every second; Ctrl+C during the reconnect wait exits cleanly. All Gold parser/drawing/camera functions AST-identical to v1.0. Tested with Jim's own simulator `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.py` (RMC 1 Hz + six units 7-101..7-106, one per RSSI level) through a pty into the tracker, with a mock Automation API: drawings and camera identical v1.0 vs v1.1; reconnect v1.0 -> 0 trucks and state file deleted, v1.1 -> all 6 kept. A 60 s 19,200-baud simulation cleared the suspected readline sentence-splitting (pyserial readline = io.IOBase.readline, per-byte timeout). Test build on branch `prave-v1.1-test` at `test-builds/PRAVE_ME_Tracker_v1.1_TEST.zip` (folder `PRAVE_ME_Tracker/`). On acceptance: replace `downloads/PRAVE_ME_Tracker_v1.zip` contents (keep or rename per Jim), add a v1.1 change document, update `docs/PRAVE_ME_TRACKER.md` (reconnect behavior; icons not bundled - say where they come from), ask Jim to delete the branch.
+- **Test branch `prave-v1.1-test`** in ArcGIS-Earth-Offline-Maps-Chartplotting is obsolete; Jim to delete it on GitHub.
+- **PRAVE/ME Tracker: radio field test pending.** Jim started v1.1 on Windows (came up normally) and accepted it for release; the Raveon radio test incl. unplug/replug is still to do. Update `docs/PRAVE_ME_TRACKER_V1.1_CHANGES.md` 'Live status' when he reports back.
 - **Parked (Jim's call, 2026-10-31):** Extent Tool v2 findings - stale SAVE/COPY after HOME edit, silent save failure under pythonw, launcher needs python.exe on PATH, clipboard timeout dumps script, window too big for small screens. Batch Factory findings (code read only; needs ArcGIS Pro 3.7 SDK to build) - Cancel ignores 2-min settle, duplicate labels caught late, closing window mid-batch. Raise again only if Jim asks.
 - **Hardening queue after the tracker:** EarthStick.py, Object Factory, PointLayer.py, Parcel100.py.
 
@@ -153,4 +161,5 @@ From the older continuity files. None of these is approved just by appearing her
   - MBTiles: `ARCGIS_EARTH_UNLOCKED.md` links moved off the old Earth-Beacon repo.
   - EarthStick and Chartplotting needed no changes. Created this file.
   - Started code hardening. **mb2tpkx v1.1 released** after Jim's live ArcGIS Earth acceptance (Bryceville 7-layer TPKX opened correctly). 27/27 synthetic tests; Bryceville real-data output byte-identical to v1.0 apart from the random GUID. Added `MB2TPKX_V1.1_CHANGES.md`; updated checksums. The `#`/`%` name fix is verified here only, not yet live on Windows.
+  - **PRAVE/ME Tracker v1.1 released** (launchers fixed, units kept through reconnect, pyserial/icon/no-fix/API logging fixes) and **PRAVE/RMC Tester v1.0 Gold added** with a bench-testing guide section. Extent Tool and Batch Factory findings parked by Jim.
   - **Master 4 Grid Maker v3.1 released** after Jim's live acceptance (grid TIF, Cell 55 demo and TXT checked in ArcGIS Earth/Notepad). 42/42 tests; TXT+TIF byte-identical to v3. Locked-TIF message and re-prompt verified here only. Added `MASTER4_V3.1_CHANGES.md`; updated checksums in README, MASTER4_GRID_MAKER.md, TECHNICAL.md, CONTINUITY.md, 00_USER_MANUALS.md.

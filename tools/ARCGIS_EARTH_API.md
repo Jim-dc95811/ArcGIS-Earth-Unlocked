@@ -45,12 +45,13 @@ EarthStick reads the camera, changes values, and PUTs it back; the tracker chang
 
 ## Clicks and popups (KML side)
 
-- Object Factory writes an HTML link into the KML description. Clicking the object opens ArcGIS Earth's info panel; clicking the link opens the **default web browser** (owner-observed behavior for http/https links; exact behavior depends on ArcGIS Earth and Windows settings).
-- **Untested:** whether a non-web link (a custom scheme such as `earthpip:...`, a `file:` link, or a `localhost` URL) in that panel is handed to Windows. This decides how a click can open a separate always-on-top camera window.
+- Object Factory writes an HTML link into the KML description. Any object's popup can also be edited inside ArcGIS Earth: Properties > **Info** tab > **Rich Text / HTML** (raw HTML accepted, no rebuild).
+- **Proven 2026-11-01 (Jim's screenshot):** the popup is a built-in web browser. A plain `https://www.fl511.com` link in an object's HTML opened the live, interactive FL511 site **inside the ArcGIS Earth popup**, with back/forward arrows, plus the popup's pin, zoom-to and enlarge buttons. So web-viewable cameras can be shown inside ArcGIS Earth itself, and a pinned popup can act as picture-in-picture.
+- **Still untested:** whether a non-web link (a custom scheme such as `earthpip:...`, a `file:` link, or a `localhost` URL) in that panel is handed to Windows. This decides how a click can open a separate always-on-top camera window.
 
 ## Ideas this makes possible (none approved)
 
-- **Camera picture-in-picture (Jim, 2026-11-01):** camera object over an intersection; clicking it opens a small Windows always-on-top viewer (not inside ArcGIS Earth). Trigger options, in order of preference: (1) custom URL scheme registered with Windows; (2) `http://localhost` link served by a small background helper (works with plain web links, but also opens a browser tab). Viewer: refreshing JPEG cameras (many DOT feeds) need only Pillow + Tkinter; true video (HLS) needs VLC/ffmpeg or an embedded browser.
+- **Camera picture-in-picture (Jim, 2026-11-01):** camera object over an intersection. Since the popup is a web browser (above), the simplest route is a link or embedded page inside the popup itself; Jim's original plan is a small Windows always-on-top viewer outside ArcGIS Earth. Trigger options, in order of preference: (1) custom URL scheme registered with Windows; (2) `http://localhost` link served by a small background helper (works with plain web links, but also opens a browser tab). Viewer: refreshing JPEG cameras (many DOT feeds) need only Pillow + Tkinter; true video (HLS) needs VLC/ffmpeg or an embedded browser.
 - **Auto-loading layers by location:** watch the camera and `POST /layer` the Parcel100 or Master 4 cell underneath.
 - **Scenario / scavenger games:** a script adds drawings or loads clue KMZs as the camera reaches a beacon (camera polling stands in for the missing events).
 - **Snapshot capture:** `GET /snapshot` for briefing images or before/after records.

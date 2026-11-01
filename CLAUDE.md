@@ -175,7 +175,7 @@ From the older continuity files. None of these is approved just by appearing her
 ## 6. Open items
 
 - **PRAVE (Jim: "addressed later"):** radio field test of tracker v1.1/v1.2 (only startup confirmed); then a PDF of `docs/PRAVE_ME_TRACKER.md`; a screenshot for the PRAVE/RMC tester on the Chartplotting page.
-- **Camera picture-in-picture idea (Jim, 2026-11-01, not approved to build):** a separate always-on-top Windows viewer opened by clicking a camera object. First tests: does an `earthpip:` custom-scheme link in a KML popup reach Windows; are the chosen cameras refreshing JPEGs or live video. See `tools/ARCGIS_EARTH_API.md`.
+- **Camera picture-in-picture idea (Jim, 2026-11-01, not approved to build):** a separate always-on-top Windows viewer opened by clicking a camera object. PROVEN by Jim: the ArcGIS Earth popup is a built-in browser - an fl511.com link opened the live site inside the popup (back/forward, pin). Remaining tests: `earthpip:` link reaching Windows, `<img>` and `<iframe>` in the popup HTML. See `tools/ARCGIS_EARTH_API.md`.
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.

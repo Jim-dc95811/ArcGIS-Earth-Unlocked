@@ -1,0 +1,56 @@
+# ArcGIS Earth Automation API - working reference
+
+Compiled 2026-11-01 from Esri's documentation and from what Jim's tools already do live. **Documented** = from Esri's pages (which contain small inconsistencies, noted). **Proven** = used successfully by a released tool in Jim's ArcGIS Earth. **Untested** = needs a test on Jim's PC before anything is built on it.
+
+Base URL: `http://localhost:8000` (Settings > Advanced > Automation API). Local calls should bypass any Windows proxy (`urllib.request.build_opener(urllib.request.ProxyHandler({}))`); EarthStick 1.1 and the tracker v1.2 do this. Sources: [Esri overview](https://doc.arcgis.com/en/arcgis-earth/automation-api/overview.htm).
+
+## Endpoints
+
+| Area | Call | Purpose | Status |
+|---|---|---|---|
+| Camera | `GET /arcgisearth/camera` | current viewpoint (position x/y/z, heading, tilt, roll) | **Proven** (EarthStick, tracker) |
+| Camera | `PUT /arcgisearth/camera` | set viewpoint instantly | **Proven** (EarthStick ~10 Hz, tracker recentering) |
+| Flight | `POST /arcgisearth/flight` | animated fly-to with a duration | Documented |
+| Drawings | `POST /arcgisearth/drawings` | add a point/line/polygon drawing; saved under **My Drawings** | **Proven** (tracker units with picture markers + labels) |
+| Drawings | `DELETE /arcgisearth/drawings`, `DELETE /arcgisearth/drawings/{id}` | clear all / delete one | **Proven** (tracker) |
+| Graphics | `POST /arcgisearth/graphics`, `GET`/`PATCH`/`DELETE /arcgisearth/graphics/{id}` | temporary graphics; PATCH updates in place | Documented |
+| Layers | `POST /arcgisearth/layer` | add a layer by `URI` (or `URIs`) with optional `target` and `type` | Documented |
+| Layers | `GET`/`DELETE /arcgisearth/layer/{id}`, `DELETE /arcgisearth/layers/{target}` | load status / remove one / clear a target | Documented |
+| Workspace | `GET`/`PUT`/`DELETE /arcgisearth/workspace` | export as .zip / import / clear | Documented |
+| Snapshot | `GET /arcgisearth/snapshot` | image of the current view | Documented |
+
+**What the API does NOT have:** no events, no click/selection reporting, no popup control, no way to read which feature the user clicked. Anything that reacts to a click has to go through the object's own popup (KML description links). This is the key constraint for the camera picture-in-picture idea.
+
+## Drawings vs graphics
+
+- **Drawings** appear in the table of contents (My Drawings), accept `title`, `visible` and a `labelSymbol` (`type: text`, `color`, size) for points, and picture markers use `url` + `size`. Esri's text puts the label size in `font.size` but its example puts `size` at the top level; the tracker uses the top-level `size` and it works (**proven**). Response `{"id": ..., "result": "Success"}`. There is no update call: replace = delete + add (the tracker does this). If a user unchecks a drawing, the next add makes it visible again.
+- **Graphics** are not documented as appearing in the table of contents, have a PATCH update, and picture markers use `url`, `width`, `height`, `angle`, `xoffset`, `yoffset`. No label field documented. Untested here; a graphic that can be PATCHed may be smoother for moving units than delete+add (worth a test before any tracker change).
+- Neither documents attributes or popups. Clickable information still comes from KML/KMZ (Object Factory).
+- Esri's own examples are loose about units and formats (`"48px"` vs `48`, RGBA arrays vs hex, `spatialReference.wkid` as string vs number). Send numbers and `{"wkid": 4326}`, and do not expect the response to echo the request exactly.
+
+## Adding layers (`POST /arcgisearth/layer`)
+
+Body `{"URI": "<url or local path>", "target": "operationalLayers" | "baseMaps" | "elevationLayers", "type": "<type>"}`. Types: `ArcGISFeatureService`, `ArcGISMapService`, `ArcGISImageService`, `Shapefile`, `WMS` (type required), `KML` (KML and KMZ), `SceneLayerPackage`, `SceneService`, `RasterDataLayer`, `TilePackage`, `ArcGISMobileScenePackage`, `ArcGISWebScene`, `ArcGISWebMap`, `PortalItem`, `GeoJSON`, `GPX`. Response gives an `id` and `loadStatus`.
+
+Untested but promising: a script could load Object Factory KMZs, Parcel100 GeoJSON cells or a TPKX (`TilePackage` - Esri lists "ArcGIS tile package"; TPKX not named) by path, for example loading the Parcel100 cell under the current camera position. Source: [Add Layer](https://doc.arcgis.com/en/arcgis-earth/automation-api/add-layer.htm).
+
+## Camera body (proven shape)
+
+```json
+{"position": {"x": -81.93, "y": 30.39, "z": 1500, "spatialReference": {"wkid": 4326}},
+ "heading": 0, "tilt": 60, "roll": 0}
+```
+
+EarthStick reads the camera, changes values, and PUTs it back; the tracker changes only x/y so the operator's zoom and tilt are kept.
+
+## Clicks and popups (KML side)
+
+- Object Factory writes an HTML link into the KML description. Clicking the object opens ArcGIS Earth's info panel; clicking the link opens the **default web browser** (owner-observed behavior for http/https links; exact behavior depends on ArcGIS Earth and Windows settings).
+- **Untested:** whether a non-web link (a custom scheme such as `earthpip:...`, a `file:` link, or a `localhost` URL) in that panel is handed to Windows. This decides how a click can open a separate always-on-top camera window.
+
+## Ideas this makes possible (none approved)
+
+- **Camera picture-in-picture (Jim, 2026-11-01):** camera object over an intersection; clicking it opens a small Windows always-on-top viewer (not inside ArcGIS Earth). Trigger options, in order of preference: (1) custom URL scheme registered with Windows; (2) `http://localhost` link served by a small background helper (works with plain web links, but also opens a browser tab). Viewer: refreshing JPEG cameras (many DOT feeds) need only Pillow + Tkinter; true video (HLS) needs VLC/ffmpeg or an embedded browser.
+- **Auto-loading layers by location:** watch the camera and `POST /layer` the Parcel100 or Master 4 cell underneath.
+- **Scenario / scavenger games:** a script adds drawings or loads clue KMZs as the camera reaches a beacon (camera polling stands in for the missing events).
+- **Snapshot capture:** `GET /snapshot` for briefing images or before/after records.

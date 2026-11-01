@@ -69,7 +69,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - Blocked: PyPI for some packages (pyserial: clone from GitHub instead), YouTube (thumbnails and pages), raw.githubusercontent.com. `gh run list` works; `gh api .../pages` is refused.
 - GitHub Actions in Parcel100 commits a rebuilt zip after pushes to main; pull before the next edit.
 - Repos must be attached with `add_repo(access: push)` before pushing; branch deletion is refused (Jim deletes branches).
-- **Claude Toolbox (`tools/`, Jim's idea 2026-11-01): check `tools/README.md` before writing a helper from scratch.** It holds `linkcheck.py`, `check_binaries.py`, `md2pdf.py`, `crop_screenshot.py` and `test-rigs/`. Add new reusable helpers there and list them in its README.
+- **Claude Toolbox (`tools/`, Jim's idea 2026-11-01): check `tools/README.md` before writing a helper from scratch.** It holds `linkcheck.py`, `check_binaries.py`, `md2pdf.py`, `crop_screenshot.py`, `test-rigs/` and `ARCGIS_EARTH_API.md` (Automation API reference: proven vs documented vs untested; read it before any API work). Add new reusable helpers there and list them in its README.
 
 ---
 
@@ -175,6 +175,7 @@ From the older continuity files. None of these is approved just by appearing her
 ## 6. Open items
 
 - **PRAVE (Jim: "addressed later"):** radio field test of tracker v1.1/v1.2 (only startup confirmed); then a PDF of `docs/PRAVE_ME_TRACKER.md`; a screenshot for the PRAVE/RMC tester on the Chartplotting page.
+- **Camera picture-in-picture idea (Jim, 2026-11-01, not approved to build):** a separate always-on-top Windows viewer opened by clicking a camera object. First tests: does an `earthpip:` custom-scheme link in a KML popup reach Windows; are the chosen cameras refreshing JPEGs or live video. See `tools/ARCGIS_EARTH_API.md`.
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.

@@ -42,6 +42,8 @@ Documentation fixes (broken links, stale versions, typos) are fine when Jim asks
 
 **Code-hardening workflow (agreed 2026-10-31):** go page by page in the order of the umbrella README. For each script: review and test here, report findings ranked by importance, change nothing until Jim approves. Jim chose to bundle approved fixes for one script into a single release (e.g. mb2tpkx v1.1) rather than one version per fix. Build in a dev folder, test here (including a byte-for-byte regression against the current version where output files exist), then hand off for Jim's live Windows/ArcGIS Earth test. Post to main only after he accepts.
 
+**Auto-install launchers (Jim, 2026-11-02):** any tool needing a non-standard Python library installs it from its `.bat`, never from the `.py`: find Python (`set "PYEXE=py -3"`, `where py || set PYEXE=python`, `--version` check), `%PYEXE% -c "import <mod>"`, if missing `%PYEXE% -m pip install <lib>`, re-check, else print the manual command and 'ask IT' and stop. Released as launcher-only versions: mb2tpkx v1.1.1 and Master 4 v3.1.1 (Pillow), PRAVE/ME Tracker v1.2.1 and the Gold tester's launcher (pyserial); all live-tested by Jim. EarthStick, Object Factory, PointLayer and Parcel100 need no extra libraries.
+
 **Packaging standard (Jim, 2026-11-01):** every Python script is delivered as a zip containing the `.py` and a `.bat` launcher (CRLF; `py -3`, falling back to `python`; `pause` at the end), inside a folder named after the tool.
 
 **Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading. The session's git proxy also refuses branch deletion, so ask Jim to delete finished test branches on GitHub (Branches page). If the stop hook demands a push before Jim's input is in, park work on a side branch, never on main.
@@ -96,8 +98,8 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | Repo | Role | Current version | Continuity file |
 |---|---|---|---|
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
-| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10, dated notes since) |
-| `ArcGIS-Earth-Offline-Maps-Chartplotting` | ArcGIS Pro TPKX route (Batch Factory), mobile offline, chartplotting, PRAVE/ME tracker; GitHub Pages site `index.html` | Batch Factory v1 (Extent Tool v2 retired 2026-11-01), PRAVE/ME Tracker v1.2, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`; this file) |
+| `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1.1 (py = protected v1.1 baseline), Master 4 v3.1.1 (py = v3.1) | `CONTINUITY.md` (snapshot 2026-10-10, dated notes since) |
+| `ArcGIS-Earth-Offline-Maps-Chartplotting` | ArcGIS Pro TPKX route (Batch Factory), mobile offline, chartplotting, PRAVE/ME tracker; GitHub Pages site `index.html` | Batch Factory v1 (Extent Tool v2 retired 2026-11-01), PRAVE/ME Tracker v1.2.1, PRAVE/RMC Tester v1.0 Gold (launcher updated 2026-11-02) | none (README + `docs/`; this file) |
 | `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.2 | `CONTINUITY.md` |
 | `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.2 (released 2026-11-02) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.4 | `CONTINUITY.md` |
@@ -204,7 +206,7 @@ From the older continuity files. None of these is approved just by appearing her
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
-- **Branches:** all seven repos have only `main` (confirmed with `git ls-remote`, 2026-11-02 18:26).
+- **Branches to delete (Jim):** `launcher-autoinstall-test` in QGIS-Mbtile and in Chartplotting.
 
 ---
 
@@ -219,4 +221,4 @@ From the older continuity files. None of these is approved just by appearing her
   - Unlocked front page gained "The project pages" (6 links). Claude Toolbox created in `tools/` (Jim's idea). ArcGIS Earth Automation API researched into `tools/ARCGIS_EARTH_API.md`.
   - **Big finding (Jim's tests):** the ArcGIS Earth popup is a built-in web browser that runs JavaScript. A camera object over SR-200 W of I-95 (Nassau) showing FL511 camera 1362 auto-refreshed live inside ArcGIS Earth. Test KMZ now in `tools/samples/`. Jim's direction: objects in 3D space online and offline (live cameras, kids' scavenger games with beacon guides, object packs); an objects video is planned. Session paused for a few hours at Jim's request.
   - **EarthStick 1.2 released** (trigger-click, Jim's idea): test builds v0.1-v0.3 found the glide-and-rest click recipe; TEST accepted live ("works great"); TEST2's Button 2 = Esc did not work, and Jim found a trigger-click on open map closes the popup, so 1.2 = TEST. Front-page link updated; Jim's crosshair screenshot added to the page and manual (PDF rebuilt). Jim deleted all test branches; all repos are `main` only. Night break.
-- **2026-11-02:** **Object Factory 1.2 released** (Hide above via KML Region cube, calibrated live from Jim's eye-alt screenshots; altitude in feet; name popup; layout). Jim also put the live FL511 camera HTML into a 1.2 object - works inside the Hide above folder.
+- **2026-11-02:** **Object Factory 1.2 released** (Hide above via KML Region cube, calibrated live from Jim's eye-alt screenshots; altitude in feet; name popup; layout). Jim also put the live FL511 camera HTML into a 1.2 object - works inside the Hide above folder. 'Get everything you need' blocks on all pages. Launcher auto-install releases (mb2tpkx v1.1.1, Master 4 v3.1.1, Tracker v1.2.1, Gold tester launcher). Jim's 5Wn14qlC7n4 video hit 125 views in 2 days (big for him); next: live-camera Short.

@@ -23,7 +23,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 
 **Before you start:** most tools need two free programs, **⬇️ [ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** (Windows desktop version) and **⬇️ [Python 3](https://www.python.org/downloads/windows/)** (install with the default options). Each tool's page lists exactly what it needs, at the top.
 
-### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
+### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
 
 Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
@@ -32,7 +32,7 @@ Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
 
 *A converted Bryceville, Florida, map open offline in ArcGIS Earth. ▶️ [Watch the video](https://www.youtube.com/watch?v=C71n8TAByuE) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
-### **⬇️ [DOWNLOAD MASTER 4 GRID MAKER v3.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip)**
+### **⬇️ [DOWNLOAD MASTER 4 GRID MAKER v3.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/Master4_Grid_Maker_User_Manual.pdf)**
 
 Split a 1-degree box into 100 numbered cells with exact extents and file names for large-area map production.
@@ -86,7 +86,7 @@ Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see
 
 *A St. Johns County parcel with its owner, address and acres. ▶️ [Watch the video](https://www.youtube.com/watch?v=_hMB_TOODOQ) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Parcel100).*
 
-### **⬇️ [DOWNLOAD PRAVE / ME TRACKER v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip)**
+### **⬇️ [DOWNLOAD PRAVE / ME TRACKER v1.2.1](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/PRAVE_ME_TRACKER.md)**
 
 Show your own position (ME) and other radio-tracked units live in ArcGIS Earth from a Raveon PRAVE/RMC radio.

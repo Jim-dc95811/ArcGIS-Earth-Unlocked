@@ -66,3 +66,8 @@ Web searches for joystick/gamepad control of ArcGIS Earth, Automation API projec
 - **Webcams in popups** exist in ArcGIS Online web maps (e.g. CalOES California Webcams, community traffic-camera layers), but nothing was found showing live cameras floating as objects in ArcGIS Earth's 3D space.
 - Nearest public-safety cousin: **ATAK** (Android Team Awareness Kit), with offline maps, unit tracking and video, but a different platform.
 Absence of search results is not proof nobody has done it, only that nothing public turned up.
+
+
+## Simulated clicks (proven 2026-11-01)
+
+A program can open an object's popup by moving the Windows mouse onto it and clicking (EarthStick trigger-click test v0.3). An instant cursor jump followed by an immediate click did NOT select the object - ArcGIS Earth zoomed in instead. What works: glide the pointer onto the target in small steps, rest about 0.25 s, press about 0.08 s, rest about 0.4 s, then restore the pointer. Keep any overlay out of the way during the click.

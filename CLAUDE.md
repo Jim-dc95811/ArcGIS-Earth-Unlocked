@@ -2,7 +2,7 @@
 
 **Written by Claude, for Claude.** Read this first after any session reset. It is the fastest way to get fully caught up on Jim's ArcGIS Earth Unlocked project family and how to work with him.
 
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-02
 
 Update this file whenever something durable changes: a release, an accepted test, a new rule, a decision, an open item opened or closed. Keep it current rather than long. History belongs in the session log at the bottom, kept short.
 
@@ -97,8 +97,8 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 | `ArcGIS-Earth-Unlocked` | Umbrella front door / system map | - | this file |
 | `QGIS-Mbtile-to-ArcGIS-Earth-TPKX` | Foundation maps: MBTiles -> TPKX converter + Master 4 Grid Maker | mb2tpkx v1.1 (protected baseline), Master 4 v3.1 | `CONTINUITY.md` (snapshot 2026-10-10, dated notes since) |
 | `ArcGIS-Earth-Offline-Maps-Chartplotting` | ArcGIS Pro TPKX route (Batch Factory), mobile offline, chartplotting, PRAVE/ME tracker; GitHub Pages site `index.html` | Batch Factory v1 (Extent Tool v2 retired 2026-11-01), PRAVE/ME Tracker v1.2, PRAVE/RMC Tester v1.0 Gold | none (README + `docs/`; this file) |
-| `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.1 (protected baseline) | `CONTINUITY.md` |
-| `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.1 (released 2026-10-31) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
+| `EarthStick` | Joystick flight of the ArcGIS Earth camera | 1.2 | `CONTINUITY.md` |
+| `ArcGIS-Earth-Object-Factory` | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | 1.2 (released 2026-11-02) | `internal/CONTINUITY.md` + `internal/MAPWORLD.md` |
 | `Point-Maps` | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | 1.4 | `CONTINUITY.md` |
 | `Parcel100` | Master 4 box -> up to 100 parcel GeoJSON cells | 1.5 | `CONTINUITY.md` |
 
@@ -135,11 +135,12 @@ ArcGIS Earth     -> the common renderer
 - **1.1 released 2026-10-31** (hardening; flying identical to 1.0): waits for the joystick at startup, proxy-free localhost API opener, startup wait prints reason, single post-error prompt. `releases/EarthStick_v1.1.zip` SHA-256 `505295a68e041bec7ae921f2c71b5240816946a8d5bb5f48459f3b237819c52e`; `EarthStick.py` `84894c2f2d6c857ba71b2153126cb274254e3dbf23099ca1b821dbc2ca7400c7`. `releases/EarthStick_v1.0.zip` (`8b399d70...`) kept for existing links. Change doc `docs/EARTHSTICK_V1.1_CHANGES.md`. Constants and recovery behavior are locked; see its `CONTINUITY.md`.
 - Test rig: `es_rig.py` pattern - load EarthStick.py via exec into a module, replace `WinJoystick` with a scripted class, `time` with a sleep-driven fake clock, `os.name` with 'nt', and point `CAMERA_URL` at a local mock camera API; compare the PUT stream between versions.
 
-**Object Factory 1.1**
+**Object Factory 1.2**
 - v1.0 = accepted v0.2.2 TEST build, promoted with only three text changes (version string, one error message, startup status). v1.0 source SHA-256 `e77e1866e7a87b9824ed6bb1cd0f830f52adb1a2872efe48ede13a581018aa00`, which exists only in commit `b65a54c`; Jim removed the loose file from the repo root on 10/30.
 - **v1.1 released 2026-10-31** (hardening; outputs identical to v1.0): `releases/ArcGIS_Earth_Object_Factory_v1.1.zip` (folder `Object_Factory_v1.1/`, SHA-256 `927ed4bf...`), source `source/Object_Factory_v1.1.py` (`f94a2034a9e3348d81a2a2061619201fd795d36930c2b64797ebb2611f5b6b70`), change doc `docs/OBJECT_FACTORY_V1.1_CHANGES.md`. v0.2.2 TEST zip removed from current files. Jim accepted on live proof (POF screenshot); he considers working output sufficient and did not run `--selftest` - don't keep pressing for it. Clipboard from Google Maps right-click is THE coordinate method; never reintroduce ArcGIS Earth camera pickup.
+- **v1.2 released 2026-11-02** (Jim's request; accepted live on TEST3, "target acquired"): **Hide above (ft)** on the Objects tab + optional batch column `hide_above_ft`. Each object (+ tether) goes in a `<Folder>` with a KML Region: a 300 m CUBE (LatLonAltBox with minAltitude/maxAltitude, centred on the object) and `minLodPixels = LOD_FT_PX / feet`, `LOD_FT_PX = 1,790,000`. Calibrated on Jim's screen: altitude x minLodPixels was constant (1.44-2.38 million ft*px for the 0.003-degree test box); 40,000 ft check passed. A FLAT box vanishes edge-on at low altitude; the cube stays visible sideways (to ~1.35x the setting). Objects tab altitude now in feet (presets rounded to 10 ft); batch `alt_m` stays metres. Popup Info with empty text and URL now shows the name (v1.1 wrote nothing, so a click only selected the object). Header/rows tightened so CREATE OBJECT KMZ fits on Jim's maximised window. `releases/ArcGIS_Earth_Object_Factory_v1.2.zip` `531d4e0e54e38a0608052ba4140c51534101e40a16d75af6842532701c2fe1c4`, `source/Object_Factory_v1.2.py` `1310743e2f129d70dd85291efe1922c2f275bedbb9a91f45759d5925b4640ff9`, change doc `docs/OBJECT_FACTORY_V1.2_CHANGES.md`, manual PDF `docs/ArcGIS_Earth_Object_Factory_v1.2_User_Manual.pdf` (v1.1 PDF removed; v1.1 zip + source kept). Rig: `tools/test-rigs/object_factory_test_v12.py` (32 checks). ArcGIS Earth status bar shows **eye alt in feet**.
 - 11 presets: object, helicopter, fuel, bird, hazard, home, staging, water, firetruck, camera, medical. PNGs normalized to 256 px or less on a working copy; originals never modified. Labels off by default; popup Info or None. Batch aliases: pin, heli, gas, gas_pump, warning, base, truck, viewpoint, hospital; unknown type -> object. Default outputs on the Desktop.
-- Batch format: `type|name|lat|lon|alt_m|icon|description|url|link_text|scale|altitude_mode|tether|popup|label`, with comma shorthand `type,lat,lon[,alt][,name]`.
+- Batch format: `type|name|lat|lon|alt_m|icon|description|url|link_text|scale|altitude_mode|tether|popup|label|hide_above_ft` (last column optional, v1.2), with comma shorthand `type,lat,lon[,alt][,name]`.
 - This repo was formerly `Earth-Beacon`. Standalone Beacon Maker v1.0 source/docs are preserved in `legacy/Earth_Beacon_v1.0/`; it is no longer a separate download (retired 2026-10-31).
 - Known cosmetic issue: ArcGIS Earth's native KML popup box is larger than wanted. That is viewer behavior, not a bug in the factory.
 - ChatGPT was given broad design authority over the Object Factory build. Do not assume Claude has the same authority; ask.
@@ -202,7 +203,7 @@ From the older continuity files. None of these is approved just by appearing her
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
-- **Branches:** all seven repos have only `main` (confirmed with `git ls-remote`, 2026-11-01 22:30).
+- **Branches to delete (Jim):** Object Factory `object-factory-lod-test` (holds the LOD calibration, flat-vs-cube and v1.2 TEST1-3 builds).
 
 ---
 
@@ -217,3 +218,4 @@ From the older continuity files. None of these is approved just by appearing her
   - Unlocked front page gained "The project pages" (6 links). Claude Toolbox created in `tools/` (Jim's idea). ArcGIS Earth Automation API researched into `tools/ARCGIS_EARTH_API.md`.
   - **Big finding (Jim's tests):** the ArcGIS Earth popup is a built-in web browser that runs JavaScript. A camera object over SR-200 W of I-95 (Nassau) showing FL511 camera 1362 auto-refreshed live inside ArcGIS Earth. Test KMZ now in `tools/samples/`. Jim's direction: objects in 3D space online and offline (live cameras, kids' scavenger games with beacon guides, object packs); an objects video is planned. Session paused for a few hours at Jim's request.
   - **EarthStick 1.2 released** (trigger-click, Jim's idea): test builds v0.1-v0.3 found the glide-and-rest click recipe; TEST accepted live ("works great"); TEST2's Button 2 = Esc did not work, and Jim found a trigger-click on open map closes the popup, so 1.2 = TEST. Front-page link updated; Jim's crosshair screenshot added to the page and manual (PDF rebuilt). Jim deleted all test branches; all repos are `main` only. Night break.
+- **2026-11-02:** **Object Factory 1.2 released** (Hide above via KML Region cube, calibrated live from Jim's eye-alt screenshots; altitude in feet; name popup; layout). Jim also put the live FL511 camera HTML into a 1.2 object - works inside the Hide above folder.

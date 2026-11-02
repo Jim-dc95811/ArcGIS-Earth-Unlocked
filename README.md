@@ -57,7 +57,7 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and i
 
 *Flying low over the St. Johns River with a beacon and sky compass on the horizon. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/EarthStick).*
 
-### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.1](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.1.zip)**
+### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
 
 Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth, one at a time or in batches.

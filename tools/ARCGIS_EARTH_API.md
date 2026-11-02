@@ -71,3 +71,10 @@ Absence of search results is not proof nobody has done it, only that nothing pub
 ## Simulated clicks (proven 2026-11-01)
 
 A program can open an object's popup by moving the Windows mouse onto it and clicking (EarthStick trigger-click test v0.3; released in EarthStick 1.2). An instant cursor jump followed by an immediate click did NOT select the object - ArcGIS Earth zoomed in instead. What works: glide the pointer onto the target in small steps, rest about 0.25 s, press about 0.08 s, rest about 0.4 s, then restore the pointer. Keep any overlay out of the way during the click. Clicking open map closes an open popup.
+
+## KML Region / LOD in ArcGIS Earth (proven 2026-11-02)
+
+- ArcGIS Earth honours KML `<Region>` + `<Lod><minLodPixels>` on a `<Folder>` (PointLayer, Object Factory 1.2). Popups inside the folder work normally.
+- The cutoff scales as 1/distance: on Jim's full-screen window, altitude (ft) x minLodPixels at disappearance was constant, 1.44-2.38 million ft*px for a 0.003 x 0.003 degree box at 30.6 N (about 310 m). Object Factory uses 1,790,000 for a 300 m box.
+- A FLAT box (no altitudes) disappears when seen edge-on from low altitude. Adding `<minAltitude>/<maxAltitude>/<altitudeMode>` to the `LatLonAltBox` (a cube) makes it work from any direction (cube set to 20,000 ft stayed visible ~4.9 miles away at 162 ft eye alt; flat box gone).
+- The status bar shows **eye alt** in feet: the easiest measurement for any calibration.

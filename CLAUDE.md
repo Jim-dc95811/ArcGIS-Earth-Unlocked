@@ -57,6 +57,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 ### 2a-1. Project timeline from Jim's YouTube channel (@dc95811, read 2026-11-01)
 
 - **~1 year+ ago:** two-way radio / communications engineering (P25, BK, Telex, Viavi, antennas). Early mapping seeds: Google Earth Pro pre-trip cache building, vehicle tracking with Google Earth + MS Teams, Raveon GPS telemetry testing (the PRAVE ancestor).
+- **Origin (Jim):** it all started with OpenCPN being able to read MBTiles made in QGIS. Jim's twist was Google imagery over land instead of nautical charts over water; the OpenCPN community was not happy about it. The MBTiles habit later became mb2tpkx (MBTiles -> TPKX for ArcGIS Earth).
 - **~6-5 months ago (May-June 2026):** tracking and land navigation: OpenCPN as a land chart plotter with QGIS/Google Maps/Google Earth Pro, U-blox GPS, Arduino NMEA conversion, Kenwood NX-700 GPS backhaul, multi-AVL on one plotter.
 - **~4 months ago (July 2026):** location pushing (Google Maps dispatch texting tool built with AI, address push via AIS/OpenCPN). Google announced the end of Google Earth Pro downloads on July 8, 2026 (downloads stop June 25, 2027).
 - **~2 months ago (Sept 2026):** the ArcGIS Earth pivot: pre-loaded satellite maps for first responders, ArcGIS Pro TPKX creation.

@@ -55,3 +55,14 @@ EarthStick reads the camera, changes values, and PUTs it back; the tracker chang
 - **Auto-loading layers by location:** watch the camera and `POST /layer` the Parcel100 or Master 4 cell underneath.
 - **Scenario / scavenger games:** a script adds drawings or loads clue KMZs as the camera reaches a beacon (camera polling stands in for the missing events).
 - **Snapshot capture:** `GET /snapshot` for briefing images or before/after records.
+
+## Prior art search (2026-11-01)
+
+Web searches for joystick/gamepad control of ArcGIS Earth, Automation API projects, and live cameras in ArcGIS Earth popups found:
+- **ArcGIS Earth itself** supports mouse, keyboard, touch and the **3Dconnexion SpaceMouse** (added around the December 2024 release); no joystick or gamepad support is documented. Search results for "ArcGIS Earth" + joystick/gamepad return only Jim's EarthStick.
+- **Esri's Automation API repo** (`Esri/arcgisearth-automation-api`, ~25 stars) offers API examples and an ArcGIS Pro-to-Earth add-in; no flight, joystick, tracking or camera samples were found.
+- **Gamepad flight exists elsewhere in Esri's world:** the ArcGIS Maps SDK for JavaScript has had gamepad navigation since 2018 (web scenes, not ArcGIS Earth), and a hobby web component (`ceddc/arcgis-flight-component`) flies planes through web scenes.
+- **Google Earth** has had a joystick-capable flight simulator and SpaceMouse support for years; hobby projects pilot it with game controllers.
+- **Webcams in popups** exist in ArcGIS Online web maps (e.g. CalOES California Webcams, community traffic-camera layers), but nothing was found showing live cameras floating as objects in ArcGIS Earth's 3D space.
+- Nearest public-safety cousin: **ATAK** (Android Team Awareness Kit), with offline maps, unit tracking and video, but a different platform.
+Absence of search results is not proof nobody has done it, only that nothing public turned up.

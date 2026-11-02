@@ -84,7 +84,7 @@ def script():
             (60, S(fwd=-0.5, strafe=0.4, yaw=-0.3, thr=1.0)), (20, S())]
     if TRIGGER:
         segs = [(20, S()), (3, S(btn=1)), (2, S()), (1, S(btn=1)), (40, S()), (5, S(btn=1)), (25, S()),
-                (60, S(fwd=1.0, thr=0.8)), (5, S(fwd=1.0, thr=0.8, btn=1)), (30, S()), (40, S(btn=(1 << 3) | 1)), (20, S())]
+                (60, S(fwd=1.0, thr=0.8)), (5, S(fwd=1.0, thr=0.8, btn=1)), (30, S()), (40, S(btn=(1 << 3) | 1)), (20, S()), (4, S(btn=2)), (10, S()), (30, S(fwd=0.5, btn=2)), (20, S())]
     for n, st in segs:
         for _ in range(n):
             yield dict(st)
@@ -135,6 +135,8 @@ elif SCENARIO == "trigger":
             def __init__(self): self.gate = es.TriggerGate()
             def on_buttons(self, b):
                 if self.gate.update(bool(b & 1), es.time.perf_counter()): clicks.append(round(es.time.perf_counter(), 3))
+                if not hasattr(self, "cg"): self.cg = es.TriggerGate()
+                if self.cg.update(bool(b & 2), es.time.perf_counter()): clicks.append("close")
         es.TriggerClick.start = classmethod(lambda cls: FakeClicker())
     go()
     result["puts"] = len(Earth.puts); result["clicks"] = clicks

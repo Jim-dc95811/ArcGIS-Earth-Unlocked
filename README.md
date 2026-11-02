@@ -21,6 +21,8 @@ This family of projects has **6 pages**, one for each part. Each page has its ow
 
 Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User manual** for step-by-step instructions. Click a picture to see that tool's page.
 
+**Before you start:** most tools need two free programs, **⬇️ [ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** (Windows desktop version) and **⬇️ [Python 3](https://www.python.org/downloads/windows/)** (install with the default options). Each tool's page lists exactly what it needs, at the top.
+
 ### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
 

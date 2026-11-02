@@ -54,6 +54,16 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - **Manual PDFs** are generated from the Markdown manual with `tools/md2pdf.py` (python-markdown + Playwright Chromium; run with `GH_BASE=https://github.com/Jim-dc95811/<repo>/blob/main/ REPO_ROOT=.` from the repo root so relative links become GitHub links). Regenerate the PDF whenever its manual changes. Each manual opens with a "printable copy" link to its PDF.
 - **Corruption check:** several uploads in these repos were truncated at about 15 KB. Before trusting any binary, open it (PIL / `pdfinfo` / `unzip -t`).
 
+### 2a-1. Project timeline from Jim's YouTube channel (@dc95811, read 2026-11-01)
+
+- **~1 year+ ago:** two-way radio / communications engineering (P25, BK, Telex, Viavi, antennas). Early mapping seeds: Google Earth Pro pre-trip cache building, vehicle tracking with Google Earth + MS Teams, Raveon GPS telemetry testing (the PRAVE ancestor).
+- **~6-5 months ago (May-June 2026):** tracking and land navigation: OpenCPN as a land chart plotter with QGIS/Google Maps/Google Earth Pro, U-blox GPS, Arduino NMEA conversion, Kenwood NX-700 GPS backhaul, multi-AVL on one plotter.
+- **~4 months ago (July 2026):** location pushing (Google Maps dispatch texting tool built with AI, address push via AIS/OpenCPN). Google announced the end of Google Earth Pro downloads on July 8, 2026 (downloads stop June 25, 2027).
+- **~2 months ago (Sept 2026):** the ArcGIS Earth pivot: pre-loaded satellite maps for first responders, ArcGIS Pro TPKX creation.
+- **~1 month ago (Oct 2026):** TPKX production and QGIS (offline TPKX, chart plotting, QGIS + ArcGIS Pro, export DPI/zoom guide, "How to Make an Offline Map with QGIS and ArcGIS Earth", "Google Maps OFFLINE").
+- **Last 3 weeks:** scale and data: large regions with QGIS (Master 4), ArcGIS Earth Mobile at Z20, Parcel100, EarthStick/flight video.
+- Channel: 889 subscribers, 202 videos. Most-viewed videos are radio/tech (lightbar 1.9K, RS232 981, VHF duplexer 605); mapping videos run 27-226 views, best ones being practical how-tos with a clear result. The subscriber base came for radio; the mapping work needs a new audience (Shorts, Esri Community, fire-service outlets). Network Earth (Google Earth Pro "Earth Server in a Box", v0.2.2 test) was the Google Earth Pro-era predecessor.
+
 ### 2b. Working with Jim (observed)
 
 - He answers tersely: "engage" = go ahead; "approve all" / "1.4 yes 1-6" = approve the listed findings; "works good" or a screenshot = live acceptance. Do not press for self-tests after that.

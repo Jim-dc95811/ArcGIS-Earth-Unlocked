@@ -48,10 +48,10 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.1.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 

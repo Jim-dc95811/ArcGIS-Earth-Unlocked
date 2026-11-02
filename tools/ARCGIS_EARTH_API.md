@@ -2,7 +2,7 @@
 
 Compiled 2026-11-01 from Esri's documentation and from what Jim's tools already do live. **Documented** = from Esri's pages (which contain small inconsistencies, noted). **Proven** = used successfully by a released tool in Jim's ArcGIS Earth. **Untested** = needs a test on Jim's PC before anything is built on it.
 
-Base URL: `http://localhost:8000` (Settings > Advanced > Automation API). Local calls should bypass any Windows proxy (`urllib.request.build_opener(urllib.request.ProxyHandler({}))`); EarthStick 1.1 and the tracker v1.2 do this. Sources: [Esri overview](https://doc.arcgis.com/en/arcgis-earth/automation-api/overview.htm).
+Base URL: `http://localhost:8000` (Settings > Advanced > Automation API). Local calls should bypass any Windows proxy (`urllib.request.build_opener(urllib.request.ProxyHandler({}))`); EarthStick 1.1+ and the tracker v1.2 do this. Sources: [Esri overview](https://doc.arcgis.com/en/arcgis-earth/automation-api/overview.htm).
 
 ## Endpoints
 
@@ -70,4 +70,4 @@ Absence of search results is not proof nobody has done it, only that nothing pub
 
 ## Simulated clicks (proven 2026-11-01)
 
-A program can open an object's popup by moving the Windows mouse onto it and clicking (EarthStick trigger-click test v0.3). An instant cursor jump followed by an immediate click did NOT select the object - ArcGIS Earth zoomed in instead. What works: glide the pointer onto the target in small steps, rest about 0.25 s, press about 0.08 s, rest about 0.4 s, then restore the pointer. Keep any overlay out of the way during the click.
+A program can open an object's popup by moving the Windows mouse onto it and clicking (EarthStick trigger-click test v0.3; released in EarthStick 1.2). An instant cursor jump followed by an immediate click did NOT select the object - ArcGIS Earth zoomed in instead. What works: glide the pointer onto the target in small steps, rest about 0.25 s, press about 0.08 s, rest about 0.4 s, then restore the pointer. Keep any overlay out of the way during the click. Clicking open map closes an open popup.

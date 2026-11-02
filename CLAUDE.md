@@ -24,6 +24,7 @@ The older continuity files in each repo were written by ChatGPT for ChatGPT. The
 ## 2. Owner and working rules
 
 - **Owner:** Jim Gaddy, GitHub `Jim-dc95811`. Public-safety / fire-service background, decades of hands-on computer and electronics work. Not a traditional programmer; a relentless tester who trusts measured behavior over theory.
+- **Tagline (Jim, 2026-11-01):** "Google owns the ground, but we own the space above it." Candidate for videos and pages.
 - **Mission:** "Create new map makers." "Do not make the user learn GIS before they can use geography."
 - **Audience and goal (Jim, 2026-11-01):** open-source sharing of this knowledge with everyone. Jim works for a state government fire department, the primary consumers of this information; the project has expanded to a general-public appeal and to the GIS community. He has met pushback from parts of the GIS community. Pages are written for YouTube visitors with no GitHub experience. A video focused on objects (Object Factory) is planned.
 - **Primary environment:** Windows 11, Python 3.14.x, ArcGIS Earth desktop (Automation API at `http://localhost:8000`), ArcGIS Earth Mobile on Android, QGIS. All tools are Windows/Python with `.bat` launchers.

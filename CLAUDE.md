@@ -203,7 +203,7 @@ From the older continuity files. None of these is approved just by appearing her
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
-- **Branches to delete (Jim):** Object Factory `object-factory-lod-test` (holds the LOD calibration, flat-vs-cube and v1.2 TEST1-3 builds).
+- **Branches:** all seven repos have only `main` (confirmed with `git ls-remote`, 2026-11-02 18:26).
 
 ---
 

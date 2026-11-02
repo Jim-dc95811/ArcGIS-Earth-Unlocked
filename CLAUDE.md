@@ -76,6 +76,9 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - Plain words: he is not a programmer. Name buttons and files exactly; skip code detail unless asked.
 - "Confirm X" means check it with a tool (e.g. `git ls-remote`, link check), not from memory.
 - He edits on GitHub himself between turns: always `git pull` before editing, and re-check what you claim is there.
+- Read every line of his report before acting. If he says something is not working, deal with that first (2026-11-01: "the joystick itself is not working" was missed while chasing the trigger; the cause was an old EarthStick 0.10 copy).
+- No hedging or reflexive caveats (he calls it "kicking balls"). Give a clear answer; keep caution only where it actually protects him or his users.
+- A screenshot with a one-line label ("screen shot showing object and crosshairs") usually means: put it on the page/manual for the thing just released.
 
 ### 2c. Sandbox facts (this cloud workspace)
 
@@ -83,7 +86,7 @@ Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX
 - Blocked: PyPI for some packages (pyserial: clone from GitHub instead), YouTube (thumbnails and pages), raw.githubusercontent.com. `gh run list` works; `gh api .../pages` is refused.
 - GitHub Actions in Parcel100 commits a rebuilt zip after pushes to main; pull before the next edit.
 - Repos must be attached with `add_repo(access: push)` before pushing; branch deletion is refused (Jim deletes branches).
-- **Claude Toolbox (`tools/`, Jim's idea 2026-11-01): check `tools/README.md` before writing a helper from scratch.** It holds `linkcheck.py`, `check_binaries.py`, `md2pdf.py`, `crop_screenshot.py`, `test-rigs/` and `ARCGIS_EARTH_API.md` (Automation API reference: proven vs documented vs untested; read it before any API work). Add new reusable helpers there and list them in its README.
+- **Claude Toolbox (`tools/`, Jim's idea 2026-11-01): check `tools/README.md` before writing a helper from scratch.** It holds `linkcheck.py`, `check_binaries.py`, `md2pdf.py`, `crop_screenshot.py`, `test-rigs/`, `samples/` (the live-camera test KMZ) and `ARCGIS_EARTH_API.md` (Automation API reference: proven vs documented vs untested; read it before any API work). Add new reusable helpers there and list them in its README.
 
 ---
 
@@ -180,7 +183,8 @@ ArcGIS Earth     -> the common renderer
 
 From the older continuity files. None of these is approved just by appearing here:
 - Clipboard -> QR -> email pin-drop utility (verify ArcGIS Earth app-link syntax first).
-- Object Factory: Camera/Viewpoint objects with a separate always-on-top viewer, 3D models, scenario/progressive reveal logic.
+- Object Factory: live camera objects (popup picture + refresh script, proven; see section 6), a separate always-on-top viewer, 3D models, scenario/progressive reveal logic.
+- Outreach: YouTube Shorts recorded from ArcGIS Earth at its 1200x2000 minimum window (close to 9:16); recreation direction to grow popularity (Jim leaning that way).
 - Parcel100: source profiles, field-profile save/load, GPS-driven cell loading. (Resume validation and batch splitting shipped in 1.5.)
 - Batch Factory: accept Master 4 TXT rows as they are and use their file names (needs Jim's OK and an ArcGIS Pro 3.7 build/test on his PC).
 - PointLayer: non-hydrant tests, more symbols, better LOD suggestions.
@@ -192,13 +196,13 @@ From the older continuity files. None of these is approved just by appearing her
 ## 6. Open items
 
 - **PRAVE (Jim: "addressed later"):** radio field test of tracker v1.1/v1.2 (only startup confirmed); then a PDF of `docs/PRAVE_ME_TRACKER.md`; a screenshot for the PRAVE/RMC tester on the Chartplotting page.
-- **NEXT WHEN JIM RETURNS - live camera objects:** Jim to choose between (a) a camera field in the Object Factory (paste the FL511 picture link; popup gets the live, refreshing picture) and (b) a camera-pack maker (camera numbers + coordinates -> one KMZ). Either is a new feature and a new version. Also: delete branch `camera-pip-test` in Object Factory when done; check FL511/FDOT terms of use before publishing a camera pack.
-- **Camera picture-in-picture idea (Jim, 2026-11-01, not approved to build):** a separate always-on-top Windows viewer opened by clicking a camera object. PROVEN by Jim: the ArcGIS Earth popup is a built-in browser - an fl511.com link opened the live site inside the popup (back/forward, pin). `earthpip:` link with no handler registered: "couldn't be opened" (inconclusive). PROVEN: a camera object whose popup has `<img src=https://fl511.com/map/Cctv/1362>` + a 10-second refresh script shows the live camera and updates by itself (popup runs JavaScript). Test KMZ on Object Factory branch `camera-pip-test` (Jim to delete when done). Building it into a tool (e.g. Object Factory camera field or a camera-pack maker) is a new feature: needs Jim's approval and a new version. See `tools/ARCGIS_EARTH_API.md`.
-- **EarthStick 1.2 RELEASED 2026-11-01** (trigger-click; see section 5). Jim to delete EarthStick branches `earthstick-v1.2-test` and `triggerclick-test`. The simulated-click recipe is in `tools/ARCGIS_EARTH_API.md`.
+- **NEXT WHEN JIM RETURNS - live camera objects:** Jim to choose between (a) a camera field in the Object Factory (paste the FL511 picture link; popup gets the live, refreshing picture) and (b) a camera-pack maker (camera numbers + coordinates -> one KMZ). Either is a new feature and a new version. The proven test KMZ is saved at `tools/samples/TEST_Camera_SR200_W_of_I95.kmz` (its branch is deleted). Open question for camera objects: altitude and tether (Claude suggested no tether, about 60-80 m; Jim undecided). Trigger-click (EarthStick 1.2) now opens these popups from the joystick.
+- **Camera picture-in-picture idea (Jim, 2026-11-01, not approved to build):** a separate always-on-top Windows viewer opened by clicking a camera object. PROVEN by Jim: the ArcGIS Earth popup is a built-in browser - an fl511.com link opened the live site inside the popup (back/forward, pin). `earthpip:` link with no handler registered: "couldn't be opened" (inconclusive). PROVEN: a camera object whose popup has `<img src=https://fl511.com/map/Cctv/1362>` + a 10-second refresh script shows the live camera and updates by itself (popup runs JavaScript). Test KMZ saved at `tools/samples/TEST_Camera_SR200_W_of_I95.kmz`. Building it into a tool (e.g. Object Factory camera field or a camera-pack maker) is a new feature: needs Jim's approval and a new version. See `tools/ARCGIS_EARTH_API.md`.
+- **EarthStick 1.2 RELEASED 2026-11-01** (trigger-click; see section 3). Page and manual carry Jim's crosshair + camera-object screenshot (`images/earthstick_trigger_click_crosshair.jpg`). Optional next picture: the same view with the info box open (before/after). The simulated-click recipe is in `tools/ARCGIS_EARTH_API.md`.
 - **Objects video** coming from Jim; when it exists, it may replace `5Wn14qlC7n4` on the Object Factory picture (ask).
 - **Parked (Jim's call, 2026-10-31):** Batch Factory findings (code read only) - Cancel ignores the 2-minute settle, duplicate labels caught late, closing the window mid-batch. Raise again only if Jim asks. (Extent Tool findings are moot: tool retired.)
 - `legacy/Earth_Beacon_v1.0/README_original.md` in Object Factory has three relative links that broke when it moved into `legacy/`. Left alone as a preserved original.
-- **Branches to delete (Jim):** EarthStick `earthstick-v1.2-test`, `triggerclick-test`; Object Factory `camera-pip-test` (keep until the camera feature is decided, if Jim wants the test KMZ).
+- **Branches:** all seven repos have only `main` (confirmed with `git ls-remote`, 2026-11-01 22:30).
 
 ---
 
@@ -211,5 +215,5 @@ From the older continuity files. None of these is approved just by appearing her
   - **User manual audit:** every manual checked against current code and corrected; PDFs regenerated from Markdown for Parcel100, PointLayer (was corrupt), Object Factory (v1.1 PDF replaces corrupt v1.0), EarthStick, mb2tpkx (new `MB2TPKX_USER_MANUAL.md`), Master 4, and the Batch Factory (new PDF; install section confirmed by Jim). Chartplotting site manual links now open GitHub blob pages. `tools/md2pdf.py` and `tools/linkcheck.py` added to this repo.
   - Jim deleted all leftover test branches.
   - Unlocked front page gained "The project pages" (6 links). Claude Toolbox created in `tools/` (Jim's idea). ArcGIS Earth Automation API researched into `tools/ARCGIS_EARTH_API.md`.
-  - **Big finding (Jim's tests):** the ArcGIS Earth popup is a built-in web browser that runs JavaScript. A camera object over SR-200 W of I-95 (Nassau) showing FL511 camera 1362 auto-refreshed live inside ArcGIS Earth. Test KMZ on Object Factory branch `camera-pip-test`. Jim's direction: objects in 3D space online and offline (live cameras, kids' scavenger games with beacon guides, object packs); an objects video is planned. Session paused for a few hours at Jim's request.
-  - **EarthStick 1.2 released** (trigger-click, Jim's idea): test builds v0.1-v0.3 found the glide-and-rest click recipe; TEST accepted live ("works great"); TEST2's Button 2 = Esc did not work, and Jim found a trigger-click on open map closes the popup, so 1.2 = TEST. Front-page link updated.
+  - **Big finding (Jim's tests):** the ArcGIS Earth popup is a built-in web browser that runs JavaScript. A camera object over SR-200 W of I-95 (Nassau) showing FL511 camera 1362 auto-refreshed live inside ArcGIS Earth. Test KMZ now in `tools/samples/`. Jim's direction: objects in 3D space online and offline (live cameras, kids' scavenger games with beacon guides, object packs); an objects video is planned. Session paused for a few hours at Jim's request.
+  - **EarthStick 1.2 released** (trigger-click, Jim's idea): test builds v0.1-v0.3 found the glide-and-rest click recipe; TEST accepted live ("works great"); TEST2's Button 2 = Esc did not work, and Jim found a trigger-click on open map closes the popup, so 1.2 = TEST. Front-page link updated; Jim's crosshair screenshot added to the page and manual (PDF rebuilt). Jim deleted all test branches; all repos are `main` only. Night break.

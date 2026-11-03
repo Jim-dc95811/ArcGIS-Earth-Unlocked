@@ -119,6 +119,23 @@ def _blank_png():
             + ch(b"IDAT", zlib.compress(b"\x00\x00\x00\x00\x00")) + ch(b"IEND", b""))
 
 
+LOD_FT_PX = 1_790_000.0   # Object Factory 1.2 calibration (300 m cube, Jim's screen)
+
+
+def lod_folder(name, inner_kml, lat, lon, alt_m, hide_above_ft, box_m=300.0):
+    """Wrap KML in a Folder that only shows within about hide_above_ft (Region cube, proven in Object Factory 1.2)."""
+    half = box_m / 2.0
+    dlat = math.degrees(half / R)
+    dlon = math.degrees(half / (R * max(math.cos(math.radians(lat)), 0.01)))
+    lod = max(1, int(round(LOD_FT_PX / hide_above_ft)))
+    return f'''  <Folder>
+    <name>{escape(name)}</name>
+    <Region><LatLonAltBox><north>{lat + dlat:.8f}</north><south>{lat - dlat:.8f}</south><east>{lon + dlon:.8f}</east><west>{lon - dlon:.8f}</west><minAltitude>{alt_m - half:.1f}</minAltitude><maxAltitude>{alt_m + half:.1f}</maxAltitude><altitudeMode>absolute</altitudeMode></LatLonAltBox>
+      <Lod><minLodPixels>{lod}</minLodPixels><maxLodPixels>-1</maxLodPixels></Lod></Region>
+{inner_kml}
+  </Folder>'''
+
+
 def welcome_sign(text, lat, lon, alt_m, heading, ahead_m=250.0, above_m=40.0):
     """Floating text placed ahead of an arrival point (seen right after a jump)."""
     slat, slon = dest(lat, lon, heading, ahead_m)
@@ -186,8 +203,8 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   </Style>
   <Style id="gateName"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>{name_scale}</scale></LabelStyle></Style>
   <Style id="gateAlt"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>{alt_scale}</scale></LabelStyle></Style>
-  <Style id="site"><IconStyle><scale>1.2</scale><Icon><href>icons/site.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>1.0</scale></LabelStyle></Style>
-  <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.8</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
+  <Style id="site"><IconStyle><scale>0.9</scale><Icon><href>icons/site.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>0.9</scale></LabelStyle></Style>
+  <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.4</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g, side_labels) for g in gates)}
 {chr(10).join(_label_placemarks(g) for g in gates) if side_labels else ""}

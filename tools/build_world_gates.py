@@ -5,7 +5,7 @@ landing spots, so ring names can repeat (every return ring is called ATL).
 python3 build_world_gates.py <output.kmz>
 """
 import sys
-from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark
+from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
 FT = 0.3048
@@ -90,9 +90,6 @@ for i, name in enumerate(TOUR[:-1]):
 # Welcome signs (Jim, 2026-11-03): floating text just ahead of every arrival point
 CITY = {"NYC": "New York", "London": "London", "Paris": "Paris", "Rome": "Rome", "Tokyo": "Tokyo",
         "Sydney": "Sydney", "Rio": "Rio de Janeiro"}
-signs = [welcome_sign(f"Welcome to {CITY[n]}", *arrival[n]) for n in TOUR]
-signs.append(welcome_sign("Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING))
-signs.append(welcome_sign("Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax))
 # Popular sites (Jim, 2026-11-03): a row of floating icons ahead of each arrival; each popup's SHOW ME
 # button draws a red beacon + gold label on the site through the Automation API (proven from a popup).
 SITES = {
@@ -132,20 +129,30 @@ SITES = {
             ("Ipanema Beach", "Made famous by the song.", -22.9868, -43.2050),
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
-MENU_AHEAD_M = 180.0     # the menu row floats this far ahead of the arrival point
-MENU_SPACING_M = 70.0    # side-by-side spacing of the menu icons
-MENU_BELOW_M = 30.0      # a little below eye level (the welcome sign is above)
-menus = []
-for city, sites in SITES.items():
-    alat_, alon_, aalt, ahead = arrival[city]
-    clat, clon = dest(alat_, alon_, ahead, MENU_AHEAD_M)
-    n = len(sites)
+
+# Layout v8 (Jim, 2026-11-03): KML text is a fixed size on screen, so signs and menus only show near
+# each arrival (Region LOD, as Object Factory "Hide above"); welcome sign further ahead and higher;
+# sites as a vertical menu board off to the left so labels do not collide.
+SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
+SIGN_AHEAD_M, SIGN_ABOVE_M = 450.0, 110.0
+MENU_AHEAD_M, MENU_LEFT_DEG = 260.0, 28.0
+MENU_TOP_ABOVE_M, MENU_STEP_M = 45.0, 24.0
+
+
+def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
+    parts = [welcome_sign(sign_text, alat_, alon_, aalt, ahead, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M)]
+    mlat, mlon = dest(alat_, alon_, (ahead - MENU_LEFT_DEG) % 360, MENU_AHEAD_M)
     for i, (sname, blurb, slat, slon) in enumerate(sites):
-        off = (i - (n - 1) / 2) * MENU_SPACING_M
-        plat, plon = dest(clat, clon, (ahead + 90) % 360 if off >= 0 else (ahead + 270) % 360, abs(off))
-        menus.append(site_placemark(f"site-{city.lower()}-{i + 1}", sname, blurb, slat, slon, plat, plon, aalt - MENU_BELOW_M))
+        parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
+                                    aalt + MENU_TOP_ABOVE_M - i * MENU_STEP_M))
+    return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
+
+
+extras = [city_extras(n, f"Welcome to {CITY[n]}", *arrival[n], SITES[n]) for n in TOUR]
+extras.append(city_extras("ATL", "Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, []))
+extras.append(city_extras("JAX", "Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax, []))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
-          extra_kml="\n".join(signs + menus), extra_files={"icons/site.png": SITE_ICON.read_bytes()})
+          extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()})
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

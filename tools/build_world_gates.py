@@ -10,7 +10,7 @@ from make_gate_kmz import gate, write_kmz, dest, bearing
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
-HUB_R = 2000.0                   # ATL departure rings: a circle this far out, around the airport
+HUB_R = 3000.0                   # ATL departure rings: a circle this far out, around the airport (Jim: 1.5x)
 ATL_GROUND = 1026 * FT           # Hartsfield-Jackson field elevation (ring heights are above sea level)
 JAX_LEVEL = 1500 * FT            # JIA is ~30 ft above sea level
 LEVEL = ATL_GROUND + 1500 * FT   # ATL terminal level: 1,500 ft above the airport

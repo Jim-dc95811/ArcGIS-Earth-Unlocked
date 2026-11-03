@@ -82,7 +82,7 @@ def _placemark(g, side_labels=False):
 
 
 LABEL_GAP_M = 40.0      # name starts this far outside the ring's right edge (seen from the gold side)
-ALT_LINE_DROP_M = 70.0  # eye-alt line sits this far below the name
+ALT_LINE_DROP_M = 130.0 # altitude line sits this far below the name
 
 
 def _label_placemarks(g):
@@ -97,7 +97,7 @@ def _label_placemarks(g):
     <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{g["alt_m"]:.1f}</coordinates></Point>
   </Placemark>
   <Placemark>
-    <name>eye alt {ft:,} ft</name>
+    <name>{ft:,} ft</name>
     <description>{desc}</description>
     <styleUrl>#gateAlt</styleUrl>
     <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{g["alt_m"] - ALT_LINE_DROP_M:.1f}</coordinates></Point>

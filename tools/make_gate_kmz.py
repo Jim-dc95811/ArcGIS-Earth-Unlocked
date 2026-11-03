@@ -119,7 +119,17 @@ def _blank_png():
             + ch(b"IDAT", zlib.compress(b"\x00\x00\x00\x00\x00")) + ch(b"IEND", b""))
 
 
-def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0):
+def welcome_sign(text, lat, lon, alt_m, heading, ahead_m=250.0, above_m=40.0):
+    """Floating text placed ahead of an arrival point (seen right after a jump)."""
+    slat, slon = dest(lat, lon, heading, ahead_m)
+    return f'''  <Placemark>
+    <name>{escape(text)}</name>
+    <styleUrl>#welcome</styleUrl>
+    <Point><altitudeMode>absolute</altitudeMode><coordinates>{slon:.7f},{slat:.7f},{alt_m + above_m:.1f}</coordinates></Point>
+  </Placemark>'''
+
+
+def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml=""):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -131,9 +141,11 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   </Style>
   <Style id="gateName"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>{name_scale}</scale></LabelStyle></Style>
   <Style id="gateAlt"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>{alt_scale}</scale></LabelStyle></Style>
+  <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.8</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g, side_labels) for g in gates)}
 {chr(10).join(_label_placemarks(g) for g in gates) if side_labels else ""}
+{extra_kml}
 {chr(10).join(_back_placemark(g) for g in gates) if red_backs else ""}
 </Document>
 </kml>'''

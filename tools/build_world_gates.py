@@ -5,7 +5,7 @@ landing spots, so ring names can repeat (every return ring is called ATL).
 python3 build_world_gates.py <output.kmz>
 """
 import sys
-from make_gate_kmz import gate, write_kmz, dest, bearing
+from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign
 
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
@@ -86,6 +86,13 @@ for i, name in enumerate(TOUR[:-1]):
                       dest_alt_m=a[2], dest_heading=a[3],
                       description=f"<b>Round-the-world tour: next stop {nxt}</b><br/>Or take the ATL gate back to Atlanta."))
 
-write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0)
+# Welcome signs (Jim, 2026-11-03): floating text just ahead of every arrival point
+CITY = {"NYC": "New York", "London": "London", "Paris": "Paris", "Rome": "Rome", "Tokyo": "Tokyo",
+        "Sydney": "Sydney", "Rio": "Rio de Janeiro"}
+signs = [welcome_sign(f"Welcome to {CITY[n]}", *arrival[n]) for n in TOUR]
+signs.append(welcome_sign("Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING))
+signs.append(welcome_sign("Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax))
+write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
+          extra_kml="\n".join(signs))
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

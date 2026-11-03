@@ -26,7 +26,9 @@ Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth
 - 🧭 **[Sky Compass](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz)** - giant N / E / S / W letters in the sky around the area.
 - 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
 
-Made with the Object Factory. Make your own with the tools below.
+- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL.kmz)** - golden rings from Jacksonville to an Atlanta hub and on to New York, London, Paris, Rome, Tokyo, Sydney and Rio. Fly through them with EarthStick 1.3 and you arrive at the landmark.
+
+Made with the Object Factory and EarthStick. Make your own with the tools below.
 
 ## Download the tools
 
@@ -66,10 +68,10 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.2.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **New in 1.3: World Gates** - fly through a golden ring and come out on the other side of the world.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 

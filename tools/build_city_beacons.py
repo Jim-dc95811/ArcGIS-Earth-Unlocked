@@ -19,7 +19,10 @@ with contextlib.redirect_stdout(io.StringIO()):
 sys.argv = _argv
 dest = W["dest"]
 
-BEACONS_VERSION = "v1"         # Jim: every change gets a new version number
+BEACONS_VERSION = "v2"         # Jim: every change gets a new version number
+# v2 (Jim, 2026-11-03 18:46): v1's <LookAt> was ignored - double-click flew straight over the top of the
+# beacon, looking down. v2 stores the view as a <Camera> (exact eye position, heading and tilt) instead.
+CAM_TILT = 85.0   # 90 = level with the horizon; 85 = looking very slightly down
 TILT, RANGE = 80.0, 1000.0
 
 
@@ -38,7 +41,7 @@ def beacon_kmz(path, title, lat, lon, eye):
     </Style>
     <Placemark>
       <name>{n}</name>
-      <LookAt><longitude>{tlon:.8f}</longitude><latitude>{tlat:.8f}</latitude><altitude>{talt:.1f}</altitude><heading>{head:.1f}</heading><tilt>{TILT:g}</tilt><range>{RANGE:g}</range><altitudeMode>absolute</altitudeMode></LookAt>
+      <Camera><longitude>{elon:.8f}</longitude><latitude>{elat:.8f}</latitude><altitude>{ealt:.1f}</altitude><heading>{head:.1f}</heading><tilt>{CAM_TILT:g}</tilt><roll>0</roll><altitudeMode>absolute</altitudeMode></Camera>
       <styleUrl>#beaconStyle</styleUrl>
       <MultiGeometry>
         <Point><altitudeMode>relativeToGround</altitudeMode><coordinates>{lon:.8f},{lat:.8f},0</coordinates></Point>

@@ -8,7 +8,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v11"           # Jim: every change gets a new version number
+GATES_VERSION = "v12"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -131,6 +131,10 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
 
+# v12 (Jim, 17:51 screenshot coming out of the ATL gate in Paris): names still ran together and the
+# next-city ring (Rome) sat right behind the welcome sign. Each star is now spaced by the length of the
+# name before it (measured on Jim's screen: ~0.72 deg per character at label scale 0.9, 1.15 at the sign's 1.4, 9 deg = 175 px),
+# and the whole board (sign + row) turns sideways until no ring at that city is behind it.
 # v11 (Jim, 17:45 "names and stars don't align"): ArcGIS Earth draws each label a fixed ~80 px ABOVE its
 # icon, so in a vertical column every name sat beside the star above it. The menu is now one row, below
 # the welcome sign, items 9 deg apart on an arc 900 m out, so each name sits just above its own star.
@@ -144,13 +148,36 @@ SIGN_AHEAD_M, SIGN_ABOVE_M = 1200.0, 0.0
 MENU_AHEAD_M, MENU_STEP_DEG, MENU_BELOW_M = 900.0, 9.0, 100.0
 
 
+DEG_PER_CHAR_SITE = 0.72      # label scale 0.9 (site names)
+DEG_PER_CHAR_SIGN = 1.15      # label scale 1.4 (welcome sign)
+GAP_DEG, RING_CLEAR_DEG = 3.0, 12.0
+
+
+def _ang(a):
+    return (a + 180) % 360 - 180
+
+
 def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
-    parts = [welcome_sign(sign_text, alat_, alon_, aalt, ahead, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M)]
+    # star offsets (deg, relative to the board's left end); a label is drawn to the right of its star
+    offs, x = [], 0.0
+    for sname, *_ in sites:
+        offs.append(x); x += DEG_PER_CHAR_SITE * len(sname) + GAP_DEG
+    sign_w = DEG_PER_CHAR_SIGN * len(sign_text)
+    row_w = (offs[-1] + DEG_PER_CHAR_SITE * len(sites[-1][0])) if sites else 0.0
+    width = max(row_w, sign_w)
+    near = [bearing(alat_, alon_, g["lat"], g["lon"]) for g in gates
+            if abs(g["lat"] - alat_) < 0.06 and abs(g["lon"] - alon_) < 0.08]
+    def clear(c):
+        return all(abs(_ang(b - (ahead + c))) > width / 2 + RING_CLEAR_DEG for b in near)
+    centre = next((c for k in range(0, 91, 5) for c in ((k, -k) if k else (0,)) if clear(c)), 0)
+    board = (ahead + centre) % 360
+    parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M)]
     for i, (sname, blurb, slat, slon) in enumerate(sites):
-        off = (i - (len(sites) - 1) / 2) * MENU_STEP_DEG
-        mlat, mlon = dest(alat_, alon_, (ahead + off) % 360, MENU_AHEAD_M)
+        off = offs[i] - row_w / 2
+        mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
         parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
                                     aalt - MENU_BELOW_M))
+    print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide")
     return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
 
 

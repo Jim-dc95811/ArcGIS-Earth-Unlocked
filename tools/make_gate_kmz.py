@@ -154,6 +154,7 @@ function showMe(id, name, lat, lon, rgb) {
   var items = [
     {id: id + "-label", visible: true, title: name,
      geometry: {x: lon, y: lat, spatialReference: {wkid: 4326}},
+     symbol: {type: "simple-marker", style: "circle", size: 0, color: [0, 0, 0, 0], outline: {color: [0, 0, 0, 0], width: 0}},
      labelSymbol: {type: "text", color: rgb.concat([255]), size: 16}},
     {id: id + "-beacon", visible: true, title: name + " beacon",
      geometry: {paths: [[[lon, lat, 0], [lon, lat, 3000]]], hasZ: true, spatialReference: {wkid: 4326}},
@@ -161,6 +162,14 @@ function showMe(id, name, lat, lon, rgb) {
   items.forEach(function (b) {
     fetch(api + "/" + b.id, {method: "DELETE"}).catch(function () {}).then(function () {
       return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(b)})
+        .then(function (r) {
+          // v14: if ArcGIS Earth refuses the invisible marker, add the label the old way (with its pin)
+          if (r && r.type !== "opaque" && !r.ok && b.symbol && b.labelSymbol) {
+            var c = JSON.parse(JSON.stringify(b)); delete c.symbol;
+            return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(c)});
+          }
+          return r;
+        })
         .catch(function () {
           return fetch(api, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain"}, body: JSON.stringify(b)});
         });
@@ -184,7 +193,7 @@ def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, 
     js_name = escape(name).replace("\\", "\\\\").replace("'", "\\'")
     if auto:
         c = list(rgb or (255, 0, 0))
-        html = (f'<div style="font-family:Segoe UI,Arial,sans-serif;min-width:260px"><b>{escape(name)}</b><br/>'
+        html = (f'<div style="font-family:Segoe UI,Arial,sans-serif;min-width:260px">'
                 f'<small>{escape(blurb)}</small>'
                 f'<div id="st-{site_id}" style="margin-top:6px;color:#555"></div>{SHOW_ME_JS}'
                 f'<script>showMe(\'{site_id}\', \'{js_name}\', {lat}, {lon}, {c});</script></div>')
@@ -208,7 +217,8 @@ def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, 
   </Placemark>'''
 
 
-def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml="", extra_files=None):
+def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml="", extra_files=None,
+              label_within_ft=None):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -224,7 +234,7 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.4</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g, side_labels) for g in gates)}
-{chr(10).join(_label_placemarks(g) for g in gates) if side_labels else ""}
+{chr(10).join((lod_folder(g["name"] + " name", _label_placemarks(g), g["lat"], g["lon"], g["alt_m"], label_within_ft) if label_within_ft else _label_placemarks(g)) for g in gates) if side_labels else ""}
 {extra_kml}
 {chr(10).join(_back_placemark(g) for g in gates) if red_backs else ""}
 </Document>

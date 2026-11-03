@@ -8,7 +8,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v13"           # Jim: every change gets a new version number
+GATES_VERSION = "v14"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -95,7 +95,7 @@ CITY = {"NYC": "New York", "London": "London", "Paris": "Paris", "Rome": "Rome",
 # button draws a red beacon + gold label on the site through the Automation API (proven from a popup).
 SITES = {
     "NYC": [("Statue of Liberty", "Liberty Island, 1886.", 40.6892, -74.0445),
-            ("One World Trade Center", "Tallest building in the Western Hemisphere.", 40.7127, -74.0134),
+            ("1 World Trade Ctr", "One World Trade Center, tallest building in the Western Hemisphere.", 40.7127, -74.0134),
             ("Brooklyn Bridge", "Opened 1883.", 40.7061, -73.9969),
             ("Empire State Building", "Midtown Manhattan, 1931.", 40.7484, -73.9857),
             ("Central Park", "843 acres in the middle of Manhattan.", 40.7829, -73.9654)],
@@ -121,7 +121,7 @@ SITES = {
               ("Tokyo Skytree", "634 m tall.", 35.7101, 139.8107)],
     "Sydney": [("Sydney Opera House", "Opened 1973.", -33.8568, 151.2153),
                ("Harbour Bridge", "The Coathanger, 1932.", -33.8523, 151.2108),
-               ("Royal Botanic Garden", "Beside the Opera House.", -33.8642, 151.2166),
+               ("Botanic Garden", "Royal Botanic Garden, beside the Opera House.", -33.8642, 151.2166),
                ("Taronga Zoo", "Across the harbour.", -33.8436, 151.2411),
                ("Bondi Beach", "Sydney's famous surf beach.", -33.8915, 151.2767)],
     "Rio": [("Christ the Redeemer", "On Corcovado, 1931.", -22.9519, -43.2105),
@@ -129,8 +129,22 @@ SITES = {
             ("Copacabana Beach", "4 km of beach.", -22.9711, -43.1822),
             ("Ipanema Beach", "Made famous by the song.", -22.9868, -43.2050),
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
+    "ATL": [("Georgia Aquarium", "One of the largest aquariums in the world.", 33.7634, -84.3951),
+            ("Centennial Park", "Centennial Olympic Park, built for the 1996 Games.", 33.7603, -84.3933),
+            ("World of Coca-Cola", "The Coca-Cola museum.", 33.7626, -84.3927),
+            ("Mercedes-Benz", "Mercedes-Benz Stadium, home of the Falcons.", 33.7554, -84.4008),
+            ("Stone Mountain", "Granite dome with the Confederate memorial carving.", 33.8053, -84.1455)],
+    "JAX": [("EverBank Stadium", "Home of the Jacksonville Jaguars.", 30.3239, -81.6373),
+            ("Jax Beach Pier", "Jacksonville Beach fishing pier.", 30.2917, -81.3900),
+            ("St Johns Town Ctr", "St. Johns Town Center shopping district.", 30.2567, -81.5264),
+            ("Riverside Arts Mkt", "Riverside Arts Market, under the Fuller Warren Bridge.", 30.3166, -81.6760),
+            ("Fort Caroline", "Fort Caroline National Memorial, 1564.", 30.3866, -81.4985)],
 }
 
+# v14 (Jim, 2026-11-03 18:51, after his round-the-world tour): no pin under a SHOW ME beacon's name;
+# names shortened so ArcGIS Earth does not wrap them (it wraps by text width: a sign over ~18 characters at
+# scale 1.4 or a site name over ~19 at 0.9 splits), with a build check; wider gaps between names; no doubled
+# name in the star popup; site rows for Atlanta and Jacksonville too; ring names only within SHOW_WITHIN_FT.
 # v13 (Jim, 18:02): clicking a star puts its beacon up straight away (no SHOW ME button; clear it by
 # unticking it under My Drawings), and each of a city's five sites has its own beacon colour, with the
 # menu name in that colour. (v12's CLEAR button sent a no-cors DELETE, which the browser never sends.)
@@ -154,14 +168,14 @@ MENU_AHEAD_M, MENU_STEP_DEG, MENU_BELOW_M = 900.0, 9.0, 100.0
 
 DEG_PER_CHAR_SITE = 0.72      # label scale 0.9 (site names)
 DEG_PER_CHAR_SIGN = 1.15      # label scale 1.4 (welcome sign)
-GAP_DEG, RING_CLEAR_DEG = 3.0, 12.0
+GAP_DEG, RING_CLEAR_DEG = 5.0, 12.0   # v14: gap 3 -> 5 (Copacabana Beach ran into Ipanema Beach)
 
 
 def _ang(a):
     return (a + 180) % 360 - 180
 
 
-def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
+def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None):
     # star offsets (deg, relative to the board's left end); a label is drawn to the right of its star
     offs, x = [], 0.0
     for sname, *_ in sites:
@@ -180,16 +194,26 @@ def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
         off = offs[i] - row_w / 2
         mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
         parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
-                                    aalt - MENU_BELOW_M, rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
+                                    aalt - (below_m or MENU_BELOW_M), rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
     print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide")
     return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
 
 
-extras = [city_extras(n, f"Welcome to {CITY[n]}", *arrival[n], SITES[n]) for n in TOUR]
-extras.append(city_extras("ATL", "Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, []))
-extras.append(city_extras("JAX", "Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax, []))
+SIGN = {"NYC": "Welcome to NYC", "London": "Welcome to London", "Paris": "Welcome to Paris", "Rome": "Welcome to Rome",
+        "Tokyo": "Welcome to Tokyo", "Sydney": "Welcome to Sydney", "Rio": "Welcome to Rio",
+        "ATL": "Welcome to Atlanta", "JAX": "Welcome to JAX"}
+MAX_SIGN_CHARS, MAX_SITE_CHARS = 18, 19      # longer text wraps onto two lines in ArcGIS Earth
+SEEN_ON_ONE_LINE = {"Empire State Building"}   # longer, but narrow letters: Jim saw it on one line (v13)
+too_long = [s for s in SIGN.values() if len(s) > MAX_SIGN_CHARS] + \
+           [s[0] for v in SITES.values() for s in v if len(s[0]) > MAX_SITE_CHARS and s[0] not in SEEN_ON_ONE_LINE]
+if too_long:
+    sys.exit(f"Labels too long (would wrap in ArcGIS Earth): {too_long}")
+extras = [city_extras(n, SIGN[n], *arrival[n], SITES[n]) for n in TOUR]
+# hub: the row sits lower so it stays under the London and Paris rings either side of the sign
+extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=200.0))
+extras.append(city_extras("JAX", SIGN["JAX"], alat, alon, JAX_LEVEL, back_jax, SITES["JAX"]))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], f"World Gates {GATES_VERSION} - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
-          extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()})
+          extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()}, label_within_ft=SHOW_WITHIN_FT)
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

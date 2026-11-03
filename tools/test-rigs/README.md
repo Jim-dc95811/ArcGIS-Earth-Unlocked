@@ -18,6 +18,7 @@ Paths: some rigs still contain the original session's absolute paths (`/home/cla
 | `pointlayer_rig.py`, `pointlayer_test_v14.py` | PointLayer 1.3 vs 1.4 (mock layer 458) | edit `V13`/`V14`, then `python3 pointlayer_test_v14.py` |
 | `earthstick_rig.py` | EarthStick: scripted joystick + fake clock + mock camera API; compares PUT streams | `python3 earthstick_rig.py <EarthStick.py> <scenario>` |
 | `earthstick_rig_trigger.py` | EarthStick 1.2 trigger-click: scripted trigger presses (incl. a bounce) with a fake clicker; checks clicks and that camera PUTs match 1.1 | `python3 earthstick_rig_trigger.py <EarthStick.py> trigger` |
+| `earthstick_rig_wormhole.py` | EarthStick 1.3 wormholes: gate 1 km ahead of the scripted flight, partner over NYC; checks one jump, arrival point/heading, no bounce back | `python3 earthstick_rig_wormhole.py <EarthStick.py>` |
 | `earthstick_proxy_check.py` | EarthStick localhost API with a system proxy set | edit the path, run with a label argument |
 | `prave_tracker_rig.py` + `prave_serial_sim.py` | PRAVE/ME tracker: simulated serial stream through a pty, mock Automation API (camera + drawings) | needs pyserial (clone github.com/pyserial/pyserial tag v3.5, use `PYTHONPATH`); edit the version paths |
 | `master4_test_v31.py` | Master 4 v3 vs v3.1 (TXT + TIF byte compare, input handling) | edit `V3`/`V31` |

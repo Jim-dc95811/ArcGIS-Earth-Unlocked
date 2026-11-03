@@ -49,6 +49,10 @@ back_jax = (b_atl + 180) % 360
 alat, alon = dest(*JIA, back_jax, EXIT_M)
 gates.append(gate("JAX", jlat, jlon, LEVEL, facing=b_jax, radius_m=RING_R, dest_lat=alat, dest_lon=alon, dest_alt_m=JAX_LEVEL,
                   dest_heading=back_jax, description="<b>Gate home to Jacksonville (JAX)</b>"))
+# Round-the-world tour (Jim, 2026-11-03): each city also gets a ring to the next city, eastward;
+# Rio's onward gate is its ATL ring, which closes the circle.
+TOUR = ["NYC", "London", "Paris", "Rome", "Tokyo", "Sydney", "Rio"]
+arrival = {}       # city -> (lat, lon, alt, heading) where its gates land you
 levels_used = {}
 for name, (lat, lon, alt, level) in DEST.items():
     b_out = SLOT[name]
@@ -57,6 +61,7 @@ for name, (lat, lon, alt, level) in DEST.items():
     rlat, rlon = dest(lat, lon, b_home, APPROACH_M)
     land_head = (b_home + 180) % 360
     arr_lat, arr_lon = dest(rlat, rlon, land_head, EXIT_M)
+    arrival[name] = (arr_lat, arr_lon, alt, land_head)
     # departure ring in the ATL hub, stacked by level
     dlat, dlon = dest(*ATL, b_out, HUB_R)
     dalt = LEVEL
@@ -65,6 +70,21 @@ for name, (lat, lon, alt, level) in DEST.items():
                       description=f"<b>Gate to {name}</b><br/>Departure level {round((dalt - ATL_GROUND) / FT):,} ft above the airport."))
     gates.append(gate("ATL", rlat, rlon, alt, facing=b_home, radius_m=RING_R, **hub_arrival,
                       description="<b>Gate back to Atlanta (ATL)</b><br/>Connect there for home (JAX) or another city."))
+
+# next-city rings: beyond the landmark (900 m out toward the next city), so you arrive,
+# fly over the landmark and on through the next gate
+for i, name in enumerate(TOUR[:-1]):
+    lat, lon, alt, _ = DEST[name]
+    nxt = TOUR[i + 1]
+    b_next = bearing(lat, lon, DEST[nxt][0], DEST[nxt][1])
+    b_home = bearing(lat, lon, *ATL)
+    sep = abs((b_next - b_home + 180) % 360 - 180)
+    assert sep > 40, (name, nxt, sep)      # keep the two rings at a city apart
+    nlat, nlon = dest(lat, lon, b_next, APPROACH_M)
+    a = arrival[nxt]
+    gates.append(gate(nxt, nlat, nlon, alt, facing=b_next, radius_m=RING_R, dest_lat=a[0], dest_lon=a[1],
+                      dest_alt_m=a[2], dest_heading=a[3],
+                      description=f"<b>Round-the-world tour: next stop {nxt}</b><br/>Or take the ATL gate back to Atlanta."))
 
 write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0)
 for g in gates:

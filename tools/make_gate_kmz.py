@@ -10,7 +10,8 @@ Use from Python:
     from make_gate_kmz import gate, write_kmz
     write_kmz("Gates.kmz", "My gates", [gate("NYC", 30.32, -81.65, 457, facing=28.7, to="JAX"), ...], red_backs=True)
 
-red_backs=True adds a red ring BACK_OFFSET_M behind each gold ring (the wrong side), drawn only, not a gate.
+side_labels=True puts each name beside its own ring at centre height with an "eye alt N ft" line below
+(name_scale / alt_scale set the text sizes). red_backs=True adds a red ring BACK_OFFSET_M behind each gold ring (the wrong side), drawn only, not a gate.
 """
 import math
 import struct
@@ -62,7 +63,7 @@ def _ring_coords(g, step=5, behind_m=0.0):
     return " ".join(pts)
 
 
-def _placemark(g):
+def _placemark(g, side_labels=False):
     data = ["gate=1"]
     keys = ["lat", "lon", "alt_m", "radius_m", "facing", "to"]
     if not g["to"]:
@@ -74,9 +75,32 @@ def _placemark(g):
     <styleUrl>#gate</styleUrl>
     <ExtendedData><Data name="gate"><value>1</value></Data>{ext}</ExtendedData>
     <MultiGeometry>
-      <Point><altitudeMode>absolute</altitudeMode><coordinates>{g["lon"]:.7f},{g["lat"]:.7f},{g["alt_m"] + g["radius_m"] + 40:.1f}</coordinates></Point>
+      {"" if side_labels else f'<Point><altitudeMode>absolute</altitudeMode><coordinates>{g["lon"]:.7f},{g["lat"]:.7f},{g["alt_m"] + g["radius_m"] + 40:.1f}</coordinates></Point>'}
       <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g)}</coordinates></LineString>
     </MultiGeometry>
+  </Placemark>'''
+
+
+LABEL_GAP_M = 40.0      # name starts this far outside the ring's right edge (seen from the gold side)
+ALT_LINE_DROP_M = 70.0  # eye-alt line sits this far below the name
+
+
+def _label_placemarks(g):
+    """Name beside its own ring at centre height, eye-alt line underneath (MSL feet, as ArcGIS Earth shows)."""
+    lat, lon = dest(g["lat"], g["lon"], (g["facing"] + 90) % 360, g["radius_m"] + LABEL_GAP_M)
+    ft = round(g["alt_m"] / 0.3048 / 10) * 10
+    desc = f"<![CDATA[{g['description']}]]>"
+    return f'''  <Placemark>
+    <name>{escape(g["name"])}</name>
+    <description>{desc}</description>
+    <styleUrl>#gateName</styleUrl>
+    <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{g["alt_m"]:.1f}</coordinates></Point>
+  </Placemark>
+  <Placemark>
+    <name>eye alt {ft:,} ft</name>
+    <description>{desc}</description>
+    <styleUrl>#gateAlt</styleUrl>
+    <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{g["alt_m"] - ALT_LINE_DROP_M:.1f}</coordinates></Point>
   </Placemark>'''
 
 
@@ -95,7 +119,7 @@ def _blank_png():
             + ch(b"IDAT", zlib.compress(b"\x00\x00\x00\x00\x00")) + ch(b"IEND", b""))
 
 
-def write_kmz(path, title, gates, width=10, red_backs=False):
+def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -103,10 +127,13 @@ def write_kmz(path, title, gates, width=10, red_backs=False):
   <Style id="gate">
     <LineStyle><color>{GOLD}</color><width>{width}</width></LineStyle>
     <IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle>
-    <LabelStyle><color>{GOLD}</color><scale>2.0</scale></LabelStyle>
+    <LabelStyle><color>{GOLD}</color><scale>{name_scale}</scale></LabelStyle>
   </Style>
+  <Style id="gateName"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>{name_scale}</scale></LabelStyle></Style>
+  <Style id="gateAlt"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>{alt_scale}</scale></LabelStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
-{chr(10).join(_placemark(g) for g in gates)}
+{chr(10).join(_placemark(g, side_labels) for g in gates)}
+{chr(10).join(_label_placemarks(g) for g in gates) if side_labels else ""}
 {chr(10).join(_back_placemark(g) for g in gates) if red_backs else ""}
 </Document>
 </kml>'''

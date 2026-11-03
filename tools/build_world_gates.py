@@ -10,11 +10,12 @@ from make_gate_kmz import gate, write_kmz, dest, bearing
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
-HUB_R = 800.0                    # ATL departure rings sit this far from the hub centre
+HUB_R = 1200.0                   # ATL departure rings sit this far from the hub centre
 ATL_GROUND = 1026 * FT           # Hartsfield-Jackson field elevation (ring heights are above sea level)
 JAX_LEVEL = 1500 * FT            # JIA is ~30 ft above sea level
 LEVEL = ATL_GROUND + 1500 * FT   # ATL terminal level: 1,500 ft above the airport
-STACK = 1200 * FT                # rings in the same direction stack 1,200 ft apart
+STACK = 2000 * FT                # rings in the same direction stack 2,000 ft apart
+RING_R = 225.0                   # 450 m rings
 EXIT_M = 300.0
 APPROACH_M = 900.0               # return ring sits this far from the landmark, toward ATL
 
@@ -34,7 +35,7 @@ hub_arrival = dict(dest_lat=ATL[0], dest_lon=ATL[1], dest_alt_m=LEVEL, dest_head
 
 # JAX -> ATL
 b_atl = bearing(*JIA, *ATL)
-gates.append(gate("ATL", *JIA, JAX_LEVEL, facing=b_atl, **hub_arrival,
+gates.append(gate("ATL", *JIA, JAX_LEVEL, facing=b_atl, radius_m=RING_R, **hub_arrival,
                   description="<b>Gate to Atlanta (ATL)</b><br/>Fly through to connect to your international gates."))
 
 # ATL hub: return to JAX (level 0 in its direction)
@@ -42,7 +43,7 @@ b_jax = bearing(*ATL, *JIA)
 jlat, jlon = dest(*ATL, b_jax, HUB_R)
 back_jax = (b_atl + 180) % 360
 alat, alon = dest(*JIA, back_jax, EXIT_M)
-gates.append(gate("JAX", jlat, jlon, LEVEL, facing=b_jax, dest_lat=alat, dest_lon=alon, dest_alt_m=JAX_LEVEL,
+gates.append(gate("JAX", jlat, jlon, LEVEL, facing=b_jax, radius_m=RING_R, dest_lat=alat, dest_lon=alon, dest_alt_m=JAX_LEVEL,
                   dest_heading=back_jax, description="<b>Gate home to Jacksonville (JAX)</b>"))
 levels_used = {}
 for name, (lat, lon, alt, level) in DEST.items():
@@ -55,12 +56,12 @@ for name, (lat, lon, alt, level) in DEST.items():
     # departure ring in the ATL hub, stacked by level
     dlat, dlon = dest(*ATL, b_out, HUB_R)
     dalt = LEVEL + level * STACK
-    gates.append(gate(name, dlat, dlon, dalt, facing=b_out, dest_lat=arr_lat, dest_lon=arr_lon, dest_alt_m=alt,
+    gates.append(gate(name, dlat, dlon, dalt, facing=b_out, radius_m=RING_R, dest_lat=arr_lat, dest_lon=arr_lon, dest_alt_m=alt,
                       dest_heading=land_head,
                       description=f"<b>Gate to {name}</b><br/>Departure level {round((dalt - ATL_GROUND) / FT):,} ft above the airport."))
-    gates.append(gate("ATL", rlat, rlon, alt, facing=b_home, **hub_arrival,
+    gates.append(gate("ATL", rlat, rlon, alt, facing=b_home, radius_m=RING_R, **hub_arrival,
                       description="<b>Gate back to Atlanta (ATL)</b><br/>Connect there for home (JAX) or another city."))
 
-write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True)
+write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0)
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

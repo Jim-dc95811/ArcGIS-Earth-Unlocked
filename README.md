@@ -17,11 +17,27 @@ This family of projects has **6 pages**, one for each part. Each page has its ow
 5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
 6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
 
+## Try it in 2 minutes - no Python needed
+
+Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)**, then download any of these and drag it onto the ArcGIS Earth map (or use the **+** Add data button). They are all near Jacksonville, Florida.
+
+- 📡 **[Live traffic camera](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Live_Traffic_Camera.kmz)** - click the floating camera: a live FL511 traffic camera opens and refreshes every 10 seconds.
+- 🔴 **[Beacon](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Beacon.kmz)** - a tall red beacon you can see and fly to from far away.
+- 🧭 **[Sky Compass](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz)** - giant N / E / S / W letters in the sky around the area.
+- 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
+
+Made with the Object Factory. Make your own with the tools below.
+
 ## Download the tools
 
 Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User manual** for step-by-step instructions. Click a picture to see that tool's page.
 
 **Before you start:** most tools need two free programs, **⬇️ [ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** (Windows desktop version) and **⬇️ [Python 3](https://www.python.org/downloads/windows/)** (install with the default options). Each tool's page lists exactly what it needs, at the top.
+
+> **First time? Three quick tips**
+> 1. **Extract the zip first:** right-click the downloaded zip > **Extract All**, then open the new folder. Double-clicking files while they are still inside the zip does not work.
+> 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
+> 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
 ### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**

@@ -10,11 +10,15 @@ from make_gate_kmz import gate, write_kmz, dest, bearing
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
-HUB_R = 1200.0                   # ATL departure rings sit this far from the hub centre
+HUB_R = 2000.0                   # ATL departure rings: a circle this far out, around the airport
 ATL_GROUND = 1026 * FT           # Hartsfield-Jackson field elevation (ring heights are above sea level)
 JAX_LEVEL = 1500 * FT            # JIA is ~30 ft above sea level
 LEVEL = ATL_GROUND + 1500 * FT   # ATL terminal level: 1,500 ft above the airport
-STACK = 2000 * FT                # rings in the same direction stack 2,000 ft apart
+# Jim (2026-11-02): eight equal-height rings evenly around the airport; stand in the middle, turn and pick.
+# NYC/London/Paris/Rome all lie ~45-51 deg from ATL, so the ring is laid out like a world map wrapped
+# around you (Atlantic cities west to east), with home (JAX) in its true south-east direction.
+SLOT = {"NYC": 315, "London": 0, "Paris": 45, "Rome": 90, "JAX": 135, "Rio": 180, "Sydney": 225, "Tokyo": 270}
+HUB_ARRIVAL_HEADING = 22.5       # arrive facing between two gates, never straight into one
 RING_R = 225.0                   # 450 m rings
 EXIT_M = 300.0
 APPROACH_M = 900.0               # return ring sits this far from the landmark, toward ATL
@@ -31,7 +35,7 @@ DEST = {
 }
 
 gates = []
-hub_arrival = dict(dest_lat=ATL[0], dest_lon=ATL[1], dest_alt_m=LEVEL, dest_heading=0.0)
+hub_arrival = dict(dest_lat=ATL[0], dest_lon=ATL[1], dest_alt_m=LEVEL, dest_heading=HUB_ARRIVAL_HEADING)
 
 # JAX -> ATL
 b_atl = bearing(*JIA, *ATL)
@@ -39,7 +43,7 @@ gates.append(gate("ATL", *JIA, JAX_LEVEL, facing=b_atl, radius_m=RING_R, **hub_a
                   description="<b>Gate to Atlanta (ATL)</b><br/>Fly through to connect to your international gates."))
 
 # ATL hub: return to JAX (level 0 in its direction)
-b_jax = bearing(*ATL, *JIA)
+b_jax = SLOT["JAX"]
 jlat, jlon = dest(*ATL, b_jax, HUB_R)
 back_jax = (b_atl + 180) % 360
 alat, alon = dest(*JIA, back_jax, EXIT_M)
@@ -47,7 +51,7 @@ gates.append(gate("JAX", jlat, jlon, LEVEL, facing=b_jax, radius_m=RING_R, dest_
                   dest_heading=back_jax, description="<b>Gate home to Jacksonville (JAX)</b>"))
 levels_used = {}
 for name, (lat, lon, alt, level) in DEST.items():
-    b_out = bearing(*ATL, lat, lon)
+    b_out = SLOT[name]
     b_home = bearing(lat, lon, *ATL)
     # far end: return ring between landmark and home, arrival 600 m short of the landmark, facing it
     rlat, rlon = dest(lat, lon, b_home, APPROACH_M)
@@ -55,7 +59,7 @@ for name, (lat, lon, alt, level) in DEST.items():
     arr_lat, arr_lon = dest(rlat, rlon, land_head, EXIT_M)
     # departure ring in the ATL hub, stacked by level
     dlat, dlon = dest(*ATL, b_out, HUB_R)
-    dalt = LEVEL + level * STACK
+    dalt = LEVEL
     gates.append(gate(name, dlat, dlon, dalt, facing=b_out, radius_m=RING_R, dest_lat=arr_lat, dest_lon=arr_lon, dest_alt_m=alt,
                       dest_heading=land_head,
                       description=f"<b>Gate to {name}</b><br/>Departure level {round((dalt - ATL_GROUND) / FT):,} ft above the airport."))

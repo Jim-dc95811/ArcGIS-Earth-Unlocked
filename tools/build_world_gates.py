@@ -8,7 +8,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v10"           # Jim: every change gets a new version number
+GATES_VERSION = "v11"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -131,6 +131,9 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
 
+# v11 (Jim, 17:45 "names and stars don't align"): ArcGIS Earth draws each label a fixed ~80 px ABOVE its
+# icon, so in a vertical column every name sat beside the star above it. The menu is now one row, below
+# the welcome sign, items 9 deg apart on an arc 900 m out, so each name sits just above its own star.
 # v10: same as v9 plus the version in the layer name (Jim: every change gets a new version number).
 # Layout v9 (Jim, 2026-11-03 17:25): spread out; welcome sign at the height you come out at, straight ahead.
 # Layout v8 (Jim, 2026-11-03): KML text is a fixed size on screen, so signs and menus only show near
@@ -138,16 +141,16 @@ SITES = {
 # sites as a vertical menu board off to the left so labels do not collide.
 SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
 SIGN_AHEAD_M, SIGN_ABOVE_M = 1200.0, 0.0
-MENU_AHEAD_M, MENU_LEFT_DEG = 900.0, 30.0
-MENU_TOP_ABOVE_M, MENU_STEP_M = 160.0, 80.0
+MENU_AHEAD_M, MENU_STEP_DEG, MENU_BELOW_M = 900.0, 9.0, 100.0
 
 
 def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
     parts = [welcome_sign(sign_text, alat_, alon_, aalt, ahead, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M)]
-    mlat, mlon = dest(alat_, alon_, (ahead - MENU_LEFT_DEG) % 360, MENU_AHEAD_M)
     for i, (sname, blurb, slat, slon) in enumerate(sites):
+        off = (i - (len(sites) - 1) / 2) * MENU_STEP_DEG
+        mlat, mlon = dest(alat_, alon_, (ahead + off) % 360, MENU_AHEAD_M)
         parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
-                                    aalt + MENU_TOP_ABOVE_M - i * MENU_STEP_M))
+                                    aalt - MENU_BELOW_M))
     return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
 
 

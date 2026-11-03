@@ -8,7 +8,9 @@ that EarthStick reads from its Gates folder:
 
 Use from Python:
     from make_gate_kmz import gate, write_kmz
-    write_kmz("Gates.kmz", "My gates", [gate("NYC", 30.32, -81.65, 457, facing=28.7, to="JAX"), ...])
+    write_kmz("Gates.kmz", "My gates", [gate("NYC", 30.32, -81.65, 457, facing=28.7, to="JAX"), ...], red_backs=True)
+
+red_backs=True adds a red ring BACK_OFFSET_M behind each gold ring (the wrong side), drawn only, not a gate.
 """
 import math
 import struct
@@ -18,6 +20,8 @@ from xml.sax.saxutils import escape
 
 R = 6371008.8
 GOLD = "ff00d7ff"   # KML aabbggrr for #FFD700
+RED = "ff0000ff"
+BACK_OFFSET_M = 10.0  # red back ring sits this far behind the gold one
 
 
 def dest(lat, lon, brg, d):
@@ -44,8 +48,11 @@ def gate(name, lat, lon, alt_m, facing, radius_m=150.0, to="", dest_lat=None, de
     return g
 
 
-def _ring_coords(g, step=5):
+def _ring_coords(g, step=5, behind_m=0.0):
     side = (g["facing"] + 90) % 360
+    if behind_m:
+        clat, clon = dest(g["lat"], g["lon"], g["facing"], behind_m)
+        g = dict(g, lat=clat, lon=clon)
     pts = []
     for k in range(0, 360 + step, step):
         t = math.radians(k)
@@ -73,6 +80,14 @@ def _placemark(g):
   </Placemark>'''
 
 
+def _back_placemark(g):
+    return f'''  <Placemark>
+    <name>{escape(g["name"])} (back)</name>
+    <styleUrl>#gateBack</styleUrl>
+    <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g, behind_m=BACK_OFFSET_M)}</coordinates></LineString>
+  </Placemark>'''
+
+
 def _blank_png():
     def ch(t, d):
         return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
@@ -80,7 +95,7 @@ def _blank_png():
             + ch(b"IDAT", zlib.compress(b"\x00\x00\x00\x00\x00")) + ch(b"IEND", b""))
 
 
-def write_kmz(path, title, gates, width=10):
+def write_kmz(path, title, gates, width=10, red_backs=False):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -90,7 +105,9 @@ def write_kmz(path, title, gates, width=10):
     <IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle>
     <LabelStyle><color>{GOLD}</color><scale>2.0</scale></LabelStyle>
   </Style>
+  <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g) for g in gates)}
+{chr(10).join(_back_placemark(g) for g in gates) if red_backs else ""}
 </Document>
 </kml>'''
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:

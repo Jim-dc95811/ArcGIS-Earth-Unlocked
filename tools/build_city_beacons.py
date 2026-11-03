@@ -19,6 +19,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 sys.argv = _argv
 dest = W["dest"]
 
+BEACONS_VERSION = "v1"         # Jim: every change gets a new version number
 TILT, RANGE = 80.0, 1000.0
 
 
@@ -59,6 +60,6 @@ items = [("Jacksonville (JAX)", *W["JIA"], (W["alat"], W["alon"], W["JAX_LEVEL"]
          ("Atlanta (ATL)", *W["ATL"], (*W["ATL"], W["LEVEL"], W["HUB_ARRIVAL_HEADING"]))]
 items += [(W["CITY"][c], W["DEST"][c][0], W["DEST"][c][1], W["arrival"][c]) for c in W["TOUR"]]
 for i, (title, lat, lon, eye) in enumerate(items, 1):
-    f = out / f"{i:02d}_Beacon_{title.split(' (')[0].replace(' ', '_')}.kmz"
+    f = out / f"{i:02d}_Beacon_{BEACONS_VERSION}_{title.split(' (')[0].replace(' ', '_')}.kmz"
     beacon_kmz(f, f"Go to {title}", lat, lon, eye)
     print(f.name, f"eye {eye[0]:.4f},{eye[1]:.4f} {round(eye[2] / 0.3048):,} ft heading {eye[3]:.0f}")

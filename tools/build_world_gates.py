@@ -8,6 +8,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
+GATES_VERSION = "v10"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -130,6 +131,7 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
 
+# v10: same as v9 plus the version in the layer name (Jim: every change gets a new version number).
 # Layout v9 (Jim, 2026-11-03 17:25): spread out; welcome sign at the height you come out at, straight ahead.
 # Layout v8 (Jim, 2026-11-03): KML text is a fixed size on screen, so signs and menus only show near
 # each arrival (Region LOD, as Object Factory "Hide above"); welcome sign further ahead and higher;
@@ -153,7 +155,7 @@ extras = [city_extras(n, f"Welcome to {CITY[n]}", *arrival[n], SITES[n]) for n i
 extras.append(city_extras("ATL", "Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, []))
 extras.append(city_extras("JAX", "Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax, []))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
-write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
+write_kmz(sys.argv[1], f"World Gates {GATES_VERSION} - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
           extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()})
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

@@ -8,7 +8,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v12"           # Jim: every change gets a new version number
+GATES_VERSION = "v13"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -131,6 +131,10 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
 
+# v13 (Jim, 18:02): clicking a star puts its beacon up straight away (no SHOW ME button; clear it by
+# unticking it under My Drawings), and each of a city's five sites has its own beacon colour, with the
+# menu name in that colour. (v12's CLEAR button sent a no-cors DELETE, which the browser never sends.)
+SITE_COLOURS = [(255, 0, 0), (0, 110, 255), (0, 200, 0), (255, 0, 255), (255, 140, 0)]  # red blue green magenta orange
 # v12 (Jim, 17:51 screenshot coming out of the ATL gate in Paris): names still ran together and the
 # next-city ring (Rome) sat right behind the welcome sign. Each star is now spaced by the length of the
 # name before it (measured on Jim's screen: ~0.72 deg per character at label scale 0.9, 1.15 at the sign's 1.4, 9 deg = 175 px),
@@ -176,7 +180,7 @@ def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):
         off = offs[i] - row_w / 2
         mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
         parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
-                                    aalt - MENU_BELOW_M))
+                                    aalt - MENU_BELOW_M, rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
     print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide")
     return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
 

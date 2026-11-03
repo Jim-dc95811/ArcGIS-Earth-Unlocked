@@ -147,23 +147,24 @@ def welcome_sign(text, lat, lon, alt_m, heading, ahead_m=250.0, above_m=40.0):
 
 
 SHOW_ME_JS = r"""<script>
-function showMe(id, name, lat, lon) {
+function showMe(id, name, lat, lon, rgb) {
+  rgb = rgb || [255, 0, 0];
   var api = "http://localhost:8000/arcgisearth/drawings";
   var out = document.getElementById("st-" + id);
   var items = [
     {id: id + "-label", visible: true, title: name,
      geometry: {x: lon, y: lat, spatialReference: {wkid: 4326}},
-     labelSymbol: {type: "text", color: [255, 215, 0, 255], size: 16}},
+     labelSymbol: {type: "text", color: rgb.concat([255]), size: 16}},
     {id: id + "-beacon", visible: true, title: name + " beacon",
      geometry: {paths: [[[lon, lat, 0], [lon, lat, 3000]]], hasZ: true, spatialReference: {wkid: 4326}},
-     symbol: {type: "simple-line", color: [255, 0, 0, 255], width: 6}}];
+     symbol: {type: "simple-line", color: rgb.concat([255]), width: 6}}];
   items.forEach(function (b) {
-    fetch(api + "/" + b.id, {method: "DELETE", mode: "no-cors"}).catch(function () {}).then(function () {
+    fetch(api + "/" + b.id, {method: "DELETE"}).catch(function () {}).then(function () {
       return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(b)})
         .catch(function () {
           return fetch(api, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain"}, body: JSON.stringify(b)});
         });
-    }).then(function () { out.textContent = "Beacon is up - look for the red line."; })
+    }).then(function () { if (out && !out.textContent) out.textContent = "Beacon on. To clear it, untick it under My Drawings (left)."; })
       .catch(function (e) { out.textContent = "Could not reach ArcGIS Earth (Automation API on?) " + e; });
   });
 }
@@ -175,9 +176,25 @@ function clearMe(id) {
 </script>"""
 
 
-def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, icon_href="icons/site.png"):
-    """Floating menu icon at pos_*; its popup has SHOW ME / CLEAR buttons that draw a beacon at (lat, lon)."""
+def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, icon_href="icons/site.png",
+                   rgb=None, auto=False):
+    """Floating menu icon at pos_*; its popup draws a beacon at (lat, lon) through the Automation API.
+    auto=True (Jim, 2026-11-03): the beacon goes up as soon as the popup opens - no buttons; clear it by
+    unticking it under My Drawings. rgb = beacon/label colour; the menu name is drawn in the same colour."""
     js_name = escape(name).replace("\\", "\\\\").replace("'", "\\'")
+    if auto:
+        c = list(rgb or (255, 0, 0))
+        html = (f'<div style="font-family:Segoe UI,Arial,sans-serif;min-width:260px"><b>{escape(name)}</b><br/>'
+                f'<small>{escape(blurb)}</small>'
+                f'<div id="st-{site_id}" style="margin-top:6px;color:#555"></div>{SHOW_ME_JS}'
+                f'<script>showMe(\'{site_id}\', \'{js_name}\', {lat}, {lon}, {c});</script></div>')
+        kml_col = f"ff{c[2]:02x}{c[1]:02x}{c[0]:02x}"
+        return f'''  <Placemark>
+    <name>{escape(name)}</name>
+    <description><![CDATA[{html}]]></description>
+    <Style><IconStyle><scale>0.9</scale><Icon><href>{icon_href}</href></Icon></IconStyle><LabelStyle><color>{kml_col}</color><scale>0.9</scale></LabelStyle></Style>
+    <Point><altitudeMode>absolute</altitudeMode><coordinates>{pos_lon:.7f},{pos_lat:.7f},{pos_alt_m:.1f}</coordinates></Point>
+  </Placemark>'''
     html = (f'<div style="font-family:Segoe UI,Arial,sans-serif;min-width:300px"><b>{escape(name)}</b><br/>'
             f'<small>{escape(blurb)}</small><br/><br/>'
             f'<button onclick="showMe(\'{site_id}\', \'{js_name}\', {lat}, {lon})">SHOW ME</button> '

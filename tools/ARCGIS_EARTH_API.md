@@ -78,3 +78,10 @@ A program can open an object's popup by moving the Windows mouse onto it and cli
 - The cutoff scales as 1/distance: on Jim's full-screen window, altitude (ft) x minLodPixels at disappearance was constant, 1.44-2.38 million ft*px for a 0.003 x 0.003 degree box at 30.6 N (about 310 m). Object Factory uses 1,790,000 for a 300 m box.
 - A FLAT box (no altitudes) disappears when seen edge-on from low altitude. Adding `<minAltitude>/<maxAltitude>/<altitudeMode>` to the `LatLonAltBox` (a cube) makes it work from any direction (cube set to 20,000 ft stayed visible ~4.9 miles away at 162 ft eye alt; flat box gone).
 - The status bar shows **eye alt** in feet: the easiest measurement for any calibration.
+
+## Popups can drive the Automation API (PROVEN 2026-11-03, Jim)
+
+JavaScript inside a KML popup (description HTML) can call `http://localhost:8000/arcgisearth/...` directly. Test KMZ `TEST_Sky_Menu_ShowMe.kmz` (EarthStick branch `earthstick-v1.3.1-test`): buttons POSTed two drawings for EverBank Stadium and both appeared in My Drawings and on the map (two of the three methods got through; fetch with JSON, fetch `mode:"no-cors"` with text/plain body, and XMLHttpRequest were tried):
+- a point drawing with a gold `labelSymbol` (the tracker's proven shape), and
+- **a 3D vertical polyline beacon**: `geometry: {paths: [[[lon,lat,0],[lon,lat,3000]]], hasZ: true, spatialReference: {wkid: 4326}}`, `symbol: {type: "simple-line", color: [255,0,0,255], width: 6}` - drew as a tall red line.
+So objects can carry SHOW ME buttons (beacons on demand) with no helper program. Untested next: camera PUT from a popup (a "take me there" button) and DELETE.

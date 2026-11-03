@@ -22,7 +22,7 @@ SLOT = {"NYC": 315, "London": 0, "Paris": 45, "Rome": 90, "JAX": 135, "Rio": 180
 HUB_ARRIVAL_HEADING = 22.5       # arrive facing between two gates, never straight into one
 RING_R = 225.0                   # 450 m rings
 EXIT_M = 300.0
-APPROACH_M = 900.0               # return ring sits this far from the landmark, toward ATL
+APPROACH_M = 2000.0              # v9 (Jim: spread it out): return ring this far from the landmark, toward ATL; next-city ring as far beyond
 
 # name: (landmark lat, lon, ring altitude m absolute, level in its direction tower)
 DEST = {
@@ -58,7 +58,7 @@ levels_used = {}
 for name, (lat, lon, alt, level) in DEST.items():
     b_out = SLOT[name]
     b_home = bearing(lat, lon, *ATL)
-    # far end: return ring between landmark and home, arrival 600 m short of the landmark, facing it
+    # far end: return ring between landmark and home, arrival 1,700 m short of the landmark, facing it
     rlat, rlon = dest(lat, lon, b_home, APPROACH_M)
     land_head = (b_home + 180) % 360
     arr_lat, arr_lon = dest(rlat, rlon, land_head, EXIT_M)
@@ -72,7 +72,7 @@ for name, (lat, lon, alt, level) in DEST.items():
     gates.append(gate("ATL", rlat, rlon, alt, facing=b_home, radius_m=RING_R, **hub_arrival,
                       description="<b>Gate back to Atlanta (ATL)</b><br/>Connect there for home (JAX) or another city."))
 
-# next-city rings: beyond the landmark (900 m out toward the next city), so you arrive,
+# next-city rings: beyond the landmark (2 km out toward the next city), so you arrive,
 # fly over the landmark and on through the next gate
 for i, name in enumerate(TOUR[:-1]):
     lat, lon, alt, _ = DEST[name]
@@ -130,13 +130,14 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
 }
 
+# Layout v9 (Jim, 2026-11-03 17:25): spread out; welcome sign at the height you come out at, straight ahead.
 # Layout v8 (Jim, 2026-11-03): KML text is a fixed size on screen, so signs and menus only show near
 # each arrival (Region LOD, as Object Factory "Hide above"); welcome sign further ahead and higher;
 # sites as a vertical menu board off to the left so labels do not collide.
 SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
-SIGN_AHEAD_M, SIGN_ABOVE_M = 450.0, 110.0
-MENU_AHEAD_M, MENU_LEFT_DEG = 260.0, 28.0
-MENU_TOP_ABOVE_M, MENU_STEP_M = 45.0, 24.0
+SIGN_AHEAD_M, SIGN_ABOVE_M = 1200.0, 0.0
+MENU_AHEAD_M, MENU_LEFT_DEG = 900.0, 30.0
+MENU_TOP_ABOVE_M, MENU_STEP_M = 160.0, 80.0
 
 
 def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites):

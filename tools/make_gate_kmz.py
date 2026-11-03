@@ -129,7 +129,52 @@ def welcome_sign(text, lat, lon, alt_m, heading, ahead_m=250.0, above_m=40.0):
   </Placemark>'''
 
 
-def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml=""):
+SHOW_ME_JS = r"""<script>
+function showMe(id, name, lat, lon) {
+  var api = "http://localhost:8000/arcgisearth/drawings";
+  var out = document.getElementById("st-" + id);
+  var items = [
+    {id: id + "-label", visible: true, title: name,
+     geometry: {x: lon, y: lat, spatialReference: {wkid: 4326}},
+     labelSymbol: {type: "text", color: [255, 215, 0, 255], size: 16}},
+    {id: id + "-beacon", visible: true, title: name + " beacon",
+     geometry: {paths: [[[lon, lat, 0], [lon, lat, 3000]]], hasZ: true, spatialReference: {wkid: 4326}},
+     symbol: {type: "simple-line", color: [255, 0, 0, 255], width: 6}}];
+  items.forEach(function (b) {
+    fetch(api + "/" + b.id, {method: "DELETE", mode: "no-cors"}).catch(function () {}).then(function () {
+      return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(b)})
+        .catch(function () {
+          return fetch(api, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain"}, body: JSON.stringify(b)});
+        });
+    }).then(function () { out.textContent = "Beacon is up - look for the red line."; })
+      .catch(function (e) { out.textContent = "Could not reach ArcGIS Earth (Automation API on?) " + e; });
+  });
+}
+function clearMe(id) {
+  var api = "http://localhost:8000/arcgisearth/drawings/";
+  ["-label", "-beacon"].forEach(function (k) { fetch(api + id + k, {method: "DELETE", mode: "no-cors"}).catch(function () {}); });
+  document.getElementById("st-" + id).textContent = "Beacon removed.";
+}
+</script>"""
+
+
+def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, icon_href="icons/site.png"):
+    """Floating menu icon at pos_*; its popup has SHOW ME / CLEAR buttons that draw a beacon at (lat, lon)."""
+    js_name = escape(name).replace("\\", "\\\\").replace("'", "\\'")
+    html = (f'<div style="font-family:Segoe UI,Arial,sans-serif;min-width:300px"><b>{escape(name)}</b><br/>'
+            f'<small>{escape(blurb)}</small><br/><br/>'
+            f'<button onclick="showMe(\'{site_id}\', \'{js_name}\', {lat}, {lon})">SHOW ME</button> '
+            f'<button onclick="clearMe(\'{site_id}\')">CLEAR BEACON</button>'
+            f'<div id="st-{site_id}" style="margin-top:6px;color:#555"></div>{SHOW_ME_JS}</div>')
+    return f'''  <Placemark>
+    <name>{escape(name)}</name>
+    <description><![CDATA[{html}]]></description>
+    <styleUrl>#site</styleUrl>
+    <Point><altitudeMode>absolute</altitudeMode><coordinates>{pos_lon:.7f},{pos_lat:.7f},{pos_alt_m:.1f}</coordinates></Point>
+  </Placemark>'''
+
+
+def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml="", extra_files=None):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -141,6 +186,7 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   </Style>
   <Style id="gateName"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>{name_scale}</scale></LabelStyle></Style>
   <Style id="gateAlt"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>{alt_scale}</scale></LabelStyle></Style>
+  <Style id="site"><IconStyle><scale>1.2</scale><Icon><href>icons/site.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>1.0</scale></LabelStyle></Style>
   <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.8</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g, side_labels) for g in gates)}
@@ -152,4 +198,6 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("doc.kml", kml)
         z.writestr("icons/blank.png", _blank_png())
+        for arc, data in (extra_files or {}).items():
+            z.writestr(arc, data)
     return path

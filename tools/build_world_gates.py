@@ -5,7 +5,8 @@ landing spots, so ring names can repeat (every return ring is called ATL).
 python3 build_world_gates.py <output.kmz>
 """
 import sys
-from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign
+from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark
+from pathlib import Path
 
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
@@ -92,7 +93,59 @@ CITY = {"NYC": "New York", "London": "London", "Paris": "Paris", "Rome": "Rome",
 signs = [welcome_sign(f"Welcome to {CITY[n]}", *arrival[n]) for n in TOUR]
 signs.append(welcome_sign("Welcome to Atlanta (ATL)", ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING))
 signs.append(welcome_sign("Welcome home to Jacksonville", alat, alon, JAX_LEVEL, back_jax))
+# Popular sites (Jim, 2026-11-03): a row of floating icons ahead of each arrival; each popup's SHOW ME
+# button draws a red beacon + gold label on the site through the Automation API (proven from a popup).
+SITES = {
+    "NYC": [("Statue of Liberty", "Liberty Island, 1886.", 40.6892, -74.0445),
+            ("One World Trade Center", "Tallest building in the Western Hemisphere.", 40.7127, -74.0134),
+            ("Brooklyn Bridge", "Opened 1883.", 40.7061, -73.9969),
+            ("Empire State Building", "Midtown Manhattan, 1931.", 40.7484, -73.9857),
+            ("Central Park", "843 acres in the middle of Manhattan.", 40.7829, -73.9654)],
+    "London": [("Tower Bridge", "Opened 1894.", 51.5055, -0.0754),
+               ("Tower of London", "Home of the Crown Jewels.", 51.5081, -0.0759),
+               ("St Paul's Cathedral", "Christopher Wren's dome, 1710.", 51.5138, -0.0984),
+               ("London Eye", "Giant wheel on the South Bank.", 51.5033, -0.1196),
+               ("Big Ben", "The Elizabeth Tower at Westminster.", 51.5007, -0.1246)],
+    "Paris": [("Eiffel Tower", "1889, 330 m tall.", 48.8584, 2.2945),
+              ("Arc de Triomphe", "At the centre of the Etoile.", 48.8738, 2.2950),
+              ("Louvre", "Home of the Mona Lisa.", 48.8606, 2.3376),
+              ("Notre-Dame", "Ile de la Cite.", 48.8530, 2.3499),
+              ("Sacre-Coeur", "On the hill of Montmartre.", 48.8867, 2.3431)],
+    "Rome": [("Colosseum", "Completed AD 80.", 41.8902, 12.4922),
+             ("Roman Forum", "Heart of ancient Rome.", 41.8925, 12.4853),
+             ("Trevi Fountain", "Throw in a coin.", 41.9009, 12.4833),
+             ("Pantheon", "Nearly 2,000 years old.", 41.8986, 12.4769),
+             ("St Peter's Basilica", "Vatican City.", 41.9022, 12.4539)],
+    "Tokyo": [("Tokyo Tower", "333 m, 1958.", 35.6586, 139.7454),
+              ("Imperial Palace", "Home of the Emperor of Japan.", 35.6852, 139.7528),
+              ("Shibuya Crossing", "The world's busiest crossing.", 35.6595, 139.7005),
+              ("Senso-ji", "Tokyo's oldest temple, Asakusa.", 35.7148, 139.7967),
+              ("Tokyo Skytree", "634 m tall.", 35.7101, 139.8107)],
+    "Sydney": [("Sydney Opera House", "Opened 1973.", -33.8568, 151.2153),
+               ("Harbour Bridge", "The Coathanger, 1932.", -33.8523, 151.2108),
+               ("Royal Botanic Garden", "Beside the Opera House.", -33.8642, 151.2166),
+               ("Taronga Zoo", "Across the harbour.", -33.8436, 151.2411),
+               ("Bondi Beach", "Sydney's famous surf beach.", -33.8915, 151.2767)],
+    "Rio": [("Christ the Redeemer", "On Corcovado, 1931.", -22.9519, -43.2105),
+            ("Sugarloaf Mountain", "Cable car to the top.", -22.9486, -43.1566),
+            ("Copacabana Beach", "4 km of beach.", -22.9711, -43.1822),
+            ("Ipanema Beach", "Made famous by the song.", -22.9868, -43.2050),
+            ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
+}
+MENU_AHEAD_M = 180.0     # the menu row floats this far ahead of the arrival point
+MENU_SPACING_M = 70.0    # side-by-side spacing of the menu icons
+MENU_BELOW_M = 30.0      # a little below eye level (the welcome sign is above)
+menus = []
+for city, sites in SITES.items():
+    alat_, alon_, aalt, ahead = arrival[city]
+    clat, clon = dest(alat_, alon_, ahead, MENU_AHEAD_M)
+    n = len(sites)
+    for i, (sname, blurb, slat, slon) in enumerate(sites):
+        off = (i - (n - 1) / 2) * MENU_SPACING_M
+        plat, plon = dest(clat, clon, (ahead + 90) % 360 if off >= 0 else (ahead + 270) % 360, abs(off))
+        menus.append(site_placemark(f"site-{city.lower()}-{i + 1}", sname, blurb, slat, slon, plat, plon, aalt - MENU_BELOW_M))
+SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], "World Gates - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
-          extra_kml="\n".join(signs))
+          extra_kml="\n".join(signs + menus), extra_files={"icons/site.png": SITE_ICON.read_bytes()})
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

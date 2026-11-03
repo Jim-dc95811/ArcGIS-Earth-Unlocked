@@ -35,6 +35,7 @@ The older continuity files in each repo were written by ChatGPT for ChatGPT. The
 - Implement only what was asked. No unrequested cleanup, refactors or "improvements".
 - One functional change at a time, discussed first.
 - Every code change gets a new version number.
+- **This includes data packs and test files (Jim, 2026-11-03):** gate packs, beacon packs and test zips carry their version in the file name and layer name (`World_Gates_JAX_ATL_v10.kmz`, `EarthStick_v1.3.1_TEST_WorldGates_v10.zip`, `World_Gates_City_Beacons_v1.zip`). Never overwrite a pushed file under the same name.
 - Preserve filenames, paths, constants and known-good behavior unless the change specifically requires otherwise.
 - Nothing is "accepted" until Jim live-tests it in ArcGIS Earth.
 - Keep **verified**, **owner-observed**, **inferred** and **conceptual** clearly separate. "Unknown" beats pretending.

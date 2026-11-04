@@ -57,6 +57,8 @@ One gate, a different destination every time: "a mystery gate that would pop you
 
 **Classroom mode (Jim is a teacher, 2026-11-04):** the teacher holds the answer key (place, details, what to look for); students fly in **full-screen mode** (no status bar, so no coordinates) and must work out where they are from **visual clues** before time runs out and they are sent on. Needs, besides the random pick: a **stay timer** (EarthStick sends you back or onward after N seconds), **no giveaways** (no welcome sign, gate named "?", no landmark names; the basemap's own labels are clues too - imagery without labels for a harder level), and a **teacher's sheet** printed from the same place list (answers, facts, discussion questions). Ideas: difficulty levels (famous landmark -> ordinary street in a far country), a round of ten jumps, students write their guess before the timer ends.
 
+**Flash round (Jim, 2026-11-04):** as soon as they come out of a gate they fly straight into the next one, so they only get the first look. **Works with today's EarthStick (no new code):** a chain of one-way gates, each arrival facing a hidden exit ring straight ahead that leads to the next place. Watch the 2-second rest after a jump: the exit ring must be far enough ahead that the pilot reaches it after the rest (or it lets them through without jumping). Glimpse length = distance to the next ring, set per level. Hidden rings (in the Gates folder, not on the map) mean nothing gives the game away.
+
 ## Idea backlog
 
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
@@ -80,3 +82,4 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - **2026-11-04** - Jim on how the Realm gets built: he knows many things can be coded into existence but took the analog path long ago; with an AI partner "the possibilities branch in wild lightning type patterns." Working mode: Jim plays with ideas and tests; Claude builds, measures and keeps this journal.
 - **2026-11-04** - Jim: Mystery Gate - one gate, a random crazy destination each time (bottom of the Great Pyramid, inside a zoo...). Logged above.
 - **2026-11-04** - Jim (a teacher): Mystery Gate classroom mode - full screen, visual clues only, a timer before they must leave; teacher knows the details. Logged under Mystery Gate.
+- **2026-11-04** - Jim: flash round - straight from one gate into the next, one look per place. Possible with EarthStick as it is.

@@ -46,6 +46,10 @@ Inspired by the Void in Star Trek: The Next Generation. A giant hidden gate snat
 
 Jim's real goal for the Realm: people take the tools, sit down with their own Claude and **branch their own universe**. In Jim's words: *"my Claude left your Claude an instruction book."* So the Realm ships with a public page written to be handed straight to an AI: the gate file format with a working example, what is proven in ArcGIS Earth (eye alt from sea level, fixed-size text hidden when far, names wrap past ~18 characters, popups can draw beacons through the Automation API), the tools (World Gate Maker, `make_gate_kmz.py`, the beacon script), and the rules of the road (tools, not data; imagery people are allowed to use). The Void is the example realm. Not written yet.
 
+## Realm doorways (Jim, 2026-11-04)
+
+Gates don't have to be rings: the ring is only decoration, the gate itself is invisible data. Jim: **each door takes the look of a door native to its destination.** Our own designs, inspired by each place (not copies of protected designs): Tokyo - a torii gate; Rome - a stone triumphal arch; Paris - an Art Nouveau metro-style arch; London - a black Georgian door with a fanlight; New York - a brownstone doorway; Rio - a colonial doorway in bright colours; Sydney - a harbour-sail frame; Atlanta - an airport gate frame; The Void - a cracked stone arch. Needs a first test: does ArcGIS Earth show 3D models (KML `<Model>` / COLLADA) inside a KMZ? Not tested yet.
+
 ## Idea backlog
 
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
@@ -65,3 +69,4 @@ Jim's real goal for the Realm: people take the tools, sit down with their own Cl
 - **2026-11-04** - Placement rule from Jim: put signs and menus far away (several km). Close objects shift and pile up as you move; distant ones stay put like scenery, and the trigger reaches them anyway. World Gates v16 built on it.
 - **2026-11-04** - Jim asked Claude to work out the 3D geometry for future objects. Result: a viewer model of ArcGIS Earth (78 deg view, label offsets, text widths) fitted to Jim's Rio screenshot within 5 pixels, and a preview tool (`tools/preview_view.py`) that draws any arrival view and flags overlapping labels before anyone flies it. Rules in `tools/ARCGIS_EARTH_API.md`. Every future Realm sign, menu and clue gets checked with it.
 - **2026-11-04** - EarthStick 1.3.2 released with World Gates v19 (signs and site stars in the sky, far out, two rows, clear of the gates). Jim: "these are more ornaments on our beta". The sky layout rules (CLAUDE.md section 3a, `tools/ARCGIS_EARTH_API.md`) now apply to every Realm object.
+- **2026-11-04** - Jim: "each door would take the appearance of a door native to the destination" - Realm doorways (see above). Needs a 3D-model test in ArcGIS Earth first.

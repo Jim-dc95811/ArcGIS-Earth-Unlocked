@@ -26,7 +26,7 @@ Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth
 - 🧭 **[Sky Compass](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz)** - giant N / E / S / W letters in the sky around the area.
 - 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
 
-- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL.kmz)** - golden rings from Jacksonville to an Atlanta hub and on to New York, London, Paris, Rome, Tokyo, Sydney and Rio. Fly through them with EarthStick 1.3 and you arrive at the landmark.
+- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL.kmz)** - golden rings from Jacksonville to an Atlanta hub and on to New York, London, Paris, Rome, Tokyo, Sydney and Rio. Fly through them with EarthStick 1.3 and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
 
 Made with the Object Factory and EarthStick. Make your own with the tools below.
 

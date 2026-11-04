@@ -8,9 +8,9 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
-[![Paris through World Gates: Welcome to Paris, five coloured site stars, and orange and red beacons on Sacre-Coeur and the Eiffel Tower](images/world_gates.jpg)](https://www.youtube.com/watch?v=2N8-4cWMoPw)
+[![Arriving in London through World Gates: Welcome to London high in the sky, with five coloured site names above gold stars - Tower Bridge, Tower of London, St Paul's Cathedral, London Eye, Big Ben](images/world_gates_v19.jpg)](https://www.youtube.com/watch?v=2N8-4cWMoPw)
 
-Fly through a golden ring over Jacksonville and come out over the Statue of Liberty. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and a row of famous sites; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
+Fly through a golden ring over Jacksonville and come out over the Statue of Liberty. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and its famous sites floating in the sky; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
 
 **⬇️ [Download EarthStick v1.3.2 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
 
@@ -81,11 +81,20 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 ### **⬇️ [DOWNLOAD EARTHSTICK v1.3.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. New in 1.3.1: a round-the-world tour with welcome signs and one-click site beacons, a bigger crosshair, and a one-click taskbar start.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, and a one-click taskbar start.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 
 *Flying low over the St. Johns River with a beacon and sky compass on the horizon. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/EarthStick).*
+
+### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)**
+**📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**
+
+Make your own World Gates: pick any two places and it builds the pair of golden rings between them for EarthStick.
+
+[![A World Gate named Home floating over Central Park, New York, at 520 ft](images/world_gate_maker.jpg)](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates)
+
+*A "Home" gate over Central Park, partnered with a "Central Park" gate near home in Jacksonville. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
 ### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
@@ -130,6 +139,8 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 | Make large offline zoomable ArcGIS Earth maps | [QGIS MBTiles -> ArcGIS Earth TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) |
 | Build TPKX packages in ArcGIS Pro, use offline maps on Android, or track PRAVE / ME units | [ArcGIS Earth Offline Maps & Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
 | Fly and navigate ArcGIS Earth with a joystick | [EarthStick](https://github.com/Jim-dc95811/EarthStick) |
+| Fly through wormholes to cities around the world | [EarthStick - World Gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131) |
+| Make my own gates between two places | [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) |
 | Put beacons, sky objects, icons, information, or object sets into Earth | [ArcGIS Earth Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory) |
 | Turn public ArcGIS point services into offline KMZ/GeoJSON layers | [Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps) |
 | Build offline clickable parcel layers | [Parcel100](https://github.com/Jim-dc95811/Parcel100) |
@@ -140,6 +151,7 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 Foundation maps  -> what the world looks like      MBTiles converter, Master 4, Batch Factory
 Operational data -> what databases know about it   PointLayer, Parcel100
 EarthStick       -> how you move through it
+World Gates      -> where you can jump to             World Gates pack, World Gate Maker
 Object Factory   -> objects and meaning you place in it
 PRAVE / ME       -> where your units are right now
 ArcGIS Earth     -> the common viewer

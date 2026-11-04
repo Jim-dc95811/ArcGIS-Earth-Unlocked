@@ -12,7 +12,7 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 Fly through a golden ring over Jacksonville and come out over the Statue of Liberty. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and a row of famous sites; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
 
-**⬇️ [Download EarthStick v1.3.1 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.1.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v14.kmz)** (drag onto ArcGIS Earth)
+**⬇️ [Download EarthStick v1.3.2 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of rings between them.
 
@@ -36,7 +36,7 @@ Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth
 - 🧭 **[Sky Compass](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz)** - giant N / E / S / W letters in the sky around the area.
 - 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
 
-- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v14.kmz)** - golden rings from Jacksonville to an Atlanta hub and around the world: New York, London, Paris, Rome, Tokyo, Sydney and Rio, each with a welcome sign and site stars. Fly through them with EarthStick 1.3.1 and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
+- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** - golden rings from Jacksonville to an Atlanta hub and around the world: New York, London, Paris, Rome, Tokyo, Sydney and Rio, each with a welcome sign and site stars. Fly through them with EarthStick 1.3.2 and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
 
 Made with the Object Factory and EarthStick. Make your own with the tools below.
 
@@ -78,7 +78,7 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.3.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.1.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 
 Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. New in 1.3.1: a round-the-world tour with welcome signs and one-click site beacons, a bigger crosshair, and a one-click taskbar start.

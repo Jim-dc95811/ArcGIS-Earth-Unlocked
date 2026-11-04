@@ -64,7 +64,7 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
 - Kids' scavenger hunt around Jacksonville: hidden gates send you to clue spots, beacons guide you on.
 - Traps that catch from any direction: several hidden rings at one spot facing different ways.
-- World Gate Maker 1.1: a "hidden, one-way" option.
+- World Gate Maker 1.1 (Jim, 2026-11-04, ideas - not approved to build yet): one-way gates (Place 2 = drop point, no return ring); a PNG picture with each ring (a 'door look' without 3D models); hidden option; ring colour; more than one pair per file.
 - Live webcam object at each World Gates city (Jim to pick the webcams).
 - More hubs beyond Atlanta.
 - Sky menu boards for public safety: hydrants, stations, hospitals, staging - pick one and a beacon guides you.

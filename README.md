@@ -151,7 +151,7 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 Foundation maps  -> what the world looks like      MBTiles converter, Master 4, Batch Factory
 Operational data -> what databases know about it   PointLayer, Parcel100
 EarthStick       -> how you move through it
-World Gates      -> where you can jump to             World Gates pack, World Gate Maker
+World Gates      -> where you can jump to          World Gates pack, World Gate Maker
 Object Factory   -> objects and meaning you place in it
 PRAVE / ME       -> where your units are right now
 ArcGIS Earth     -> the common viewer

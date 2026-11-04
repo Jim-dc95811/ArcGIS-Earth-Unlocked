@@ -15,5 +15,6 @@ All of them assume the seven repositories are cloned side by side under `/home/c
 | `ARCGIS_EARTH_API.md` | Working reference for the ArcGIS Earth Automation API: every endpoint, what Jim's tools already prove, what the API cannot do (no click events), and untested ideas such as the camera picture-in-picture. | Read before any API work |
 | `samples/` | `TEST_Camera_SR200_W_of_I95.kmz`: the proven live-camera object (FL511 camera 1362 in the popup, refreshes every 10 s). Unzip to read `doc.kml`. | Open in ArcGIS Earth |
 | `test-rigs/` | Regression and hardening rigs for Parcel100, PointLayer, EarthStick, the PRAVE/ME tracker, Master 4 and the Object Factory. | See [`test-rigs/README.md`](test-rigs/README.md) |
+| `preview_view.py` | Draws what a KMZ looks like in ArcGIS Earth from a camera pose (pinhole model fitted to Jim's screenshots, 5 px rms) and lists overlapping labels - check gate packs and sky objects before Jim flies them. | `from preview_view import load_kmz, render, overlaps` |
 
 Which PDF comes from which manual, the page layout standard, and the video for each tool are listed in [`../CLAUDE.md`](../CLAUDE.md) (section 2a).

@@ -9,7 +9,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v17"           # Jim: every change gets a new version number
+GATES_VERSION = "v18"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -176,6 +176,10 @@ SHOW_WITHIN_FT = 20000.0     # ring names disappear beyond about 4 miles
 # +-22.5 deg sat where a 78 deg view puts them), and a one-row board reached 79 deg (Rio, NYC). Boards are
 # now TWO rows (first 3 sites, then 2), about half as wide; rows 4 km out (room for the second row above the
 # ground); welcome sign just above the rows; boards show from twice as far so backing off does not hide them.
+# v18 (2026-11-04, from tools/preview_view.py - the viewer model fitted to Jim's Rio v17 screenshot to 5 px):
+# the board now keeps clear of each ring AND its name (names sit beside the ring), and prefers a turn that
+# keeps the whole board inside the ~78 deg view when you look straight ahead (NYC's v17 board ran off-screen).
+VIEW_HALF_DEG = 39.0
 BOARD_WITHIN_FT = 40000.0    # v17: signs + star rows (was 20,000)
 SIGN_AHEAD_M = 6000.0        # v16
 MENU_AHEAD_M = 4000.0        # v17 (v16: 5,000)
@@ -187,6 +191,12 @@ ROWS = ((0, 1, 2), (3, 4))   # v17: which sites go on each row
 DEG_PER_CHAR_SITE = 0.72      # label scale 0.9 (site names)
 DEG_PER_CHAR_SIGN = 1.15      # label scale 1.4 (welcome sign)
 GAP_DEG, RING_CLEAR_DEG = 5.0, 12.0   # v14: gap 3 -> 5 (Copacabana Beach ran into Ipanema Beach)
+
+
+def distance_m(lat1, lon1, lat2, lon2):
+    la1, la2 = math.radians(lat1), math.radians(lat2)
+    h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    return 2 * 6371008.8 * math.asin(min(1.0, math.sqrt(h)))
 
 
 def _ang(a):
@@ -209,11 +219,30 @@ def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, hub=False):
         rows.append((offs, w))
     sign_w = DEG_PER_CHAR_SIGN * len(sign_text)
     width = max([sign_w] + [w for _, w in rows])
-    near = [bearing(alat_, alon_, g["lat"], g["lon"]) for g in gates
-            if abs(g["lat"] - alat_) < 0.06 and abs(g["lon"] - alon_) < 0.08]
+    # each nearby ring blocks the bearings from its left edge to the end of its name (names sit beside the ring)
+    blocked = []
+    for g in gates:
+        if abs(g["lat"] - alat_) > 0.06 or abs(g["lon"] - alon_) > 0.08:
+            continue
+        b = bearing(alat_, alon_, g["lat"], g["lon"])
+        dist = max(1.0, distance_m(alat_, alon_, g["lat"], g["lon"]))
+        rad = math.degrees(math.atan(g["radius_m"] / dist))
+        llat, llon = dest(g["lat"], g["lon"], (g["facing"] + 90) % 360, g["radius_m"] + 40)
+        lb = bearing(alat_, alon_, llat, llon)
+        name_w = DEG_PER_CHAR_SIGN * max(len(g["name"]), 8)        # ring name (scale 1.4) / "2,530 ft" line
+        rel = _ang(b - ahead)
+        if abs(rel) > 100:                       # behind you (e.g. the ATL ring you just came out of)
+            continue
+        lrel = rel + _ang(lb - b)
+        lo_ = min(rel - rad, lrel)
+        hi_ = max(rel + rad, lrel + name_w)
+        blocked.append((lo_ - 4.0, hi_ + 4.0))
     def clear(c):
-        return all(abs(_ang(b - (ahead + c))) > width / 2 + RING_CLEAR_DEG for b in near)
-    centre = 0 if hub else next((c for k in range(0, 91, 5) for c in ((k, -k) if k else (0,)) if clear(c)), 0)
+        return all(c + width / 2 < lo_ or c - width / 2 > hi_ for lo_, hi_ in blocked)
+    cands = sorted(range(-90, 91), key=abs)
+    centre = 0 if hub else next((c for c in cands if clear(c) and abs(c) + width / 2 <= VIEW_HALF_DEG), None)
+    if centre is None:                           # v18: no side gap fits in the view -> lift the board over the rings
+        centre, sign_deg, row_deg = 0, HUB_SIGN_DEG, HUB_ROW_DEG
     board = (ahead + centre) % 360
     parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M,
                           above_m=_up(SIGN_AHEAD_M, sign_deg))]

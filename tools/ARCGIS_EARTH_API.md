@@ -85,3 +85,23 @@ JavaScript inside a KML popup (description HTML) can call `http://localhost:8000
 - a point drawing with a gold `labelSymbol` (the tracker's proven shape), and
 - **a 3D vertical polyline beacon**: `geometry: {paths: [[[lon,lat,0],[lon,lat,3000]]], hasZ: true, spatialReference: {wkid: 4326}}`, `symbol: {type: "simple-line", color: [255,0,0,255], width: 6}` - drew as a tall red line.
 So objects can carry SHOW ME buttons (beacons on demand) with no helper program. Untested next: camera PUT from a popup (a "take me there" button) and DELETE.
+
+## Viewer geometry (measured 2026-11-04 from Jim's screenshots; model in `preview_view.py`)
+
+Fitted to Jim's World Gates v17 Rio screenshot: five site stars matched to **5 px rms** with a plain pinhole camera.
+
+| Quantity | Value (Jim's screenshots as shown in chat, 2000 x 1125 = his 3840 x 2160 / 1.92) |
+|---|---|
+| Focal length | **1231 px** -> horizontal view **~78 deg**, vertical **~49 deg** (cross-checked on the v16 ATL hub shot: London/Paris rings at +-22.5 deg land where predicted) |
+| Label beside a site star (icon scale 0.9) | starts **+22 px** right of the point, middle **-39 px** (above) |
+| Label of a blank-icon point (signs, ring names) | starts **+36 px** right, middle **-21 px** |
+| Text width | label scale 0.9 **~14.5 px/char** (~0.67 deg at screen centre); scale 1.4 **~23.5 px/char** (~1.09 deg) |
+| Altitudes | eye alt and KML `absolute` are both sea level |
+
+Rules that came out of it (all learned the hard way, see the World Gates history in `CLAUDE.md`):
+- **Text never shrinks with distance**, so distance does not crowd labels - but **near objects shift and pile up as the pilot moves**. Put signs and menus **several km out** (World Gates: sign 6 km, star rows 4 km); the trigger-click reaches any distance.
+- **A board must fit the view:** keep any row under ~70 deg wide (about 78 deg visible). Long lists go in more than one row.
+- **Rows stacked vertically need ~4 deg between them** (label sits ~1.9 deg above its icon and is ~1.4 deg tall); never a single vertical column (each name lands beside the star above it).
+- **Keep boards clear of rings AND their names** (a ring's name sits beside it, to the right as seen from the gold side). If no side gap fits, lift the board above the rings (rows +9/+13 deg, sign +17.5 deg).
+- **Check before Jim flies:** `preview_view.render()` draws the arrival view, `preview_view.overlaps()` lists colliding labels.
+

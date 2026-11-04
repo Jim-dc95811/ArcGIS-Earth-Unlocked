@@ -41,6 +41,10 @@ Inspired by the Void in Star Trek: The Next Generation. A giant hidden gate snat
 - **The way home:** invisible and dead until the last clue is found; then EarthStick draws the gold ring and arms it. Through it, you are back where you were snatched.
 - **Open:** clues in order (each riddle leads to the next) or any order; where the trap is and where it drops you; how many clues.
 
+## The instruction book (Jim, 2026-11-04)
+
+Jim's real goal for the Realm: people take the tools, sit down with their own Claude and **branch their own universe**. In Jim's words: *"my Claude left your Claude an instruction book."* So the Realm ships with a public page written to be handed straight to an AI: the gate file format with a working example, what is proven in ArcGIS Earth (eye alt from sea level, fixed-size text hidden when far, names wrap past ~18 characters, popups can draw beacons through the Automation API), the tools (World Gate Maker, `make_gate_kmz.py`, the beacon script), and the rules of the road (tools, not data; imagery people are allowed to use). The Void is the example realm. Not written yet.
+
 ## Idea backlog
 
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
@@ -56,3 +60,4 @@ Inspired by the Void in Star Trek: The Next Generation. A giant hidden gate snat
 - **2026-11-02** - First wormhole jump, JAX -> NYC, 19:41 (Jim: "GIS history"). World Gates released in EarthStick 1.3 that night.
 - **2026-11-03** - Round-the-world tour, welcome signs, one-click site beacons (World Gates v14); EarthStick 1.3.1 released; video "ArcGIS Earth Flight: City to City Using Wormholes" (`2N8-4cWMoPw`) posted.
 - **2026-11-04** - World Gate Maker 1.0 released (Jim flew Home <-> Central Park: "truly a marvel"). Jim: hidden giant trap gates "like the Void in STTNG"; the way home needs clues. **The Realm** named as the bigger plan, released as packages; this journal started. First realm: **The Void**.
+- **2026-11-04** - Jim: rather than us building every game, people should "get with your twin brother Claude and branch their own universe" - the instruction book for their Claude (see above).

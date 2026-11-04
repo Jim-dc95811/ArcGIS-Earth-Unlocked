@@ -9,7 +9,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v16"           # Jim: every change gets a new version number
+GATES_VERSION = "v17"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -170,13 +170,18 @@ SITE_COLOURS = [(255, 0, 0), (0, 110, 255), (0, 200, 0), (255, 0, 255), (255, 14
 # Layout v8 (Jim, 2026-11-03): KML text is a fixed size on screen, so signs and menus only show near
 # each arrival (Region LOD, as Object Factory "Hide above"); welcome sign further ahead and higher;
 # sites as a vertical menu board off to the left so labels do not collide.
-SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
-SIGN_AHEAD_M, SIGN_ABOVE_M = 6000.0, 0.0   # v16: was 1,200 m
-HUB_SIGN_UP_DEG = 14.0         # v16 (v15: 12): hub sign above eye level, over the hub row
-HUB_ROW_UP_DEG = 9.0           # v16: hub star row above eye level, clear of the 8 rings (ring tops ~4.3 deg)
-MENU_DOWN_DEG = 3.0            # v16: city star rows this far below eye level
-MENU_AHEAD_M, MENU_STEP_DEG = 5000.0, 9.0   # v16: was 900 m
-MENU_BELOW_M = MENU_AHEAD_M * math.tan(math.radians(MENU_DOWN_DEG))
+SHOW_WITHIN_FT = 20000.0     # ring names disappear beyond about 4 miles
+# v17 (Jim, 2026-11-04 17:58 'Rio is problematic, the objects will disappear before you can see all in one
+# shot'): ArcGIS Earth's view is ~78 deg wide (measured on Jim's v16 hub screenshot: London/Paris rings at
+# +-22.5 deg sat where a 78 deg view puts them), and a one-row board reached 79 deg (Rio, NYC). Boards are
+# now TWO rows (first 3 sites, then 2), about half as wide; rows 4 km out (room for the second row above the
+# ground); welcome sign just above the rows; boards show from twice as far so backing off does not hide them.
+BOARD_WITHIN_FT = 40000.0    # v17: signs + star rows (was 20,000)
+SIGN_AHEAD_M = 6000.0        # v16
+MENU_AHEAD_M = 4000.0        # v17 (v16: 5,000)
+CITY_SIGN_DEG, CITY_ROW_DEG = 3.5, (-0.5, -4.5)       # v17: degrees above (+) / below (-) eye level
+HUB_SIGN_DEG, HUB_ROW_DEG = 17.5, (13.0, 9.0)         # v17: hub board above the 8 rings (ring tops ~4.3 deg)
+ROWS = ((0, 1, 2), (3, 4))   # v17: which sites go on each row
 
 
 DEG_PER_CHAR_SITE = 0.72      # label scale 0.9 (site names)
@@ -188,29 +193,39 @@ def _ang(a):
     return (a + 180) % 360 - 180
 
 
-def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None, sign_above_m=None):
-    # star offsets (deg, relative to the board's left end); a label is drawn to the right of its star
-    offs, x = [], 0.0
-    for sname, *_ in sites:
-        offs.append(x); x += DEG_PER_CHAR_SITE * len(sname) + GAP_DEG
+def _up(dist_m, deg):
+    return dist_m * math.tan(math.radians(deg))
+
+
+def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, hub=False):
+    sign_deg, row_deg = (HUB_SIGN_DEG, HUB_ROW_DEG) if hub else (CITY_SIGN_DEG, CITY_ROW_DEG)
+    rows = []                                   # per row: [(site index, offset deg from row's left end)], width
+    for idx in ROWS:
+        idx = [k for k in idx if k < len(sites)]
+        offs, x = [], 0.0
+        for k in idx:
+            offs.append((k, x)); x += DEG_PER_CHAR_SITE * len(sites[k][0]) + GAP_DEG
+        w = (offs[-1][1] + DEG_PER_CHAR_SITE * len(sites[idx[-1]][0])) if idx else 0.0
+        rows.append((offs, w))
     sign_w = DEG_PER_CHAR_SIGN * len(sign_text)
-    row_w = (offs[-1] + DEG_PER_CHAR_SITE * len(sites[-1][0])) if sites else 0.0
-    width = max(row_w, sign_w)
+    width = max([sign_w] + [w for _, w in rows])
     near = [bearing(alat_, alon_, g["lat"], g["lon"]) for g in gates
             if abs(g["lat"] - alat_) < 0.06 and abs(g["lon"] - alon_) < 0.08]
     def clear(c):
         return all(abs(_ang(b - (ahead + c))) > width / 2 + RING_CLEAR_DEG for b in near)
-    centre = next((c for k in range(0, 91, 5) for c in ((k, -k) if k else (0,)) if clear(c)), 0)
+    centre = 0 if hub else next((c for k in range(0, 91, 5) for c in ((k, -k) if k else (0,)) if clear(c)), 0)
     board = (ahead + centre) % 360
-    parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M if sign_above_m is None else sign_above_m)]
-    for i, (sname, blurb, slat, slon) in enumerate(sites):
-        off = offs[i] - row_w / 2
-        mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
-        parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
-                                    aalt - (MENU_BELOW_M if below_m is None else below_m), rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
-    print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide")
-    return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
-
+    parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M,
+                          above_m=_up(SIGN_AHEAD_M, sign_deg))]
+    for (offs, w), deg in zip(rows, row_deg):
+        for k, off in offs:
+            sname, blurb, slat, slon = sites[k]
+            mlat, mlon = dest(alat_, alon_, (board + off - w / 2) % 360, MENU_AHEAD_M)
+            parts.append(site_placemark(f"site-{key.lower()}-{k + 1}", sname, blurb, slat, slon, mlat, mlon,
+                                        aalt + _up(MENU_AHEAD_M, deg), rgb=SITE_COLOURS[k % len(SITE_COLOURS)], auto=True))
+    lowest = aalt + _up(MENU_AHEAD_M, min(row_deg))
+    print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide, lowest star {lowest:5.0f} m above sea level")
+    return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, BOARD_WITHIN_FT)
 
 SIGN = {"NYC": "Welcome to NYC", "London": "Welcome to London", "Paris": "Welcome to Paris", "Rome": "Welcome to Rome",
         "Tokyo": "Welcome to Tokyo", "Sydney": "Welcome to Sydney", "Rio": "Welcome to Rio",
@@ -222,9 +237,8 @@ too_long = [s for s in SIGN.values() if len(s) > MAX_SIGN_CHARS] + \
 if too_long:
     sys.exit(f"Labels too long (would wrap in ArcGIS Earth): {too_long}")
 extras = [city_extras(n, SIGN[n], *arrival[n], SITES[n]) for n in TOUR]
-# hub: the row sits lower so it stays under the London and Paris rings either side of the sign
-extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=-MENU_AHEAD_M * math.tan(math.radians(HUB_ROW_UP_DEG)),
-                          sign_above_m=SIGN_AHEAD_M * math.tan(math.radians(HUB_SIGN_UP_DEG))))
+# hub: sign and rows sit above the 8 rings (v16/v17)
+extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], hub=True))
 extras.append(city_extras("JAX", SIGN["JAX"], alat, alon, JAX_LEVEL, back_jax, SITES["JAX"]))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], f"World Gates {GATES_VERSION} - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,

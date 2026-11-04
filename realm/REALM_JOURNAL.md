@@ -15,13 +15,14 @@ The adventures will be **released together as packages**: one download, many rea
 
 | Block | What it does | Status |
 |---|---|---|
-| World Gates | Fly through a gold ring and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02) |
+| World Gates | Fly through a gold ring and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02; current pack v19 in 1.3.2) |
 | Hidden gates | A gate file in the Gates folder but not loaded on the map: invisible but armed | Works now (no new code) |
-| Welcome signs | Floating text near an arrival point, shown only when near | Released (World Gates v14) |
+| Welcome signs | Floating text far out in the sky ahead of an arrival point, shown only when near | Released (World Gates v14; sky layout v19) |
 | Site stars + beacons | Click a star: a coloured beacon goes up over a site (popup script -> Automation API) | Released (World Gates v14) |
 | City Beacons | Double-click to jump straight to a place | Released (EarthStick 1.3.1) |
 | World Gate Maker | Make a two-way gate pair between any two places | Released (v1.0, 2026-11-04) |
 | Live camera objects | Popup shows a live, refreshing traffic camera | Proven (Object Factory) |
+| Viewer model | Predicts exactly where anything appears on Jim's screen (78 deg view, label offsets) and flags overlaps before flying | `tools/preview_view.py` (2026-11-04) |
 
 ## Building blocks still to build
 
@@ -63,3 +64,4 @@ Jim's real goal for the Realm: people take the tools, sit down with their own Cl
 - **2026-11-04** - Jim: rather than us building every game, people should "get with your twin brother Claude and branch their own universe" - the instruction book for their Claude (see above).
 - **2026-11-04** - Placement rule from Jim: put signs and menus far away (several km). Close objects shift and pile up as you move; distant ones stay put like scenery, and the trigger reaches them anyway. World Gates v16 built on it.
 - **2026-11-04** - Jim asked Claude to work out the 3D geometry for future objects. Result: a viewer model of ArcGIS Earth (78 deg view, label offsets, text widths) fitted to Jim's Rio screenshot within 5 pixels, and a preview tool (`tools/preview_view.py`) that draws any arrival view and flags overlapping labels before anyone flies it. Rules in `tools/ARCGIS_EARTH_API.md`. Every future Realm sign, menu and clue gets checked with it.
+- **2026-11-04** - EarthStick 1.3.2 released with World Gates v19 (signs and site stars in the sky, far out, two rows, clear of the gates). Jim: "these are more ornaments on our beta". The sky layout rules (CLAUDE.md section 3a, `tools/ARCGIS_EARTH_API.md`) now apply to every Realm object.

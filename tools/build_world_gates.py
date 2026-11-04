@@ -4,11 +4,12 @@ landing spots, so ring names can repeat (every return ring is called ATL).
 
 python3 build_world_gates.py <output.kmz>
 """
+import math
 import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v14"           # Jim: every change gets a new version number
+GATES_VERSION = "v15"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -131,7 +132,7 @@ SITES = {
             ("Maracana Stadium", "Home of Brazilian football.", -22.9122, -43.2302)],
     "ATL": [("Georgia Aquarium", "One of the largest aquariums in the world.", 33.7634, -84.3951),
             ("Centennial Park", "Centennial Olympic Park, built for the 1996 Games.", 33.7603, -84.3933),
-            ("World of Coca-Cola", "The Coca-Cola museum.", 33.7626, -84.3927),
+            ("Coca-Cola Museum", "World of Coca-Cola, the Coca-Cola museum.", 33.7626, -84.3927),
             ("Mercedes-Benz", "Mercedes-Benz Stadium, home of the Falcons.", 33.7554, -84.4008),
             ("Stone Mountain", "Granite dome with the Confederate memorial carving.", 33.8053, -84.1455)],
     "JAX": [("EverBank Stadium", "Home of the Jacksonville Jaguars.", 30.3239, -81.6373),
@@ -141,6 +142,9 @@ SITES = {
             ("Fort Caroline", "Fort Caroline National Memorial, 1564.", 30.3866, -81.4985)],
 }
 
+# v15 (Jim, 2026-11-04 17:28 'world gate v15, engage'): ATL hub welcome sign lifted ~12 deg above the
+# rings (they circle you at sign height, so v14's sign sat on the London ring name); 'World of Coca-Cola'
+# -> 'Coca-Cola Museum' (it wrapped at the hyphen); the v14 pin-hiding attempt removed (Jim: leave the pin).
 # v14 (Jim, 2026-11-03 18:51, after his round-the-world tour): no pin under a SHOW ME beacon's name;
 # names shortened so ArcGIS Earth does not wrap them (it wraps by text width: a sign over ~18 characters at
 # scale 1.4 or a site name over ~19 at 0.9 splits), with a build check; wider gaps between names; no doubled
@@ -163,6 +167,7 @@ SITE_COLOURS = [(255, 0, 0), (0, 110, 255), (0, 200, 0), (255, 0, 255), (255, 14
 # sites as a vertical menu board off to the left so labels do not collide.
 SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
 SIGN_AHEAD_M, SIGN_ABOVE_M = 1200.0, 0.0
+HUB_SIGN_UP_DEG = 12.0         # v15: hub sign this far above eye level, clear of the 8 rings (top of a ring ~4.3 deg)
 MENU_AHEAD_M, MENU_STEP_DEG, MENU_BELOW_M = 900.0, 9.0, 100.0
 
 
@@ -175,7 +180,7 @@ def _ang(a):
     return (a + 180) % 360 - 180
 
 
-def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None):
+def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None, sign_above_m=None):
     # star offsets (deg, relative to the board's left end); a label is drawn to the right of its star
     offs, x = [], 0.0
     for sname, *_ in sites:
@@ -189,7 +194,7 @@ def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None):
         return all(abs(_ang(b - (ahead + c))) > width / 2 + RING_CLEAR_DEG for b in near)
     centre = next((c for k in range(0, 91, 5) for c in ((k, -k) if k else (0,)) if clear(c)), 0)
     board = (ahead + centre) % 360
-    parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M)]
+    parts = [welcome_sign(sign_text, alat_, alon_, aalt, (board - sign_w / 2) % 360, ahead_m=SIGN_AHEAD_M, above_m=SIGN_ABOVE_M if sign_above_m is None else sign_above_m)]
     for i, (sname, blurb, slat, slon) in enumerate(sites):
         off = offs[i] - row_w / 2
         mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
@@ -210,7 +215,8 @@ if too_long:
     sys.exit(f"Labels too long (would wrap in ArcGIS Earth): {too_long}")
 extras = [city_extras(n, SIGN[n], *arrival[n], SITES[n]) for n in TOUR]
 # hub: the row sits lower so it stays under the London and Paris rings either side of the sign
-extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=200.0))
+extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=200.0,
+                          sign_above_m=SIGN_AHEAD_M * math.tan(math.radians(HUB_SIGN_UP_DEG))))
 extras.append(city_extras("JAX", SIGN["JAX"], alat, alon, JAX_LEVEL, back_jax, SITES["JAX"]))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], f"World Gates {GATES_VERSION} - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,

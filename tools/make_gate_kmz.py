@@ -154,7 +154,6 @@ function showMe(id, name, lat, lon, rgb) {
   var items = [
     {id: id + "-label", visible: true, title: name,
      geometry: {x: lon, y: lat, spatialReference: {wkid: 4326}},
-     symbol: {type: "simple-marker", style: "circle", size: 0, color: [0, 0, 0, 0], outline: {color: [0, 0, 0, 0], width: 0}},
      labelSymbol: {type: "text", color: rgb.concat([255]), size: 16}},
     {id: id + "-beacon", visible: true, title: name + " beacon",
      geometry: {paths: [[[lon, lat, 0], [lon, lat, 3000]]], hasZ: true, spatialReference: {wkid: 4326}},
@@ -162,14 +161,6 @@ function showMe(id, name, lat, lon, rgb) {
   items.forEach(function (b) {
     fetch(api + "/" + b.id, {method: "DELETE"}).catch(function () {}).then(function () {
       return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(b)})
-        .then(function (r) {
-          // v14: if ArcGIS Earth refuses the invisible marker, add the label the old way (with its pin)
-          if (r && r.type !== "opaque" && !r.ok && b.symbol && b.labelSymbol) {
-            var c = JSON.parse(JSON.stringify(b)); delete c.symbol;
-            return fetch(api, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(c)});
-          }
-          return r;
-        })
         .catch(function () {
           return fetch(api, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain"}, body: JSON.stringify(b)});
         });

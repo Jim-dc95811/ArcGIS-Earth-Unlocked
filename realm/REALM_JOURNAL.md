@@ -51,6 +51,10 @@ Jim's real goal for the Realm: people take the tools, sit down with their own Cl
 
 Gates don't have to be rings: the ring is only decoration, the gate itself is invisible data. Jim: **each door takes the look of a door native to its destination.** Our own designs, inspired by each place (not copies of protected designs): Tokyo - a torii gate; Rome - a stone triumphal arch; Paris - an Art Nouveau metro-style arch; London - a black Georgian door with a fanlight; New York - a brownstone doorway; Rio - a colonial doorway in bright colours; Sydney - a harbour-sail frame; Atlanta - an airport gate frame; The Void - a cracked stone arch. Needs a first test: does ArcGIS Earth show 3D models (KML `<Model>` / COLLADA) inside a KMZ? Not tested yet.
 
+## Mystery Gate (Jim, 2026-11-04)
+
+One gate, a different destination every time: "a mystery gate that would pop you at the bottom of the great pyramid ... inside a zoo ... crazy places, and they all have a GPS coordinate." The gate holds a list of places (lat, lon, height, heading); each pass picks one at random. Needs EarthStick 1.4 (a gate with several destinations). Each place needs its ground height (arrival heights are sea level) and a facing direction toward the thing worth seeing. First list ideas: base of the Great Pyramid (Giza), a zoo enclosure, the floor of the Grand Canyon, Niagara Falls from the river, Everest summit, Stonehenge, Uluru, Machu Picchu, the Taj Mahal, the South Pole, the middle of the Pacific. Variants: a "Mystery" ring at the Atlanta hub; mystery gates hidden around Jacksonville; a daily-mystery gate. Could ship as a "Mystery Places" pack people add to.
+
 ## Idea backlog
 
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
@@ -72,3 +76,4 @@ Gates don't have to be rings: the ring is only decoration, the gate itself is in
 - **2026-11-04** - EarthStick 1.3.2 released with World Gates v19 (signs and site stars in the sky, far out, two rows, clear of the gates). Jim: "these are more ornaments on our beta". The sky layout rules (CLAUDE.md section 3a, `tools/ARCGIS_EARTH_API.md`) now apply to every Realm object.
 - **2026-11-04** - Jim: "each door would take the appearance of a door native to the destination" - Realm doorways (see above). Needs a 3D-model test in ArcGIS Earth first.
 - **2026-11-04** - Jim on how the Realm gets built: he knows many things can be coded into existence but took the analog path long ago; with an AI partner "the possibilities branch in wild lightning type patterns." Working mode: Jim plays with ideas and tests; Claude builds, measures and keeps this journal.
+- **2026-11-04** - Jim: Mystery Gate - one gate, a random crazy destination each time (bottom of the Great Pyramid, inside a zoo...). Logged above.

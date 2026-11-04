@@ -30,6 +30,7 @@ The adventures will be **released together as packages**: one download, many rea
 - **Locked gates** - stay dead until the needed clues are found. Needs EarthStick 1.4.
 - **Appearing gates** - EarthStick draws the ring in the sky (through the Automation API) when it unlocks. Needs EarthStick 1.4.
 - **Trap Maker** - a maker for players' own realms, like World Gate Maker.
+- **3D model test (ready to build on Jim's word)** - one small arch model (KML `<Model>` + COLLADA `.dae` inside a KMZ) floating over Jacksonville; drag into ArcGIS Earth. Shows up = Realm doorways are possible; if not, doorways are drawn as outlines with lines, like the rings.
 
 ## Realms
 
@@ -70,3 +71,4 @@ Gates don't have to be rings: the ring is only decoration, the gate itself is in
 - **2026-11-04** - Jim asked Claude to work out the 3D geometry for future objects. Result: a viewer model of ArcGIS Earth (78 deg view, label offsets, text widths) fitted to Jim's Rio screenshot within 5 pixels, and a preview tool (`tools/preview_view.py`) that draws any arrival view and flags overlapping labels before anyone flies it. Rules in `tools/ARCGIS_EARTH_API.md`. Every future Realm sign, menu and clue gets checked with it.
 - **2026-11-04** - EarthStick 1.3.2 released with World Gates v19 (signs and site stars in the sky, far out, two rows, clear of the gates). Jim: "these are more ornaments on our beta". The sky layout rules (CLAUDE.md section 3a, `tools/ARCGIS_EARTH_API.md`) now apply to every Realm object.
 - **2026-11-04** - Jim: "each door would take the appearance of a door native to the destination" - Realm doorways (see above). Needs a 3D-model test in ArcGIS Earth first.
+- **2026-11-04** - Jim on how the Realm gets built: he knows many things can be coded into existence but took the analog path long ago; with an AI partner "the possibilities branch in wild lightning type patterns." Working mode: Jim plays with ideas and tests; Claude builds, measures and keeps this journal.

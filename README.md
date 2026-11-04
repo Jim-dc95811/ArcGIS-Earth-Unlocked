@@ -6,6 +6,14 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
+## 🆕 New: World Gates - fly city to city through wormholes
+
+[![Paris through World Gates: Welcome to Paris, five coloured site stars, and orange and red beacons on Sacre-Coeur and the Eiffel Tower](images/world_gates.jpg)](https://www.youtube.com/watch?v=2N8-4cWMoPw)
+
+Fly through a golden ring over Jacksonville and come out over the Statue of Liberty. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and a row of famous sites; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
+
+**⬇️ [Download EarthStick v1.3.1 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.1.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v14.kmz)** (drag onto ArcGIS Earth)
+
 ## The project pages
 
 This family of projects has **6 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:

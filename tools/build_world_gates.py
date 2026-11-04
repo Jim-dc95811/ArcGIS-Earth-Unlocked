@@ -9,7 +9,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v18"           # Jim: every change gets a new version number
+GATES_VERSION = "v19"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -183,7 +183,10 @@ VIEW_HALF_DEG = 39.0
 BOARD_WITHIN_FT = 40000.0    # v17: signs + star rows (was 20,000)
 SIGN_AHEAD_M = 6000.0        # v16
 MENU_AHEAD_M = 4000.0        # v17 (v16: 5,000)
-CITY_SIGN_DEG, CITY_ROW_DEG = 3.5, (-0.5, -4.5)       # v17: degrees above (+) / below (-) eye level
+# v19 (Jim, 2026-11-04 18:15, London at 1,500 ft: 'the bottom 2 are lost in imagery when we got all that blue
+# sky to work with'): seen from arrival height the horizon is at eye level, so anything below eye level sits on
+# busy imagery. The whole board now sits in the sky. (Model fit to Jim's London shot: 2.3 px rms.)
+CITY_SIGN_DEG, CITY_ROW_DEG = 10.5, (6.0, 2.0)        # v19 (v17: 3.5, (-0.5, -4.5)): degrees above eye level
 HUB_SIGN_DEG, HUB_ROW_DEG = 17.5, (13.0, 9.0)         # v17: hub board above the 8 rings (ring tops ~4.3 deg)
 ROWS = ((0, 1, 2), (3, 4))   # v17: which sites go on each row
 

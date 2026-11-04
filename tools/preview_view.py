@@ -182,3 +182,16 @@ def _dest(lat, lon, brg, dist):
     la2 = math.asin(math.sin(la) * math.cos(dd) + math.cos(la) * math.sin(dd) * math.cos(b))
     lo2 = lo + math.atan2(math.sin(b) * math.sin(dd) * math.cos(la), math.cos(dd) - math.sin(la) * math.sin(la2))
     return math.degrees(la2), math.degrees(lo2)
+
+
+def below_horizon(items, cam, min_deg=1.0):
+    """Names of on-screen points less than min_deg above eye level: at arrival height they sit on busy imagery
+    (Jim, London v18: 'lost in imagery when we got all that blue sky to work with')."""
+    out = []
+    for s in screen_items(items, cam):
+        if s["kind"] == "point" and s["name"]:
+            e, n, u = _enu(cam, s["lon"], s["lat"], s["alt"])
+            if math.degrees(math.atan2(u, math.hypot(e, n))) < min_deg:
+                out.append(s["name"])
+    return out
+

@@ -103,5 +103,7 @@ Rules that came out of it (all learned the hard way, see the World Gates history
 - **A board must fit the view:** keep any row under ~70 deg wide (about 78 deg visible). Long lists go in more than one row.
 - **Rows stacked vertically need ~4 deg between them** (label sits ~1.9 deg above its icon and is ~1.4 deg tall); never a single vertical column (each name lands beside the star above it).
 - **Keep boards clear of rings AND their names** (a ring's name sits beside it, to the right as seen from the gold side). If no side gap fits, lift the board above the rings (rows +9/+13 deg, sign +17.5 deg).
+- **Put boards in the sky.** From flying height the horizon is at about eye level, so anything below eye level lands on busy imagery (Jim, London v18). World Gates v19: rows at +2 / +6 deg, sign +10.5 deg. `preview_view.below_horizon()` flags anything lower.
+- **Second check:** the model also fitted Jim's London v18 screenshot at **2.3 px rms** (he was at the arrival spot, turned 12 deg left). Note: the lat/lon in ArcGIS Earth's status bar is the point under the MOUSE POINTER, not the camera; eye alt is the camera.
 - **Check before Jim flies:** `preview_view.render()` draws the arrival view, `preview_view.overlaps()` lists colliding labels.
 

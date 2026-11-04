@@ -9,7 +9,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder
 from pathlib import Path
 
-GATES_VERSION = "v15"           # Jim: every change gets a new version number
+GATES_VERSION = "v16"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -142,6 +142,11 @@ SITES = {
             ("Fort Caroline", "Fort Caroline National Memorial, 1564.", 30.3866, -81.4985)],
 }
 
+# v16 (Jim, 2026-11-04 17:49 "put them away ... if they were distant you wouldn't have this effect"):
+# the board was 0.9-1.2 km out, so moving a few hundred metres squashed the star row against the rings.
+# Now the welcome sign is 6 km out and the star row 5 km out (angles unchanged), so the board stays put
+# like scenery on the horizon. Hub: the 8 rings surround you at eye level, so sign AND star row sit above
+# them (row +9 deg, sign +14 deg; ring tops are +4.3 deg).
 # v15 (Jim, 2026-11-04 17:28 'world gate v15, engage'): ATL hub welcome sign lifted ~12 deg above the
 # rings (they circle you at sign height, so v14's sign sat on the London ring name); 'World of Coca-Cola'
 # -> 'Coca-Cola Museum' (it wrapped at the hyphen); the v14 pin-hiding attempt removed (Jim: leave the pin).
@@ -166,9 +171,12 @@ SITE_COLOURS = [(255, 0, 0), (0, 110, 255), (0, 200, 0), (255, 0, 255), (255, 14
 # each arrival (Region LOD, as Object Factory "Hide above"); welcome sign further ahead and higher;
 # sites as a vertical menu board off to the left so labels do not collide.
 SHOW_WITHIN_FT = 20000.0     # signs + menus disappear beyond about 4 miles
-SIGN_AHEAD_M, SIGN_ABOVE_M = 1200.0, 0.0
-HUB_SIGN_UP_DEG = 12.0         # v15: hub sign this far above eye level, clear of the 8 rings (top of a ring ~4.3 deg)
-MENU_AHEAD_M, MENU_STEP_DEG, MENU_BELOW_M = 900.0, 9.0, 100.0
+SIGN_AHEAD_M, SIGN_ABOVE_M = 6000.0, 0.0   # v16: was 1,200 m
+HUB_SIGN_UP_DEG = 14.0         # v16 (v15: 12): hub sign above eye level, over the hub row
+HUB_ROW_UP_DEG = 9.0           # v16: hub star row above eye level, clear of the 8 rings (ring tops ~4.3 deg)
+MENU_DOWN_DEG = 3.0            # v16: city star rows this far below eye level
+MENU_AHEAD_M, MENU_STEP_DEG = 5000.0, 9.0   # v16: was 900 m
+MENU_BELOW_M = MENU_AHEAD_M * math.tan(math.radians(MENU_DOWN_DEG))
 
 
 DEG_PER_CHAR_SITE = 0.72      # label scale 0.9 (site names)
@@ -199,7 +207,7 @@ def city_extras(key, sign_text, alat_, alon_, aalt, ahead, sites, below_m=None, 
         off = offs[i] - row_w / 2
         mlat, mlon = dest(alat_, alon_, (board + off) % 360, MENU_AHEAD_M)
         parts.append(site_placemark(f"site-{key.lower()}-{i + 1}", sname, blurb, slat, slon, mlat, mlon,
-                                    aalt - (below_m or MENU_BELOW_M), rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
+                                    aalt - (MENU_BELOW_M if below_m is None else below_m), rgb=SITE_COLOURS[i % len(SITE_COLOURS)], auto=True))
     print(f"{key:7s} board turned {centre:+4d} deg, {width:4.1f} deg wide")
     return lod_folder(f"{sign_text} (near view)", "\n".join(parts), alat_, alon_, aalt, SHOW_WITHIN_FT)
 
@@ -215,7 +223,7 @@ if too_long:
     sys.exit(f"Labels too long (would wrap in ArcGIS Earth): {too_long}")
 extras = [city_extras(n, SIGN[n], *arrival[n], SITES[n]) for n in TOUR]
 # hub: the row sits lower so it stays under the London and Paris rings either side of the sign
-extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=200.0,
+extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], below_m=-MENU_AHEAD_M * math.tan(math.radians(HUB_ROW_UP_DEG)),
                           sign_above_m=SIGN_AHEAD_M * math.tan(math.radians(HUB_SIGN_UP_DEG))))
 extras.append(city_extras("JAX", SIGN["JAX"], alat, alon, JAX_LEVEL, back_jax, SITES["JAX"]))
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"

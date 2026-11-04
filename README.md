@@ -14,6 +14,8 @@ Fly through a golden ring over Jacksonville and come out over the Statue of Libe
 
 **⬇️ [Download EarthStick v1.3.1 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.1.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v14.kmz)** (drag onto ArcGIS Earth)
 
+**🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of rings between them.
+
 ## The project pages
 
 This family of projects has **6 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:

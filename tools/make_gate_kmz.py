@@ -63,7 +63,39 @@ def _ring_coords(g, step=5, behind_m=0.0):
     return " ".join(pts)
 
 
-def _placemark(g, side_labels=False):
+SQUARE_LEG_M = 320.0      # World Gates v21 (Jim, 2026-11-05): square gates with legs; legs half the 640 m demo
+
+
+def _gate_pt(g, along_m, side_m, up_m):
+    """Point relative to the gate centre: along = flight direction (+ = exit side), side = right as seen
+    from the gold side, up = above the centre."""
+    la, lo = g["lat"], g["lon"]
+    if along_m:
+        la, lo = dest(la, lo, g["facing"] if along_m > 0 else (g["facing"] + 180) % 360, abs(along_m))
+    if side_m:
+        la, lo = dest(la, lo, (g["facing"] + 90) % 360 if side_m > 0 else (g["facing"] + 270) % 360, abs(side_m))
+    return f"{lo:.7f},{la:.7f},{g['alt_m'] + up_m:.1f}"
+
+
+def _ls(coords):
+    return f"<LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{' '.join(coords)}</coordinates></LineString>"
+
+
+def _square_corners(g):
+    a = g["radius_m"] / math.sqrt(2.0)     # the square fits inside the trigger circle
+    return [(-a, a), (a, a), (a, -a), (-a, -a)]
+
+
+def _square_geoms(g, leg_m=SQUARE_LEG_M):
+    """Gold square frame facing the approach + four legs straight back from the corners (Jim's
+    'glass-top side table turned sideways'): lined up, the legs make an even X; off, they lean."""
+    c = _square_corners(g)
+    frame = _ls([_gate_pt(g, 0, s, u) for s, u in c + c[:1]])
+    legs = "".join(_ls([_gate_pt(g, 0, s, u), _gate_pt(g, leg_m, s, u)]) for s, u in c) if leg_m else ""
+    return frame + legs
+
+
+def _placemark(g, side_labels=False, shape="ring", leg_m=SQUARE_LEG_M):
     data = ["gate=1"]
     keys = ["lat", "lon", "alt_m", "radius_m", "facing", "to"]
     if not g["to"]:
@@ -76,7 +108,7 @@ def _placemark(g, side_labels=False):
     <ExtendedData><Data name="gate"><value>1</value></Data>{ext}</ExtendedData>
     <MultiGeometry>
       {"" if side_labels else f'<Point><altitudeMode>absolute</altitudeMode><coordinates>{g["lon"]:.7f},{g["lat"]:.7f},{g["alt_m"] + g["radius_m"] + 40:.1f}</coordinates></Point>'}
-      <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g)}</coordinates></LineString>
+      {_square_geoms(g, leg_m) if shape == "square" else f'<LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g)}</coordinates></LineString>'}
     </MultiGeometry>
   </Placemark>'''
 
@@ -104,11 +136,16 @@ def _label_placemarks(g):
   </Placemark>'''
 
 
-def _back_placemark(g):
+def _back_placemark(g, shape="ring"):
+    if shape == "square":
+        c = _square_corners(g)
+        geom = _ls([_gate_pt(g, BACK_OFFSET_M, s, u) for s, u in c + c[:1]])
+    else:
+        geom = f"<LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g, behind_m=BACK_OFFSET_M)}</coordinates></LineString>"
     return f'''  <Placemark>
     <name>{escape(g["name"])} (back)</name>
     <styleUrl>#gateBack</styleUrl>
-    <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g, behind_m=BACK_OFFSET_M)}</coordinates></LineString>
+    {geom}
   </Placemark>'''
 
 
@@ -241,7 +278,7 @@ def site_placemark(site_id, name, blurb, lat, lon, pos_lat, pos_lon, pos_alt_m, 
 
 
 def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, name_scale=2.0, alt_scale=1.0, extra_kml="", extra_files=None,
-              label_within_ft=None):
+              label_within_ft=None, shape="ring", leg_m=SQUARE_LEG_M):
     kml = f'''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
@@ -257,10 +294,10 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.4</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateArrow"><LineStyle><color>{GOLD}</color><width>{max(3, width // 2)}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
-{chr(10).join(_placemark(g, side_labels) for g in gates)}
+{chr(10).join(_placemark(g, side_labels, shape, leg_m) for g in gates)}
 {chr(10).join((lod_folder(g["name"] + " name", _label_placemarks(g), g["lat"], g["lon"], g["alt_m"], label_within_ft) if label_within_ft else _label_placemarks(g)) for g in gates) if side_labels else ""}
 {extra_kml}
-{chr(10).join(_back_placemark(g) for g in gates) if red_backs else ""}
+{chr(10).join(_back_placemark(g, shape) for g in gates) if red_backs else ""}
 </Document>
 </kml>'''
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:

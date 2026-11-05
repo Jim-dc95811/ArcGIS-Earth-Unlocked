@@ -9,7 +9,7 @@ import sys
 from make_gate_kmz import gate, write_kmz, dest, bearing, welcome_sign, site_placemark, lod_folder, approach_arrow
 from pathlib import Path
 
-GATES_VERSION = "v20"           # Jim: every change gets a new version number
+GATES_VERSION = "v21"           # Jim: every change gets a new version number
 FT = 0.3048
 JIA = (30.4941, -81.6879)        # Jacksonville International
 ATL = (33.6407, -84.4277)        # Hartsfield-Jackson Atlanta
@@ -272,10 +272,10 @@ extras = [city_extras(n, SIGN[n], *arrival[n], SITES[n]) for n in TOUR]
 # hub: sign and rows sit above the 8 rings (v16/v17)
 extras.append(city_extras("ATL", SIGN["ATL"], ATL[0], ATL[1], LEVEL, HUB_ARRIVAL_HEADING, SITES["ATL"], hub=True))
 extras.append(city_extras("JAX", SIGN["JAX"], alat, alon, JAX_LEVEL, back_jax, SITES["JAX"]))
-# v20 (Jim, 2026-11-05): an approach arrow on every ring's gold side, shown when near like the ring names
-extras += [lod_folder(g["name"] + " approach", approach_arrow(g), g["lat"], g["lon"], g["alt_m"], SHOW_WITHIN_FT) for g in gates]
+# v20 approach arrows: shelved (Jim: 'this isnt really helping'). v21: square gates with legs (Jim's design).
 SITE_ICON = Path(__file__).resolve().parent / "samples" / "site_icon.png"
 write_kmz(sys.argv[1], f"World Gates {GATES_VERSION} - JAX ATL hub", gates, red_backs=True, side_labels=True, name_scale=1.4, alt_scale=1.0,
-          extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()}, label_within_ft=SHOW_WITHIN_FT)
+          extra_kml="\n".join(extras), extra_files={"icons/site.png": SITE_ICON.read_bytes()}, label_within_ft=SHOW_WITHIN_FT,
+          shape="square")
 for g in gates:
     print(f"{g['name']:7s} at {g['lat']:.4f},{g['lon']:.4f} {round(g['alt_m'] / FT):>6,} ft facing {g['facing']:5.1f}")

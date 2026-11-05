@@ -112,6 +112,38 @@ def _back_placemark(g):
   </Placemark>'''
 
 
+ARROW_LEN_M = 1000.0      # approach arrow (World Gates v20, Jim's idea): run-in length on the gold side
+ARROW_TIP_M = 40.0        # the tip stops this far short of the ring
+ARROW_HEAD_M = 90.0       # arrowhead legs reach back this far...
+ARROW_HEAD_W_M = 45.0     # ...and this far out from the centre line (up, down, left, right)
+
+
+def approach_arrow(g):
+    """Centre-line arrow out of the gold side, at ring-centre height, pointing into the ring (like a runway
+    centre line). Lined up, it shrinks to a point in the ring's middle; high, low or to one side, it slants."""
+    back = (g["facing"] + 180) % 360
+    side = (g["facing"] + 90) % 360
+    alt = g["alt_m"]
+
+    def pt(d_back, d_side=0.0, up=0.0):
+        la, lo = dest(g["lat"], g["lon"], back, d_back)
+        if d_side:
+            la, lo = dest(la, lo, side if d_side > 0 else (side + 180) % 360, abs(d_side))
+        return f"{lo:.7f},{la:.7f},{alt + up:.1f}"
+
+    tip = pt(ARROW_TIP_M)
+    base = ARROW_TIP_M + ARROW_HEAD_M
+    lines = [f"{pt(ARROW_LEN_M)} {tip}"] + [f"{pt(base, s_, u)} {tip}" for s_, u in
+                                              ((ARROW_HEAD_W_M, 0), (-ARROW_HEAD_W_M, 0), (0, ARROW_HEAD_W_M), (0, -ARROW_HEAD_W_M))]
+    geoms = "".join(f"<LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{c}</coordinates></LineString>"
+                    for c in lines)
+    return f'''  <Placemark>
+    <name>{escape(g["name"])} (approach)</name>
+    <styleUrl>#gateArrow</styleUrl>
+    <MultiGeometry>{geoms}</MultiGeometry>
+  </Placemark>'''
+
+
 def _blank_png():
     def ch(t, d):
         return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
@@ -223,6 +255,7 @@ def write_kmz(path, title, gates, width=10, red_backs=False, side_labels=False, 
   <Style id="gateAlt"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>{alt_scale}</scale></LabelStyle></Style>
   <Style id="site"><IconStyle><scale>0.9</scale><Icon><href>icons/site.png</href></Icon></IconStyle><LabelStyle><color>ffffffff</color><scale>0.9</scale></LabelStyle></Style>
   <Style id="welcome"><IconStyle><scale>1.0</scale><Icon><href>icons/blank.png</href></Icon></IconStyle><LabelStyle><color>{GOLD}</color><scale>1.4</scale></LabelStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
+  <Style id="gateArrow"><LineStyle><color>{GOLD}</color><width>{max(3, width // 2)}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
   <Style id="gateBack"><LineStyle><color>{RED}</color><width>{width}</width></LineStyle><BalloonStyle><displayMode>hide</displayMode></BalloonStyle></Style>
 {chr(10).join(_placemark(g, side_labels) for g in gates)}
 {chr(10).join((lod_folder(g["name"] + " name", _label_placemarks(g), g["lat"], g["lon"], g["alt_m"], label_within_ft) if label_within_ft else _label_placemarks(g)) for g in gates) if side_labels else ""}

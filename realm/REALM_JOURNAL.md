@@ -60,6 +60,7 @@ One gate, a different destination every time: "a mystery gate that would pop you
 **Flash round (Jim, 2026-11-04):** as soon as they come out of a gate they fly straight into the next one, so they only get the first look. **Works with today's EarthStick (no new code):** a chain of one-way gates, each arrival facing a hidden exit ring straight ahead that leads to the next place. Watch the 2-second rest after a jump: the exit ring must be far enough ahead that the pilot reaches it after the rest (or it lets them through without jumping). Glimpse length = distance to the next ring, set per level. Hidden rings (in the Gates folder, not on the map) mean nothing gives the game away.
 
 ## Idea backlog
+- **Joystick Explorer + universal EarthStick (Jim/Claude, 2026-11-04):** a standalone tool that lists every connected controller, shows live axis bars and button lights, walks the user through 'push forward / twist / throttle / press your trigger...', and saves a joystick settings file; a future EarthStick reads that file (no file = exactly today's behaviour with the T.A320). Opens EarthStick to any stick people already own. Explorer = straightforward; the real work is testing on hardware we don't have (Jim has only the Airbus stick - needs viewer volunteers). Gamepads (XInput) and two-piece HOTAS are a later step.
 
 - Famous traps: Bermuda Triangle -> over the South Pole; Area 51 (Groom Lake) -> somewhere unexpected.
 - Kids' scavenger hunt around Jacksonville: hidden gates send you to clue spots, beacons guide you on.

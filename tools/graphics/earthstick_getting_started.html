@@ -1,0 +1,145 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face { font-family: "Poppins"; font-weight: 700; src: url("file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1600px; height: 1000px; background: #0b1d33; font-family: "Inter", "Segoe UI", Arial, sans-serif; color: #f4f7fb; }
+  .wrap { position: relative; width: 1600px; height: 1000px; padding: 46px 56px;
+          background: radial-gradient(ellipse at 50% 0%, #1d4a7a 0%, #0b1d33 62%); overflow: hidden; }
+  h1 { font-family: "Poppins"; font-size: 46px; letter-spacing: 0.5px; color: #ffd400; text-shadow: 0 3px 0 #000; }
+  .sub { font-size: 22px; color: #cfe0f2; margin-top: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px 26px; margin-top: 34px; }
+  .card { position: relative; background: #12325a; border: 2px solid #2d5f94; border-radius: 22px; height: 352px;
+          padding: 22px 22px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .card.go { background: linear-gradient(180deg, #3a2a00, #1a1400); border-color: #ffd400; }
+  .num { position: absolute; top: -16px; left: -12px; width: 54px; height: 54px; border-radius: 50%;
+         background: #ffd400; color: #0b1d33; font-family: "Poppins"; font-size: 30px; line-height: 56px; text-align: center;
+         box-shadow: 0 3px 0 #000; }
+  .icon { width: 150px; height: 150px; margin-top: 8px; }
+  .t { font-family: "Poppins"; font-size: 26px; margin-top: 12px; line-height: 1.15; }
+  .d { font-size: 18px; color: #cfe0f2; margin-top: 8px; line-height: 1.35; }
+  .d b { color: #ffd400; font-weight: 700; }
+  .arrow { position: absolute; right: -24px; top: 150px; width: 22px; height: 30px; z-index: 2; }
+  .foot { position: absolute; left: 56px; right: 56px; bottom: 24px; font-size: 18px; color: #9fb8d4; display: flex; justify-content: space-between; }
+</style></head>
+<body><div class="wrap">
+  <h1>Fly the real world in 7 steps</h1>
+  <div class="sub">ArcGIS Earth + EarthStick + World Gates &nbsp;·&nbsp; everything here is free except the joystick</div>
+
+  <div class="grid">
+    <!-- 1 ArcGIS Earth -->
+    <div class="card"><div class="num">1</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <circle cx="70" cy="72" r="54" fill="#2a7fd4" stroke="#bfe0ff" stroke-width="4"/>
+        <path d="M30 52 q18 -10 30 4 q10 12 24 2 q10 -8 22 6 M24 84 q20 8 34 -4 q14 -10 30 4 q12 10 28 0" fill="none" stroke="#7fd36b" stroke-width="9" stroke-linecap="round"/>
+        <ellipse cx="70" cy="72" rx="22" ry="54" fill="none" stroke="#bfe0ff" stroke-width="3"/>
+        <circle cx="112" cy="112" r="26" fill="#ffd400" stroke="#0b1d33" stroke-width="4"/>
+        <path d="M112 98 v22 M102 112 l10 10 l10 -10" fill="none" stroke="#0b1d33" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="t">Get ArcGIS Earth</div>
+      <div class="d">Free 3D globe from Esri.<br>Download the <b>Windows desktop</b> version and install it.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- 2 Automation API -->
+    <div class="card"><div class="num">2</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <g transform="translate(46 50)"><circle r="30" fill="#5d7fa3"/>
+          <g fill="#5d7fa3"><rect x="-8" y="-42" width="16" height="16" rx="3"/><rect x="-8" y="26" width="16" height="16" rx="3"/>
+          <rect x="-42" y="-8" width="16" height="16" rx="3"/><rect x="26" y="-8" width="16" height="16" rx="3"/>
+          <rect x="-8" y="-42" width="16" height="16" rx="3" transform="rotate(45)"/><rect x="-8" y="26" width="16" height="16" rx="3" transform="rotate(45)"/>
+          <rect x="-42" y="-8" width="16" height="16" rx="3" transform="rotate(45)"/><rect x="26" y="-8" width="16" height="16" rx="3" transform="rotate(45)"/></g>
+          <circle r="12" fill="#12325a"/></g>
+        <rect x="52" y="86" width="86" height="44" rx="22" fill="#3cc76a" stroke="#eafff0" stroke-width="3"/>
+        <circle cx="116" cy="108" r="17" fill="#fff"/>
+        <text x="66" y="116" font-family="Poppins" font-size="20" fill="#0b3a1a">ON</text>
+      </svg>
+      <div class="t">Turn on the API</div>
+      <div class="d">In ArcGIS Earth: <b>Settings &gt; Advanced</b> &gt; turn on <b>Automation API</b>.<br>This lets EarthStick fly the camera.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- 3 Python -->
+    <div class="card"><div class="num">3</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <rect x="10" y="22" width="130" height="92" rx="12" fill="#0b1d33" stroke="#bfe0ff" stroke-width="4"/>
+        <rect x="10" y="22" width="130" height="20" rx="10" fill="#2d5f94"/>
+        <circle cx="24" cy="32" r="4" fill="#ff6b6b"/><circle cx="37" cy="32" r="4" fill="#ffd400"/><circle cx="50" cy="32" r="4" fill="#3cc76a"/>
+        <text x="22" y="76" font-family="Courier New, monospace" font-weight="700" font-size="26" fill="#7fd36b">&gt;_ py</text>
+        <rect x="20" y="88" width="20" height="20" rx="4" fill="#fff"/>
+        <path d="M24 98 l5 5 l9 -11" fill="none" stroke="#1a9b45" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="104" font-family="Inter, Arial" font-size="13" fill="#fff">Add to PATH</text>
+      </svg>
+      <div class="t">Get Python 3</div>
+      <div class="d">Free from python.org.<br>When the installer asks, tick <b>"Add python.exe to PATH"</b>.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- 4 Joystick -->
+    <div class="card"><div class="num">4</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <path d="M30 128 h90 a10 10 0 0 0 10 -10 v-6 a14 14 0 0 0 -14 -14 h-82 a14 14 0 0 0 -14 14 v6 a10 10 0 0 0 10 10 z" fill="#2b2f36" stroke="#9fb8d4" stroke-width="3"/>
+        <rect x="64" y="58" width="20" height="44" rx="6" fill="#3a3f48" stroke="#9fb8d4" stroke-width="3"/>
+        <path d="M54 22 q20 -14 40 0 l4 34 q-24 12 -48 0 z" fill="#3a3f48" stroke="#9fb8d4" stroke-width="3"/>
+        <circle cx="66" cy="26" r="6" fill="#e2453c"/><circle cx="84" cy="24" r="6" fill="#111"/>
+        <path d="M122 70 q12 -4 14 -16" fill="none" stroke="#9fb8d4" stroke-width="4" stroke-linecap="round"/>
+        <rect x="128" y="40" width="14" height="16" rx="3" fill="#9fb8d4"/>
+      </svg>
+      <div class="t">Set up the joystick</div>
+      <div class="d"><b>Download and install the driver</b> from support.thrustmaster.com (TCA Sidestick X Airbus Edition), <b>then plug it in</b> by USB.</div>
+    </div>
+    <!-- 5 Download + extract -->
+    <div class="card"><div class="num">5</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <path d="M14 40 h40 l10 12 h58 a8 8 0 0 1 8 8 v58 a8 8 0 0 1 -8 8 h-100 a8 8 0 0 1 -8 -8 z" fill="#f2b632" stroke="#fff3c4" stroke-width="3"/>
+        <rect x="62" y="40" width="14" height="86" fill="#c98a12"/>
+        <g stroke="#7a5200" stroke-width="3"><path d="M62 52 h14 M62 64 h14 M62 76 h14 M62 88 h14"/></g>
+        <circle cx="114" cy="40" r="26" fill="#ffd400" stroke="#0b1d33" stroke-width="4"/>
+        <path d="M114 26 v22 M104 40 l10 10 l10 -10" fill="none" stroke="#0b1d33" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="t">Download EarthStick</div>
+      <div class="d">Get the zip from the GitHub page.<br>Right-click it &gt; <b>Extract All</b>.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- 6 Run -->
+    <div class="card"><div class="num">6</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <path d="M30 14 h62 l26 26 v92 a6 6 0 0 1 -6 6 h-82 a6 6 0 0 1 -6 -6 v-112 a6 6 0 0 1 6 -6 z" fill="#e8eef6" stroke="#9fb8d4" stroke-width="3"/>
+        <path d="M92 14 v26 h26" fill="#c6d3e2"/>
+        <rect x="36" y="64" width="64" height="30" rx="6" fill="#2d5f94"/>
+        <text x="44" y="86" font-family="Poppins" font-size="20" fill="#fff">.bat</text>
+        <path d="M96 96 l0 40 l10 -10 l8 18 l8 -4 l-8 -17 l14 0 z" fill="#fff" stroke="#0b1d33" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M84 104 l-8 -6 M82 116 l-10 0 M88 92 l-4 -9" stroke="#ffd400" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <div class="t">Start it</div>
+      <div class="d">Double-click <b>EarthStick.bat</b>.<br>Or run <b>Make_Taskbar_Shortcut</b> once for a one-click taskbar button.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- 7 Gates file -->
+    <div class="card"><div class="num">7</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <rect x="12" y="20" width="126" height="96" rx="10" fill="#7fb8ea" stroke="#bfe0ff" stroke-width="3"/>
+        <rect x="12" y="84" width="126" height="32" rx="0" fill="#4f8a4a"/>
+        <rect x="12" y="104" width="126" height="12" rx="0" fill="#3d6e39"/>
+        <ellipse cx="96" cy="66" rx="18" ry="26" fill="none" stroke="#ffd400" stroke-width="7"/>
+        <path d="M30 96 q14 -26 46 -34" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="6 6" stroke-linecap="round"/>
+        <path d="M70 54 l10 8 l-12 6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 98 h26 l8 8 v34 h-34 z" fill="#e8eef6" stroke="#0b1d33" stroke-width="3" stroke-linejoin="round"/>
+        <text x="13" y="130" font-family="Poppins" font-size="12" fill="#0b1d33">KMZ</text>
+      </svg>
+      <div class="t">Open the KMZ file</div>
+      <div class="d">Drag <b>Gates\World_Gates</b> file onto the ArcGIS Earth map so you can see the rings.</div>
+      <svg class="arrow" viewBox="0 0 22 30"><path d="M2 2 L20 15 L2 28 Z" fill="#ffd400"/></svg>
+    </div>
+    <!-- GO -->
+    <div class="card go"><div class="num" style="font-size:22px">GO</div>
+      <svg class="icon" viewBox="0 0 150 150">
+        <defs><radialGradient id="glow"><stop offset="0" stop-color="#fff6b0"/><stop offset="1" stop-color="#ffd400" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="75" cy="72" r="70" fill="url(#glow)" opacity="0.45"/>
+        <ellipse cx="75" cy="72" rx="40" ry="56" fill="#123b66" stroke="#ffd400" stroke-width="12"/>
+        <path d="M8 98 q40 -10 70 -26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="8 8"/>
+        <path d="M62 64 l20 6 l-14 14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="t" style="color:#ffd400">Fly through!</div>
+      <div class="d">Line up on the <b>gold</b> side, match the height under the name, and fly through the middle.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Downloads, manuals and videos: github.com/Jim-dc95811/EarthStick</span><span>Google owns the ground. We own the space above it.</span></div>
+</div></body></html>

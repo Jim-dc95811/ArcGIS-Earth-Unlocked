@@ -12,6 +12,10 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 Fly through a golden ring over Jacksonville and come out over the Statue of Liberty. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and its famous sites floating in the sky; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
 
+[![Fly the real world in 7 steps: get ArcGIS Earth, turn on the Automation API, get Python 3, install the Thrustmaster driver then plug in the joystick, download EarthStick and Extract All, start it, open the KMZ file, fly through](images/earthstick_getting_started.png)](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_getting_started_full.png)
+
+*Everything you need, in 7 steps - click for full size.*
+
 **⬇️ [Download EarthStick v1.3.2 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of rings between them.

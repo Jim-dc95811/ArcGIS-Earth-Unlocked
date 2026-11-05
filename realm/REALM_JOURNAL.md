@@ -66,7 +66,14 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - Kids' scavenger hunt around Jacksonville: hidden gates send you to clue spots, beacons guide you on.
 - Traps that catch from any direction: several hidden rings at one spot facing different ways.
 - World Gate Maker 1.1 (Jim, 2026-11-04, ideas - not approved to build yet): one-way gates (Place 2 = drop point, no return ring); a PNG picture with each ring (a 'door look' without 3D models); hidden option; ring colour; more than one pair per file.
-- Live webcam object at each World Gates city (Jim to pick the webcams).
+- **Live webcams (2026-11-04, sources found):** a live camera at each World Gates city / Realm place. The ArcGIS Earth popup is a full browser (live FL511 camera already proven), so a popup can embed a live player.
+  - **Windy Webcams** (windy.com/webcams; API api.windy.com/webcams) - largest worldwide collection; free API tier (key required) filters by country, category and location; free-tier still-image links expire after ~10-15 min, so embed their live/timelapse player (free at any size), not a fixed picture link. Pro tier 9,990 EUR/yr - not needed.
+  - **EarthCam** - curated famous places (Times Square, Abbey Road, Las Vegas, Niagara...).
+  - **SkylineWebcams** - European landmarks (Rome, Venice, Paris, Greek islands, volcanoes) - matches the tour cities.
+  - **Explore.org** - nature and animal cams (bears, eagles, aquariums, zoos) - fits the Mystery Gate 'inside a zoo' and classrooms.
+  - **YouTube live streams** - many cities and attractions run 24-hour cams.
+  - Rule: only official, intentionally public cameras - never sites that list unsecured private cameras.
+  - **First test:** one camera object near a tour arrival whose popup embeds a Windy or YouTube live player - does it play inside ArcGIS Earth?
 - More hubs beyond Atlanta.
 - Sky menu boards for public safety: hydrants, stations, hospitals, staging - pick one and a beacon guides you.
 
@@ -84,3 +91,4 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - **2026-11-04** - Jim: Mystery Gate - one gate, a random crazy destination each time (bottom of the Great Pyramid, inside a zoo...). Logged above.
 - **2026-11-04** - Jim (a teacher): Mystery Gate classroom mode - full screen, visual clues only, a timer before they must leave; teacher knows the details. Logged under Mystery Gate.
 - **2026-11-04** - Jim: flash round - straight from one gate into the next, one look per place. Possible with EarthStick as it is.
+- **2026-11-04** - Webcam sources found for the city/Realm webcam idea (Windy API, EarthCam, SkylineWebcams, Explore.org, YouTube live); first test = an embedded live player in a popup.

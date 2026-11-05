@@ -53,6 +53,8 @@ Documentation fixes (broken links, stale versions, typos) are fine when Jim asks
 
 **Packaging standard (Jim, 2026-11-01):** every Python script is delivered as a zip containing the `.py` and a `.bat` launcher (CRLF; `py -3`, falling back to `python`; `pause` at the end), inside a folder named after the tool.
 
+**Full-kit test zips (Jim, 2026-11-05 18:17: 'from here on end send every test as a full zip so the proper py and kmz file are paired'):** every test zip carries the program AND every map/gate file it is meant to be flown with (gate packs in `Gates`, display-only files like a test KMZ in the folder root) plus a short `TESTn_READ_ME.txt` (what to untick, what to drag on, which .bat to run, what to look for). Never send a map file separately from its test. First: `EarthStick_v1.3.4_TEST6_with_Square_Gate.zip`.
+
 **Delivering test builds:** the chat app's file cards do not work for Jim with `.bat` or `.zip` files. Push the test zip to a separate branch (`<tool>-v<ver>-test`, under `test-builds/`) and give him the GitHub raw link plus the file-page link. This sandbox cannot reach raw.githubusercontent.com, so verify by comparing the branch blob with `git show`, not by downloading. The session's git proxy also refuses branch deletion, so ask Jim to delete finished test branches on GitHub (Branches page). If the stop hook demands a push before Jim's input is in, park work on a side branch, never on main.
 
 Note on terms: MBTiles cannot be opened in ArcGIS Earth; only the converted TPKX can.

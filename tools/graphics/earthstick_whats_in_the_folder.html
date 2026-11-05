@@ -1,0 +1,150 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- "What's in the EarthStick folder" pictogram (Jim's idea, 2026-11-04). Same style as earthstick_getting_started.html.
+     Render: Playwright, 1600 x 1100 viewport, screenshot at scale 1 and 2. Own drawings only (no logos). -->
+<style>
+  @font-face { font-family: "Poppins"; font-weight: 700; src: url("file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1600px; height: 1100px; background: #0b1d33; font-family: "Inter", "Segoe UI", Arial, sans-serif; color: #f4f7fb; }
+  .wrap { position: relative; width: 1600px; height: 1100px; padding: 40px 56px;
+          background: radial-gradient(ellipse at 50% 0%, #1d4a7a 0%, #0b1d33 62%); overflow: hidden; }
+  h1 { font-family: "Poppins"; font-size: 44px; letter-spacing: 0.5px; color: #ffd400; text-shadow: 0 3px 0 #000; }
+  .sub { font-size: 21px; color: #cfe0f2; margin-top: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 28px; margin-top: 26px; }
+  .card { position: relative; background: #12325a; border: 2px solid #2d5f94; border-radius: 22px; height: 384px;
+          padding: 20px 24px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .card.go { background: linear-gradient(180deg, #3a2a00, #1a1400); border-color: #ffd400; box-shadow: 0 0 28px rgba(255,212,0,0.25); }
+  .card.quiet { background: #0f2745; border-color: #24496f; }
+  .badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+           font-family: "Poppins"; font-size: 17px; letter-spacing: 1px; padding: 5px 16px; border-radius: 16px;
+           box-shadow: 0 3px 0 #000; }
+  .b-go { background: #ffd400; color: #0b1d33; }
+  .b-once { background: #3cc76a; color: #06260f; }
+  .b-alt { background: #6fb2ff; color: #0b1d33; }
+  .b-leave { background: #9aa9bb; color: #0b1d33; }
+  .b-drag { background: #ff9a3c; color: #2a1200; }
+  .icon { width: 128px; height: 128px; margin-top: 10px; }
+  .fname { margin-top: 8px; font-family: "Consolas", "Courier New", monospace; font-weight: 700; font-size: 23px;
+           background: #0b1d33; border: 2px solid #2d5f94; border-radius: 10px; padding: 4px 12px; color: #fff; }
+  .t { font-family: "Poppins"; font-size: 24px; margin-top: 10px; line-height: 1.15; color: #ffd400; }
+  .d { font-size: 18px; color: #dbe7f4; margin-top: 7px; line-height: 1.38; }
+  .d b { color: #fff; }
+  .foot { position: absolute; left: 56px; right: 56px; bottom: 26px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
+  .tip { background: #0f2745; border: 2px dashed #2d5f94; border-radius: 16px; padding: 12px 16px; font-size: 17px; color: #cfe0f2; line-height: 1.35; display: flex; gap: 12px; align-items: center; }
+  .tip b { color: #ffd400; }
+  .tip svg { flex: 0 0 46px; height: 46px; }
+</style></head>
+<body><div class="wrap">
+  <h1>What's in the EarthStick folder?</h1>
+  <div class="sub">After you <b style="color:#ffd400">Extract All</b> the zip, you get these six things. Here is what each one is for.</div>
+
+  <div class="grid">
+
+    <!-- 1 Fly_ArcGIS_Earth.bat -->
+    <div class="card go"><div class="badge b-go">START HERE · DOUBLE-CLICK</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <path d="M22 8 h58 l26 26 v86 h-84 z" fill="#f4f7fb" stroke="#9fb8d4" stroke-width="3"/>
+        <path d="M80 8 v26 h26" fill="#cfd9e6" stroke="#9fb8d4" stroke-width="3"/>
+        <circle cx="64" cy="76" r="30" fill="#2a7fd4" stroke="#0b1d33" stroke-width="3"/>
+        <path d="M40 66 q12 -8 22 2 q8 8 18 0 M38 86 q14 6 24 -2 q10 -8 22 2" fill="none" stroke="#7fd36b" stroke-width="6" stroke-linecap="round"/>
+        <path d="M58 56 l-14 6 l10 4 l4 10 l6 -14 z" fill="#ffd400" stroke="#0b1d33" stroke-width="2" transform="rotate(20 60 64) translate(30 -24)"/>
+      </svg>
+      <div class="fname">Fly_ArcGIS_Earth.bat</div>
+      <div class="t">The "go" button</div>
+      <div class="d">Double-click it and it opens <b>ArcGIS Earth</b> and <b>EarthStick</b> for you, in the right order. This is the one you will use every time.</div>
+    </div>
+
+    <!-- 2 Make_Taskbar_Shortcut.bat -->
+    <div class="card"><div class="badge b-once">DOUBLE-CLICK ONCE</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <rect x="6" y="88" width="116" height="30" rx="6" fill="#0b1d33" stroke="#9fb8d4" stroke-width="3"/>
+        <rect x="16" y="94" width="18" height="18" rx="3" fill="#3a6ea8"/><rect x="40" y="94" width="18" height="18" rx="3" fill="#3a6ea8"/>
+        <circle cx="77" cy="103" r="10" fill="#2a7fd4" stroke="#ffd400" stroke-width="3"/>
+        <rect x="94" y="94" width="18" height="18" rx="3" fill="#3a6ea8"/>
+        <path d="M64 70 q-14 -12 -2 -32 q12 -20 30 -18" fill="none" stroke="#3cc76a" stroke-width="6" stroke-linecap="round"/>
+        <path d="M70 80 l-4 -16 l14 6 z" fill="#3cc76a"/>
+        <circle cx="96" cy="22" r="14" fill="#2a7fd4" stroke="#bfe0ff" stroke-width="3"/>
+        <path d="M86 18 q6 -4 10 1 q4 4 9 0" fill="none" stroke="#7fd36b" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="fname">Make_Taskbar_Shortcut.bat</div>
+      <div class="t">Makes a button for you</div>
+      <div class="d">Run it one time. It puts an <b>"ArcGIS Earth Flight"</b> icon on your desktop. Right-click that icon, <b>Show more options</b>, <b>Pin to taskbar</b> - now it's one click forever.</div>
+    </div>
+
+    <!-- 3 EarthStick.bat -->
+    <div class="card"><div class="badge b-alt">DOUBLE-CLICK (OTHER WAY)</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <rect x="2" y="16" width="88" height="84" rx="10" fill="#05101e" stroke="#9fb8d4" stroke-width="3"/>
+        <rect x="2" y="16" width="88" height="16" rx="8" fill="#2d5f94"/>
+        <text x="10" y="54" font-family="Consolas, monospace" font-weight="700" font-size="13" fill="#7fd36b">EarthStick</text>
+        <text x="10" y="72" font-family="Consolas, monospace" font-size="12" fill="#cfe0f2">1,970 ft</text>
+        <text x="10" y="89" font-family="Consolas, monospace" font-size="12" fill="#cfe0f2">flying...</text>
+        <path d="M86 122 h36 a6 6 0 0 0 6 -6 v-2 a8 8 0 0 0 -8 -8 h-36 a8 8 0 0 0 -8 8 v2 a6 6 0 0 0 6 6 z" fill="#2b2f36" stroke="#9fb8d4" stroke-width="2"/>
+        <rect x="99" y="78" width="10" height="28" rx="3" fill="#3a3f48" stroke="#9fb8d4" stroke-width="2"/>
+        <path d="M93 62 q11 -8 22 0 l2 18 q-13 6 -26 0 z" fill="#3a3f48" stroke="#9fb8d4" stroke-width="2"/>
+      </svg>
+      <div class="fname">EarthStick.bat</div>
+      <div class="t">Starts just the joystick part</div>
+      <div class="d">Use it if ArcGIS Earth is <b>already open</b>. A black window appears - that is EarthStick working. <b>Leave it open</b> while you fly; close it when you're done.</div>
+    </div>
+
+    <!-- 4 EarthStick.py -->
+    <div class="card quiet"><div class="badge b-leave">LEAVE IT ALONE</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <path d="M22 8 h58 l26 26 v86 h-84 z" fill="#f4f7fb" stroke="#9fb8d4" stroke-width="3"/>
+        <path d="M80 8 v26 h26" fill="#cfd9e6" stroke="#9fb8d4" stroke-width="3"/>
+        <g stroke="#9fb8d4" stroke-width="4" stroke-linecap="round"><path d="M36 50 h48"/><path d="M36 64 h56"/><path d="M36 78 h40"/><path d="M36 92 h52"/></g>
+        <circle cx="94" cy="98" r="22" fill="#12325a" stroke="#ffd400" stroke-width="4"/>
+        <path d="M84 88 l20 20" stroke="#ffd400" stroke-width="5" stroke-linecap="round"/>
+        <rect x="80" y="94" width="28" height="8" rx="3" fill="#ffd400" transform="rotate(45 94 98)"/>
+      </svg>
+      <div class="fname">EarthStick.py</div>
+      <div class="t">The program itself</div>
+      <div class="d">This is the brains. The .bat files run it for you, so you <b>never open it</b>. On some PCs it looks like a blank page - that's normal. Just keep it in this folder.</div>
+    </div>
+
+    <!-- 5 Gates -->
+    <div class="card"><div class="badge b-drag">KEEP IT HERE · DRAG TO SEE</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <path d="M8 30 a6 6 0 0 1 6 -6 h30 l10 10 h60 a6 6 0 0 1 6 6 v70 a6 6 0 0 1 -6 6 h-100 a6 6 0 0 1 -6 -6 z" fill="#f2c94c" stroke="#a37a12" stroke-width="3"/>
+        <path d="M8 46 h112" stroke="#d9a92e" stroke-width="3"/>
+        <ellipse cx="64" cy="78" rx="18" ry="26" fill="none" stroke="#ffd400" stroke-width="8"/>
+        <ellipse cx="64" cy="78" rx="18" ry="26" fill="none" stroke="#7a5600" stroke-width="2"/>
+        <path d="M30 80 h18 M80 80 h18" stroke="#12325a" stroke-width="4" stroke-linecap="round"/>
+        <path d="M92 74 l8 6 l-8 6" fill="none" stroke="#12325a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="fname">Gates</div>
+      <div class="t">The golden rings (World Gates)</div>
+      <div class="d">EarthStick reads this folder when it starts, so fly-throughs work. To <b>see</b> the rings, drag the file inside it onto the ArcGIS Earth map (or <b>Open KMZ file</b>).</div>
+    </div>
+
+    <!-- 6 City_Beacons -->
+    <div class="card"><div class="badge b-drag">DRAG ONTO THE MAP</div>
+      <svg class="icon" viewBox="0 0 128 128">
+        <path d="M8 30 a6 6 0 0 1 6 -6 h30 l10 10 h60 a6 6 0 0 1 6 6 v70 a6 6 0 0 1 -6 6 h-100 a6 6 0 0 1 -6 -6 z" fill="#f2c94c" stroke="#a37a12" stroke-width="3"/>
+        <path d="M8 46 h112" stroke="#d9a92e" stroke-width="3"/>
+        <g stroke="#e8322b" stroke-width="5" stroke-linecap="round"><path d="M38 106 v-46"/><path d="M64 106 v-52"/><path d="M90 106 v-40"/></g>
+        <g fill="#e8322b" stroke="#fff" stroke-width="2"><circle cx="38" cy="58" r="7"/><circle cx="64" cy="52" r="7"/><circle cx="90" cy="64" r="7"/></g>
+        <text x="96" y="110" font-family="Poppins" font-size="15" fill="#7a5600">x 9</text>
+      </svg>
+      <div class="fname">City_Beacons</div>
+      <div class="t">Shortcuts to 9 cities</div>
+      <div class="d">Red "Go to ..." markers for Jacksonville, Atlanta, New York, London, Paris, Rome, Tokyo, Sydney and Rio. Drag one onto the map, then <b>double-click it</b> to jump straight there.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="tip">
+      <svg viewBox="0 0 46 46"><rect x="4" y="10" width="38" height="28" rx="4" fill="#f2c94c" stroke="#a37a12" stroke-width="2"/><path d="M14 24 l6 6 l12 -12" fill="none" stroke="#0b1d33" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>Keep all six together</b> in one folder. Don't move one file out on its own.</div>
+    </div>
+    <div class="tip">
+      <svg viewBox="0 0 46 46"><path d="M10 4 h18 l8 8 v30 h-26 z" fill="#f4f7fb" stroke="#9fb8d4" stroke-width="2"/><text x="14" y="34" font-family="Poppins" font-size="18" fill="#3cc76a">+</text></svg>
+      <div><b>A 7th file may appear</b> after the first start: <span style="font-family:Consolas,monospace;color:#fff">ArcGIS_Earth_path.txt</span>. It just remembers where ArcGIS Earth is. Leave it.</div>
+    </div>
+    <div class="tip">
+      <svg viewBox="0 0 46 46"><path d="M23 4 l19 34 h-38 z" fill="#ffd400" stroke="#0b1d33" stroke-width="2"/><path d="M23 16 v12" stroke="#0b1d33" stroke-width="4" stroke-linecap="round"/><circle cx="23" cy="33" r="2.5" fill="#0b1d33"/></svg>
+      <div><b>Blue Windows warning?</b> Click <b>More info</b>, then <b>Run anyway</b>. It only asks the first time.</div>
+    </div>
+  </div>
+</div></body></html>

@@ -16,7 +16,7 @@ Fly through a golden ring over Jacksonville and come out over the Statue of Libe
 
 *Everything you need, in 7 steps - click for full size.*
 
-**⬇️ [Download EarthStick v1.3.2 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
+**⬇️ [Download EarthStick v1.3.3 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.3.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of rings between them.
 
@@ -82,10 +82,10 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.3.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.2.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3.3](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.3.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, and a one-click taskbar start.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, and (new in 1.3.3) your height, heading and map zoom on screen, even in full-screen mode.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 

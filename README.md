@@ -57,6 +57,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 
 ### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/images/mb2tpkx_whats_in_the_zip_full.png)**
 
 Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
 
@@ -66,6 +67,7 @@ Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
 
 ### **⬇️ [DOWNLOAD MASTER 4 GRID MAKER v3.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/Master4_Grid_Maker_User_Manual.pdf)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/images/master4_grid_maker_whats_in_the_zip_full.png)**
 
 Split a 1-degree box into 100 numbered cells with exact extents and file names for large-area map production.
 
@@ -75,6 +77,7 @@ Split a 1-degree box into 100 numbered cells with exact extents and file names f
 
 ### **⬇️ [DOWNLOAD ARCGIS TPKX BATCH FACTORY](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/TPKX_Batch_Factory_v1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/TPKX_BATCH_FACTORY.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/images/tpkx_batch_factory_whats_in_the_zip_full.png)**
 
 ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages in one batch, up to Z20.
 
@@ -84,6 +87,7 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 ### **⬇️ [DOWNLOAD EARTHSTICK v1.3.3](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.3.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**
 
 Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden ring and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, and (new in 1.3.3) your height, heading and map zoom on screen, even in full-screen mode.
 
@@ -93,6 +97,7 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and i
 
 ### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/world_gate_maker_whats_in_the_zip_full.png)**
 
 Make your own World Gates: pick any two places and it builds the pair of golden rings between them for EarthStick.
 
@@ -102,6 +107,7 @@ Make your own World Gates: pick any two places and it builds the pair of golden 
 
 ### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/assets/object_factory_whats_in_the_zip_full.png)**
 
 Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth, one at a time or in batches.
 
@@ -111,6 +117,7 @@ Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth,
 
 ### **⬇️ [DOWNLOAD POINTLAYER v1.4](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v1.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/USER_GUIDE.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Point-Maps/blob/main/assets/pointlayer_whats_in_the_zip_full.png)**
 
 Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KMZ or GeoJSON overlay.
 
@@ -120,6 +127,7 @@ Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KM
 
 ### **⬇️ [DOWNLOAD PARCEL100 v1.5](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v1.5.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Parcel100/blob/main/USER_MANUAL.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Parcel100/blob/main/images/parcel100_whats_in_the_zip_full.png)**
 
 Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see the owner, address and acres.
 
@@ -129,6 +137,7 @@ Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see
 
 ### **⬇️ [DOWNLOAD PRAVE / ME TRACKER v1.2.1](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/PRAVE_ME_TRACKER.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/images/prave_me_tracker_whats_in_the_zip_full.png)**
 
 Show your own position (ME) and other radio-tracked units live in ArcGIS Earth from a Raveon PRAVE/RMC radio.
 

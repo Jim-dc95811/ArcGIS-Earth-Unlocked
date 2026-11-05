@@ -14,7 +14,7 @@ Fly through a golden ring over Jacksonville and come out over the Statue of Libe
 
 [![Fly the real world in 7 steps: get ArcGIS Earth, turn on the Automation API, get Python 3, install the Thrustmaster driver then plug in the joystick, download EarthStick and Extract All, start it, open the KMZ file, fly through](images/earthstick_getting_started.png)](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_getting_started_full.png)
 
-*Everything you need, in 7 steps - click for full size.*
+*Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 
 **⬇️ [Download EarthStick v1.3.3 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.3.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the rings](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v19.kmz)** (drag onto ArcGIS Earth)
 

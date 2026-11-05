@@ -15,7 +15,9 @@ The adventures will be **released together as packages**: one download, many rea
 
 | Block | What it does | Status |
 |---|---|---|
-| World Gates | Fly through a gold ring and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02; current pack v19 in 1.3.2) |
+| World Gates | Fly through a gold gate and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02; current pack v21 in 1.3.4) |
+| Square gates with legs | Gate drawn as a square with four legs running back: the mouth and the way it points show at a glance from any angle | Released (World Gates v21, EarthStick 1.3.4, 2026-11-05); World Gate Maker 1.1 in test |
+| Ring-height light + tractor beam | Green RING HEIGHT light when level with the gate ahead; within 1.5 km the beam pulls you onto its height (LOCKED ON) | Released (EarthStick 1.3.4) |
 | Hidden gates | A gate file in the Gates folder but not loaded on the map: invisible but armed | Works now (no new code) |
 | Welcome signs | Floating text far out in the sky ahead of an arrival point, shown only when near | Released (World Gates v14; sky layout v19) |
 | Site stars + beacons | Click a star: a coloured beacon goes up over a site (popup script -> Automation API) | Released (World Gates v14) |
@@ -92,3 +94,4 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - **2026-11-04** - Jim (a teacher): Mystery Gate classroom mode - full screen, visual clues only, a timer before they must leave; teacher knows the details. Logged under Mystery Gate.
 - **2026-11-04** - Jim: flash round - straight from one gate into the next, one look per place. Possible with EarthStick as it is.
 - **2026-11-04** - Webcam sources found for the city/Realm webcam idea (Windy API, EarthCam, SkylineWebcams, Explore.org, YouTube live); first test = an embedded live player in a popup.
+- **2026-11-05** - Gate alignment solved, in Jim's words 'great fundamental research'. Laser beam and approach arrows tried and dropped; square gates with legs ('That is the effect. Brilliant.'), a green RING HEIGHT light and a tractor beam ('like a giant space ship locks on') shipped in EarthStick 1.3.4 with World Gates v21 (Jim: 'to london and back, working great'). For the Realm: any gate in a game can be flown through reliably, even small ones, and the tractor beam is a ready-made 'the gate grabs you' moment for The Void. World Gate Maker 1.1 (square gates) in test.

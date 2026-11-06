@@ -50,7 +50,7 @@ for r in repos:
         text = open(os.path.join(ROOT, r, f), encoding="utf-8", errors="replace").read()
         for m in link_re.finditer(text):
             url = (m.group(1) or m.group(2)).strip()
-            if url.startswith("mailto:"):
+            if url.startswith("mailto:") or url.startswith("/_blob/"):  # /_blob/ = Slides deck asset ids (tools/graphics/esri_briefing)
                 continue
             checked += 1
             where = f"{r}/{f}"

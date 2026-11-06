@@ -40,7 +40,7 @@ Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth
 - 🧭 **[Sky Compass](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz)** - giant N / E / S / W letters in the sky around the area.
 - 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
 
-- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** - golden gates from Jacksonville to an Atlanta hub and around the world: New York, London, Paris, Rome, Tokyo, Sydney and Rio, each with a welcome sign and site stars. Fly through them with EarthStick 1.3.2 and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
+- 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** - golden gates from Jacksonville to an Atlanta hub and around the world: New York, London, Paris, Rome, Tokyo, Sydney and Rio, each with a welcome sign and site stars. Fly through them with EarthStick and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
 
 Made with the Object Factory and EarthStick. Make your own with the tools below.
 
@@ -89,7 +89,7 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden gate and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, and (new in 1.3.3) your height, heading and map zoom on screen, even in full-screen mode.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden gate and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, your height, heading and map zoom on screen (1.3.3), and - new in 1.3.4 - square gates, a green ring-height light and a tractor beam that guides you through.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 
@@ -103,7 +103,7 @@ Make your own World Gates: pick any two places and it builds the pair of golden 
 
 [![A World Gate named Home floating over Central Park, New York, at 520 ft](images/world_gate_maker.jpg)](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates)
 
-*A "Home" gate over Central Park, partnered with a "Central Park" gate near home in Jacksonville. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
+*A "Home" gate over Central Park (made with 1.0, when gates were round - 1.1 makes square gates), partnered with a "Central Park" gate near home in Jacksonville. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
 ### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**

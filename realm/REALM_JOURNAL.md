@@ -18,6 +18,7 @@ The adventures will be **released together as packages**: one download, many rea
 | Block | What it does | Status |
 |---|---|---|
 | World Gates | Fly through a gold gate and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02; current pack v21 in 1.3.4) |
+| Virtual worlds (picture worlds) | Any picture made with Rasta Pyramid Factory becomes a place on the globe (flat pictures park at 30 N 80 W, every pixel has a fixed lat/lon); gates, beacons and objects can be placed on it like on the real map | Works now (Rasta v0.1.3 proven; gates via World Gate Maker with ground elev 0) - first flight pending |
 | Square gates with legs | Gate drawn as a square with four legs running back: the mouth and the way it points show at a glance from any angle | Released (World Gates v21, EarthStick 1.3.4; World Gate Maker 1.1, 2026-11-05) |
 | Ring-height light + tractor beam | Green RING HEIGHT light when level with the gate ahead; within 1.5 km the beam pulls you onto its height (LOCKED ON) | Released (EarthStick 1.3.4) |
 | Hidden gates | A gate file in the Gates folder but not loaded on the map: invisible but armed | Works now (no new code) |
@@ -121,3 +122,4 @@ One gate, a different destination every time: "a mystery gate that would pop you
 - **2026-11-05** - Jim officially endorses **two-handed operation**: joystick in the right hand, regular mouse in the left (clicking stars, popups and menus with the mouse). 'Joystick mouse click is a dead desire.' The trigger is free for flying actions - first candidate, the escape gate.
 - **2026-11-05** - Jim (Iain M. Banks fan): gate to London and find a **GSV in low orbit** while you're a helicopter - plus a **rival heighliner headed to 'Arrakis'**. Logged: built as real 3D geometry in a map file; first test = one big solid box over London.
 - **2026-11-05** - Jim: fly inside giant cityscape pictures made with Rasta Pyramid Factory. Found: Rasta parks flat pictures at 30 N 80 W (Atlantic, ~150 km off Jacksonville) at 1 m per pixel - one World Gate Maker pair gets you there today. Logged as 'the Gallery'.
+- **2026-11-05** - Jim: **"now we can gate people into virtual worlds of our creation."** Rasta turns any picture into a place with real coordinates; World Gates connect the real Earth to it and hop around inside it. A realm no longer has to be on the real map: painted worlds, game maps, historical maps, a class's own drawing - each one a destination behind a gate. Rule as always: our own pictures or openly licensed ones.

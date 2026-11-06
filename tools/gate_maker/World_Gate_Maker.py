@@ -1,10 +1,15 @@
-"""World Gate Maker 1.0 - make your own pair of World Gates for EarthStick (1.3 or later).
+"""World Gate Maker 1.1 - make your own pair of World Gates for EarthStick (1.3 or later).
 
 Jim's idea (2026-11-04): two places (GPS coordinates + name), one height above ground,
 and you get a pair of golden rings: the ring at place 1 takes you to place 2 and the
 ring at place 2 brings you back. Each ring is named for where it takes you and faces
 the other place. Same look as the World Gates pack: gold front, red back, name beside
 the ring with the eye alt to fly at underneath (names only show when you are near).
+
+1.1 (Jim, 2026-11-05): gates are drawn as SQUARES with four legs running back from the corners
+(World Gates v21 look, 'a glass-top side table turned sideways') so the mouth of the gate and
+which way it points show at a glance. The square fits inside the trigger circle (half-side =
+radius / sqrt 2); legs are 1.42 x the radius (320 m on Large, like v21). Gate data unchanged.
 
 The KMZ is saved into EarthStick's Gates folder. Drag the same file onto ArcGIS Earth to
 see the rings, then restart EarthStick (it reads the Gates folder when it starts).
@@ -23,7 +28,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 APP = "World Gate Maker"
-VERSION = "1.0"
+VERSION = "1.1"
 FT = 0.3048
 R = 6371008.8
 GOLD = "ff00d7ff"          # KML aabbggrr for #FFD700
@@ -34,10 +39,11 @@ ALT_LINE_DROP_M = 130.0    # "N ft" line sits this far below the name
 SHOW_NAMES_WITHIN_FT = 20000.0
 LOD_FT_PX = 1_790_000.0    # Object Factory 1.2 calibration (300 m cube)
 GATE_EXIT_M = 300.0        # EarthStick lands you this far past the partner ring
-SIZES = {"Small (100 m)": 50.0, "Medium (250 m)": 125.0, "Large (450 m)": 225.0}   # ring radius in metres
-DEFAULT_SIZE = "Medium (250 m)"
+SIZES = {"Small (70 m)": 50.0, "Medium (180 m)": 125.0, "Large (320 m)": 225.0}   # 1.1: label = square width; value = trigger radius in metres
+DEFAULT_SIZE = "Medium (180 m)"
 DEFAULT_AGL_FT = 500
 MIN_CLEARANCE_M = 15.0     # lowest point of the ring must stay this far above the ground
+LEG_PER_RADIUS = 320.0 / 225.0   # 1.1: legs scale with the gate (Large 225 m radius -> 320 m, as World Gates v21)
 MAX_NAME_CHARS = 18        # longer names wrap onto two lines in ArcGIS Earth
 SETTINGS = Path(__file__).resolve().with_name("World_Gate_Maker_settings.json")
 
@@ -171,22 +177,22 @@ def make_pair(name1, lat1, lon1, elev1_ft, name2, lat2, lon2, elev2_ft, agl_ft, 
     if not name1 or not name2:
         raise ValueError("Give both places a name.")
     if name1.lower() == name2.lower():
-        raise ValueError("The two places need different names (each ring is named for where it takes you).")
+        raise ValueError("The two places need different names (each gate is named for where it takes you).")
     validate_lat_lon(lat1, lon1)
     validate_lat_lon(lat2, lon2)
     if not radius_m > 0:
-        raise ValueError("Choose a ring size.")
+        raise ValueError("Choose a gate size.")
     if not -1500 <= elev1_ft <= 30000 or not -1500 <= elev2_ft <= 30000:
         raise ValueError("Ground elev looks wrong - use the 'elev' number (feet) from ArcGIS Earth's status bar.")
     min_agl_ft = math.ceil((radius_m + MIN_CLEARANCE_M) / FT / 10) * 10
     if agl_ft < min_agl_ft:
-        raise ValueError(f"Height above ground must be at least {min_agl_ft:,} ft for this ring size, "
-                         f"or the bottom of the ring would touch the ground.")
+        raise ValueError(f"Height above ground must be at least {min_agl_ft:,} ft for this gate size, "
+                         f"or the bottom of the gate would touch the ground.")
     d = distance_m(lat1, lon1, lat2, lon2)
     min_d = 2 * radius_m + GATE_EXIT_M + 200
     if d < min_d:
         raise ValueError(f"The places are only {d:,.0f} m apart - they must be at least {min_d:,.0f} m apart "
-                         f"for this ring size.")
+                         f"for this gate size.")
     alt1 = (elev1_ft + agl_ft) * FT
     alt2 = (elev2_ft + agl_ft) * FT
     face1 = bearing(lat1, lon1, lat2, lon2)          # ring at place 1 faces place 2
@@ -202,6 +208,37 @@ def make_pair(name1, lat1, lon1, elev1_ft, name2, lat2, lon2, elev2_ft, agl_ft, 
         if len(n) > MAX_NAME_CHARS:
             notes.append(f"'{n}' is long - ArcGIS Earth may split it onto two lines (keep names to {MAX_NAME_CHARS} characters)")
     return [g1, g2], notes
+
+
+def _gate_pt(g, along_m, side_m, up_m):
+    """Point relative to the gate centre: along = flight direction (+ = exit side), side = right as seen
+    from the gold side, up = above the centre."""
+    la, lo = g["lat"], g["lon"]
+    if along_m:
+        la, lo = dest(la, lo, g["facing"] if along_m > 0 else (g["facing"] + 180) % 360, abs(along_m))
+    if side_m:
+        la, lo = dest(la, lo, (g["facing"] + 90) % 360 if side_m > 0 else (g["facing"] + 270) % 360, abs(side_m))
+    return f"{lo:.7f},{la:.7f},{g['alt_m'] + up_m:.1f}"
+
+
+def _ls(coords):
+    return f"<LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{' '.join(coords)}</coordinates></LineString>"
+
+
+def _square_corners(g):
+    a = g["radius_m"] / math.sqrt(2.0)     # the square fits inside the trigger circle
+    return [(-a, a), (a, a), (a, -a), (-a, -a)]
+
+
+def _square_geoms(g, behind_m=0.0, legs=True):
+    """Gold square frame facing the approach + four legs straight back from the corners: lined up,
+    the legs make an even X; high, low or to one side, they lean and show which way to move."""
+    c = _square_corners(g)
+    out = _ls([_gate_pt(g, behind_m, s, u) for s, u in c + c[:1]])
+    if legs:
+        leg_m = g["radius_m"] * LEG_PER_RADIUS
+        out += "".join(_ls([_gate_pt(g, 0, s, u), _gate_pt(g, leg_m, s, u)]) for s, u in c)
+    return out
 
 
 def _ring_coords(g, step=5, behind_m=0.0):
@@ -228,7 +265,7 @@ def _gate_placemark(g):
     <styleUrl>#gate</styleUrl>
     <ExtendedData><Data name="gate"><value>1</value></Data>{ext}</ExtendedData>
     <MultiGeometry>
-      <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g)}</coordinates></LineString>
+      {_square_geoms(g)}
     </MultiGeometry>
   </Placemark>'''
 
@@ -237,7 +274,7 @@ def _back_placemark(g):
     return f'''  <Placemark>
     <name>{escape(g["name"])} (back)</name>
     <styleUrl>#gateBack</styleUrl>
-    <LineString><tessellate>0</tessellate><altitudeMode>absolute</altitudeMode><coordinates>{_ring_coords(g, behind_m=BACK_OFFSET_M)}</coordinates></LineString>
+    {_square_geoms(g, behind_m=BACK_OFFSET_M, legs=False)}
   </Placemark>'''
 
 
@@ -359,7 +396,7 @@ def run_gui():
     outer = ttk.Frame(root, padding=12)
     outer.pack(fill="both", expand=True)
     ttk.Label(outer, text="World Gate Maker", font=("Segoe UI", 16, "bold")).grid(row=0, column=0, sticky="w")
-    ttk.Label(outer, text=f"v{VERSION}  -  two places, two golden rings: fly through one, come out at the other",
+    ttk.Label(outer, text=f"v{VERSION}  -  two places, two golden gates: fly through one, come out at the other",
               font=("Segoe UI", 9)).grid(row=0, column=1, sticky="w", padx=8)
 
     places = []
@@ -401,7 +438,7 @@ def run_gui():
     size = tk.StringVar(value=DEFAULT_SIZE)
     ttk.Label(opts, text="Height above ground (ft)").grid(row=0, column=0, sticky="w")
     ttk.Entry(opts, textvariable=agl, width=10).grid(row=0, column=1, sticky="w", padx=6)
-    ttk.Label(opts, text="Ring size").grid(row=0, column=2, sticky="w", padx=(20, 4))
+    ttk.Label(opts, text="Gate size").grid(row=0, column=2, sticky="w", padx=(20, 4))
     for i, s in enumerate(SIZES):
         ttk.Radiobutton(opts, text=s, value=s, variable=size).grid(row=0, column=3 + i, sticky="w", padx=4)
 
@@ -452,9 +489,9 @@ def run_gui():
         g1, g2 = gates
         status.set(f"Saved {out.name} ({'; '.join(notes)}).")
         messagebox.showinfo(APP, f"Saved {out.name} in\n{folder}\n\n"
-                            f"At {n1}: ring '{g1['name']}' - fly through at eye alt {round(g1['alt_m'] / FT / 10) * 10:,} ft.\n"
-                            f"At {n2}: ring '{g2['name']}' - fly through at eye alt {round(g2['alt_m'] / FT / 10) * 10:,} ft.\n\n"
-                            "1. Drag the file onto ArcGIS Earth to see the rings.\n"
+                            f"At {n1}: gate '{g1['name']}' - fly through at eye alt {round(g1['alt_m'] / FT / 10) * 10:,} ft.\n"
+                            f"At {n2}: gate '{g2['name']}' - fly through at eye alt {round(g2['alt_m'] / FT / 10) * 10:,} ft.\n\n"
+                            "1. Drag the file onto ArcGIS Earth to see the gates.\n"
                             "2. Restart EarthStick (it reads the Gates folder when it starts).\n"
                             "3. Fly through the gold side.\n\n" + "\n".join(notes))
 
@@ -503,6 +540,16 @@ def selftest():
                if pm.find("k:ExtendedData", ns) is not None]
         check("two gate placemarks with gate data", len(pms) == 2)
         check("two red backs and two near-only name folders", kml.count("(back)</name>") == 2 and kml.count("<Region>") == 2)
+        lines = [pm.findall(".//k:LineString", ns) for pm in pms]
+        check("each gate = square + 4 legs", all(len(ls) == 5 for ls in lines))
+        sq = [c.split(",") for c in lines[0][0].find("k:coordinates", ns).text.split()]
+        half = max(distance_m(g1["lat"], g1["lon"], float(p[1]), float(p[0])) for p in sq)
+        check("square corners inside the trigger circle", half <= g1["radius_m"] + 0.5)
+        leg = [c.split(",") for c in lines[0][1].find("k:coordinates", ns).text.split()]
+        d_leg = distance_m(float(leg[0][1]), float(leg[0][0]), float(leg[1][1]), float(leg[1][0]))
+        check("legs 1.42 x radius, on the exit side", abs(d_leg - 125.0 * LEG_PER_RADIUS) < 1.0
+              and distance_m(float(leg[1][1]), float(leg[1][0]), g2["lat"], g2["lon"])
+              < distance_m(float(leg[0][1]), float(leg[0][0]), g2["lat"], g2["lon"]))
     print("\nAll checks passed." if ok else "\nSOME CHECKS FAILED.")
     return 0 if ok else 1
 

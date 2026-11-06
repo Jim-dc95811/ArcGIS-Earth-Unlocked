@@ -18,7 +18,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 **⬇️ [Download EarthStick v1.3.4 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.4.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
 
-**🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of rings between them.
+**🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.1.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
 
 ## The project pages
 
@@ -95,11 +95,11 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and i
 
 *Flying low over the St. Johns River with a beacon and sky compass on the horizon. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/EarthStick).*
 
-### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.0](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.0.zip)**
+### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/world_gate_maker_whats_in_the_zip_full.png)**
 
-Make your own World Gates: pick any two places and it builds the pair of golden rings between them for EarthStick.
+Make your own World Gates: pick any two places and it builds the pair of golden gates between them for EarthStick.
 
 [![A World Gate named Home floating over Central Park, New York, at 520 ft](images/world_gate_maker.jpg)](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates)
 

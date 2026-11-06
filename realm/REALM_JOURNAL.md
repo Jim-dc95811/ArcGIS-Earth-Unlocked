@@ -16,13 +16,13 @@ The adventures will be **released together as packages**: one download, many rea
 | Block | What it does | Status |
 |---|---|---|
 | World Gates | Fly through a gold gate and jump to its partner or a fixed spot | Released (EarthStick 1.3, 2026-11-02; current pack v21 in 1.3.4) |
-| Square gates with legs | Gate drawn as a square with four legs running back: the mouth and the way it points show at a glance from any angle | Released (World Gates v21, EarthStick 1.3.4, 2026-11-05); World Gate Maker 1.1 in test |
+| Square gates with legs | Gate drawn as a square with four legs running back: the mouth and the way it points show at a glance from any angle | Released (World Gates v21, EarthStick 1.3.4; World Gate Maker 1.1, 2026-11-05) |
 | Ring-height light + tractor beam | Green RING HEIGHT light when level with the gate ahead; within 1.5 km the beam pulls you onto its height (LOCKED ON) | Released (EarthStick 1.3.4) |
 | Hidden gates | A gate file in the Gates folder but not loaded on the map: invisible but armed | Works now (no new code) |
 | Welcome signs | Floating text far out in the sky ahead of an arrival point, shown only when near | Released (World Gates v14; sky layout v19) |
 | Site stars + beacons | Click a star: a coloured beacon goes up over a site (popup script -> Automation API) | Released (World Gates v14) |
 | City Beacons | Double-click to jump straight to a place | Released (EarthStick 1.3.1) |
-| World Gate Maker | Make a two-way gate pair between any two places | Released (v1.0, 2026-11-04) |
+| World Gate Maker | Make a two-way gate pair between any two places | Released (v1.0, 2026-11-04; v1.1 square gates 2026-11-05) |
 | Live camera objects | Popup shows a live, refreshing traffic camera | Proven (Object Factory) |
 | Viewer model | Predicts exactly where anything appears on Jim's screen (78 deg view, label offsets) and flags overlaps before flying | `tools/preview_view.py` (2026-11-04) |
 

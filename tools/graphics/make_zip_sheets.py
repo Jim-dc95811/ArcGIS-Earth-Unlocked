@@ -40,8 +40,8 @@ ICONS = {
            '<g stroke="#9fb8d4" stroke-width="4" stroke-linecap="round"><path d="M34 46 h52"/><path d="M34 58 h40"/></g>',
     # a map file to drag onto ArcGIS Earth: page with a globe and a pin
     "kmz": FILE + globe(62, 78, 28) + '<path d="M88 52 a10 10 0 1 1 0.1 0 z" fill="#e8322b" stroke="#fff" stroke-width="2"/><path d="M88 62 l0 14" stroke="#e8322b" stroke-width="4"/>',
-    # a ring pair (gates)
-    "gates": FILE + '<ellipse cx="62" cy="76" rx="16" ry="24" fill="none" stroke="#ffd400" stroke-width="7"/><ellipse cx="62" cy="76" rx="16" ry="24" fill="none" stroke="#7a5600" stroke-width="2"/>'
+    # a square gate with legs (World Gates v21 / World Gate Maker 1.1)
+    "gates": FILE + '<path d="M50 66 l-10 -10 M74 66 l10 -10 M50 90 l-10 10 M74 90 l10 10" stroke="#e0a800" stroke-width="5" stroke-linecap="round"/><rect x="50" y="66" width="24" height="24" fill="none" stroke="#ffd400" stroke-width="7"/><rect x="50" y="66" width="24" height="24" fill="none" stroke="#7a5600" stroke-width="1.5"/>'
              '<path d="M28 78 h14 M82 78 h14" stroke="#12325a" stroke-width="4" stroke-linecap="round"/><path d="M90 72 l7 6 l-7 6" fill="none" stroke="#12325a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
     # pictures folder
     "folder_pics": FOLDER + '<g stroke="#0b1d33" stroke-width="2"><rect x="22" y="58" width="24" height="24" rx="4" fill="#e8322b"/><rect x="52" y="58" width="24" height="24" rx="4" fill="#2a7fd4"/><rect x="82" y="58" width="24" height="24" rx="4" fill="#3cc76a"/>'
@@ -103,14 +103,14 @@ SHEETS = {
         sub="After you <y>Extract All</y> the zip, you get two files. Here is what each one does - and what it makes for you.",
         cards=[
             ("go", "START HERE · DOUBLE-CLICK", ["World_Gate_Maker.bat"], "Opens the gate maker",
-             "Double-click it. A window opens: type two places, how high the rings float and how big they are, then press <b>MAKE GATES</b>."),
+             "Double-click it. A window opens: type two places, how high the gates float and how big they are, then press <b>MAKE GATES</b>."),
             ("py", "LEAVE IT ALONE", ["World_Gate_Maker.py"], "The program itself",
              "The .bat runs it for you, so you <b>never open it</b>. On some PCs it looks like a blank page - that's normal. Keep it next to the .bat."),
             ("gates", "MADE FOR YOU", ["Gate_Home_Central_Park.kmz"], "Your new pair of gates",
-             "Saved into EarthStick's <b>Gates</b> folder (it asks you to pick that folder the first time). <b>Drag it onto the map</b> to see the rings, then <b>restart EarthStick</b> to fly them.", "out"),
+             "Saved into EarthStick's <b>Gates</b> folder (it asks you to pick that folder the first time). <b>Drag it onto the map</b> to see the square gates, then <b>restart EarthStick</b> to fly them.", "out"),
         ],
         tips=[("new", "<b>A new file may appear:</b> <m>World_Gate_Maker_settings.json</m>. It just remembers your Gates folder. Leave it."),
-              ("earth", "<b>Needs EarthStick 1.3 or later</b> to fly through the gates. The rings can be seen in ArcGIS Earth by anyone."),
+              ("earth", "<b>Needs EarthStick 1.3 or later</b> to fly through the gates. The gates can be seen in ArcGIS Earth by anyone."),
               WARN]),
 
     "object_factory": dict(

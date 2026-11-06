@@ -8,8 +8,9 @@ mock ArcGIS Earth API (camera GET/PUT + POST /arcgisearth/layer):
   1. hover at the start, press Button 2           -> mark 1
   2. the camera is moved 3 km along the heading (as if flown with the mouse), Button 2 again
                                                   -> Dropped_Gate_01.kmz written, armed, layer request sent
-  3. the camera is put 500 m before mark 1, flying toward mark 2, full throttle forward
-                                                  -> exactly one jump, landing 300 m past the gate at mark 2
+  3. the camera is put 500 m before mark 1, flying the way it looked at mark 1
+                                                  -> exactly one jump, landing 300 m past mark 2 looking the way
+                                                     it looked at mark 2 (TEST2: gates face the pilot's heading)
 """
 import json, math, os, shutil, sys, tempfile, threading, types
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -138,7 +139,9 @@ jumps = [i for i in range(1, len(Earth.puts)) if abs(Earth.puts[i]["position"]["
 check("exactly one jump while flying through", len(jumps) == 1, jumps)
 if jumps:
     j = Earth.puts[jumps[0]]["position"]
-    land_lon, land_lat = es.move_lonlat(lon2, lat2, 90.0, 300.0, 0.0)
-    check("landed 300 m past the gate at mark 2, at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
+    land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 300.0, 0.0)          # TEST2: past mark 2 the way you looked there
+    check("landed 300 m past mark 2 (the way you looked there), at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
+    check("looking the way you looked when you marked it (270)", abs(Earth.puts[jumps[0]]["heading"] - 270.0) < 1e-6, Earth.puts[jumps[0]]["heading"])
+check("gate at mark 1 faces the way you looked there (90)", ga and abs(ga["facing"] - 90.0) < 1e-6, ga and ga["facing"])
 print("ALL PASS" if ok else "FAILURES")
 shutil.rmtree(tmp)

@@ -101,9 +101,9 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and i
 
 Make your own World Gates: pick any two places and it builds the pair of golden gates between them for EarthStick.
 
-[![A World Gate named Home floating over Central Park, New York, at 520 ft](images/world_gate_maker.jpg)](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates)
+[![A square World Gate named jax seen from the side over Seattle: the gold square and its legs make a box that points the way in](images/world_gate_maker_v1.1_seattle.jpg)](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates)
 
-*A "Home" gate over Central Park (made with 1.0, when gates were round - 1.1 makes square gates), partnered with a "Central Park" gate near home in Jacksonville. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
+*Jacksonville to Seattle and back with World Gate Maker 1.1: the "jax" gate home, seen from the side in Seattle - the legs show the way in at a glance. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
 ### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**

@@ -172,18 +172,12 @@ SHEETS = {
 
     "picture_world_maker": dict(
         repo="Picture-World-Maker", title="What's in the Picture World Maker folder?",
-        sub="After you <y>Extract All</y> the zip, you get these. Here is what each one does - and what it makes for you.",
+        sub="After you <y>Extract All</y> the zip, you get just two things. Here is what each one does - and what it makes for you.",
         cards=[
             ("go", "START HERE · DOUBLE-CLICK", ["Start Picture World Maker.bat"], "Opens Picture World Maker",
              "Choose a giant picture, pick TPKX or MBTiles, press <b>BUILD RASTER PYRAMID</b>. The first time, it installs the Pillow helper by itself."),
-            ("go", "RUN ONCE", ["Run Picture World Maker Self Test.bat"], "Checks everything works",
-             "Run it once after extracting. It should end with <b>SELF TEST PASSED</b>."),
-            ("txt", "READ ME", ["README - START HERE.txt"], "The short version",
-             "What you need (Python 3.14; QGIS 3.44.9 only for real map rasters) and the steps, in one page.", "read"),
-            ("go", "OTHER WAY TO START", ["START PICTURE WORLD MAKER.pyw"], "Same window, no black box",
-             "The .bat uses this. Double-click it directly if the .bat ever won't start.", "alt"),
             ("folder_parts", "LEAVE IT ALONE", ["System Files"], "The engine room",
-             "The program, the photo tiler, the QGIS worker, the TPKX converter and <m>Picture_World_Maker_Config.ini</m>. Keep it next to the other files."),
+             "The program, the photo tiler, the QGIS worker, the TPKX converter and <m>Picture_World_Maker_Config.ini</m>. Keep it next to the .bat."),
             ("tpkx", "MADE FOR YOU", ["your_picture.tpkx", "your_picture.mbtiles"], "Your picture as a map",
              "Saved in the folder you choose. <b>Drag the .tpkx onto ArcGIS Earth</b> - a photo lands on the ocean off Jacksonville, ready to fly over.", "out"),
         ],

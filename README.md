@@ -20,6 +20,14 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.1.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
 
+## 🆕 New: Picture worlds - fly into giant photographs
+
+**[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** turns a giant picture into a map. A photo has no real location, so Rasta parks it on the ocean off Jacksonville with simulated coordinates - then you fly over it and dive in with EarthStick, from the whole panorama down to the people on a cathedral tower. Every spot gets a latitude and longitude, so World Gates can take you into a picture: worlds of our own creation, one gate away.
+
+[![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/rasta_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)
+
+**⬇️ [Download Rasta Pyramid Factory v0.1.6](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/raw/main/releases/Rasta_Pyramid_Factory_v0.1.6.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/USER_MANUAL.md)
+
 ## The project pages
 
 This family of projects has **7 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:

@@ -22,7 +22,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 ## The project pages
 
-This family of projects has **6 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
+This family of projects has **7 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
 
 1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
 2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
@@ -30,6 +30,7 @@ This family of projects has **6 pages**, one for each part. Each page has its ow
 4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
 6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
+7. **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** - turn giant pictures into maps you can fly into
 
 ## Try it in 2 minutes - no Python needed
 
@@ -84,6 +85,16 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 [![The Batch Factory window inside ArcGIS Pro.](images/batch_factory.jpg)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
+
+### **⬇️ [DOWNLOAD RASTA PYRAMID FACTORY v0.1.6](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/raw/main/releases/Rasta_Pyramid_Factory_v0.1.6.zip)**
+**📖 [User manual](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/USER_MANUAL.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/images/rasta_whats_in_the_zip_full.png)**
+
+Turn a giant picture - a city panorama, a drone map, a scanned map - into a zoomable TPKX or MBTiles map, built by QGIS behind the scenes.
+
+[![A London panorama photo made with Rasta, lying flat on the Atlantic off Jacksonville in ArcGIS Earth at 29.99 N, 80.05 W, elevation 0 ft](images/rasta_pyramid_factory.jpg)](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)
+
+*A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Rasta parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory).*
 
 ### **⬇️ [DOWNLOAD EARTHSTICK v1.3.4](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
@@ -157,11 +168,13 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 | Put beacons, sky objects, icons, information, or object sets into Earth | [ArcGIS Earth Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory) |
 | Turn public ArcGIS point services into offline KMZ/GeoJSON layers | [Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps) |
 | Build offline clickable parcel layers | [Parcel100](https://github.com/Jim-dc95811/Parcel100) |
+| Turn a giant picture into a map I can fly into | [Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory) |
 
 ## How the pieces fit
 
 ```text
 Foundation maps  -> what the world looks like      MBTiles converter, Master 4, Batch Factory
+Picture worlds   -> giant pictures as places       Rasta Pyramid Factory
 Operational data -> what databases know about it   PointLayer, Parcel100
 EarthStick       -> how you move through it
 World Gates      -> where you can jump to          World Gates pack, World Gate Maker

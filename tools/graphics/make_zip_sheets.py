@@ -170,6 +170,27 @@ SHEETS = {
               ("net", "<b>Internet is needed only while it builds.</b> The parcel files work offline."),
               WARN]),
 
+    "rasta": dict(
+        repo="Rasta-Pyramid-Factory", title="What's in the Rasta Pyramid Factory folder?",
+        sub="After you <y>Extract All</y> the zip, you get these. Here is what each one does - and what it makes for you.",
+        cards=[
+            ("go", "START HERE · DOUBLE-CLICK", ["Start Rasta Pyramid Factory.bat"], "Opens the factory",
+             "Choose a giant picture, pick TPKX or MBTiles, press <b>BUILD RASTER PYRAMID</b>. Close QGIS first if it is open."),
+            ("go", "RUN ONCE", ["Run Rasta Self Test.bat"], "Checks everything works",
+             "Run it once after extracting. It should end with <b>SELF TEST PASSED</b>."),
+            ("txt", "READ ME", ["README - START HERE.txt"], "The short version",
+             "What you need (Python 3.14, QGIS 3.44.9) and the steps, in one page.", "read"),
+            ("go", "OTHER WAY TO START", ["START RASTA PYRAMID FACTORY.pyw"], "Same window, no black box",
+             "The .bat uses this. Double-click it directly if the .bat ever won't start.", "alt"),
+            ("folder_parts", "LEAVE IT ALONE", ["System Files"], "The engine room",
+             "The program, the QGIS worker, the TPKX converter and <m>Rasta_Config.ini</m> (where QGIS lives). Keep it next to the other files."),
+            ("tpkx", "MADE FOR YOU", ["your_picture.tpkx", "your_picture.mbtiles"], "Your picture as a map",
+             "Saved in the folder you choose. <b>Drag the .tpkx onto ArcGIS Earth</b> - a photo lands on the ocean off Jacksonville, ready to fly over.", "out"),
+        ],
+        tips=[("clock", "<b>Big pictures take minutes.</b> The moving heartbeat shows it is working - about 9 minutes for a 50,000 px wide photo."),
+              ("plug", "<b>Needs free space on C:</b> about 10 GB per billion pixels while it builds; it cleans up afterwards."),
+              WARN]),
+
     "mb2tpkx": dict(
         repo="QGIS-Mbtile-to-ArcGIS-Earth-TPKX", title="What's in the MBTiles -> TPKX folder?",
         sub="After you <y>Extract All</y> the zip, you get two files. Here is what each one does - and what it makes for you.",

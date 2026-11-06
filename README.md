@@ -1,5 +1,7 @@
 # ArcGIS Earth Unlocked
 
+**ArcGIS Earth has no offline map-making pipeline, no joystick flight, no way to travel city to city, no easy object authoring and no picture worlds.**
+
 Free Windows tools for building offline maps, flying the map with a joystick, adding parcels, hydrants and other public data, placing your own objects, and tracking units live, all inside **ArcGIS Earth**.
 
 ## The 7 project pages

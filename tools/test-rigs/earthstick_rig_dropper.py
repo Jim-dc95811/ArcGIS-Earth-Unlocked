@@ -8,6 +8,7 @@ mock ArcGIS Earth API (camera GET/PUT + POST /arcgisearth/layer):
   1. hover at the start, press Button 2           -> mark 1
   2. the camera is moved 3 km along the heading (as if flown with the mouse), Button 2 again
                                                   -> Dropped_Gate_01.kmz written, armed, layer request sent
+  4. Button 2 held 2.5 s (TEST4)          -> file deleted, gates disarmed, map layer removed
   3. the camera is put 500 m before mark 1, flying the way it looked at mark 1
                                                   -> exactly one jump, landing 300 m past mark 2 looking the way
                                                      it looked at mark 2 (TEST2: gates face the pilot's heading)
@@ -31,7 +32,7 @@ class StopTest(BaseException):
 class Earth:
     camera = {"position": {"x": -80.0, "y": 30.0, "z": 152.4, "spatialReference": {"wkid": 4326}},
               "heading": 90.0, "tilt": 80.0, "roll": 0.0}
-    puts, layers = [], []
+    puts, layers, deletes = [], [], []
 
 
 class H(BaseHTTPRequestHandler):
@@ -47,6 +48,9 @@ class H(BaseHTTPRequestHandler):
     def do_PUT(self):
         n = int(self.headers.get("Content-Length") or 0)
         Earth.camera = json.loads(self.rfile.read(n)); Earth.puts.append(Earth.camera); self._send(200)
+
+    def do_DELETE(self):
+        Earth.deletes.append(self.path); self._send(200, {})
 
     def do_POST(self):
         n = int(self.headers.get("Content-Length") or 0)
@@ -87,6 +91,14 @@ def at(lat, lon, z, heading):
 lon2, lat2 = es.move_lonlat(-80.0, 30.0, 90.0, 3000.0, 0.0)          # mark 2: 3 km east
 lon0, lat0 = es.move_lonlat(-80.0, 30.0, 90.0, -500.0, 0.0)          # 500 m before mark 1
 B2 = 1 << 1
+SNAP = os.path.join(tmp, "snapshot")
+
+
+def snapshot():
+    os.makedirs(SNAP, exist_ok=True)
+    src = os.path.join(tmp, "Gates", "Dropped_Gate_01.kmz")
+    if os.path.exists(src):
+        shutil.copy(src, SNAP)
 
 
 def script():
@@ -94,8 +106,10 @@ def script():
     segs = [(20, S()), (5, S(btn=B2)), (40, S()),
             (1, S(act=lambda: setattr(Earth, "camera", at(lat2, lon2, 300.0, 270.0)))), (30, S()),
             (5, S(btn=B2)), (40, S()),
+            (1, S(act=snapshot)),                                             # keep a copy (TEST4 undo deletes it later)
             (1, S(act=lambda: setattr(Earth, "camera", at(lat0, lon0, 152.4, 90.0)))), (30, S()),
-            (90, S(fwd=1.0, thr=1.0)), (30, S())]
+            (90, S(fwd=1.0, thr=1.0)), (30, S()),
+            (75, S(btn=B2)), (30, S())]                                       # TEST4: hold Button 2 2.5 s = undo
     for n, (st, act) in segs:
         for i in range(n):
             if act and i == 0:
@@ -128,11 +142,11 @@ def check(name, cond, detail=""):
 text = "".join(printed)
 kmz = os.path.join(tmp, "Gates", "Dropped_Gate_01.kmz")
 check("mark 1 message", "MARK 1 SAVED" in text)
-check("gate file written into Gates", os.path.isfile(kmz))
+check("gate file written into Gates", os.path.isfile(os.path.join(SNAP, "Dropped_Gate_01.kmz")))
 check("written and armed message", "Dropped_Gate_01.kmz written and armed (2 gates armed)" in text, [l for l in printed if "Gate Dropper" in l])
 check("one layer request, KML, path of the file", len(Earth.layers) == 1 and Earth.layers[0]["type"] == "KML"
       and Earth.layers[0]["URI"].endswith("Dropped_Gate_01.kmz"), Earth.layers)
-gates, problems = es.load_gates(os.path.join(tmp, "Gates"))
+gates, problems = es.load_gates(SNAP)
 ga = next((g for g in gates if g["name"] == "Drop 01 B"), None)
 glon, glat = es.move_lonlat(-80.0, 30.0, 90.0, 500.0, 0.0)                        # TEST3: 500 m in front of mark 1
 check("gate at mark 1 = 500 m ahead, at hover height", ga and abs(ga["lat"] - glat) < 1e-6 and abs(ga["lon"] - glon) < 1e-5 and abs(ga["alt_m"] - 152.4) < 0.01, ga)
@@ -144,5 +158,8 @@ if jumps:
     check("landed 300 m past the gate ahead of mark 2 (the way you looked there), at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
     check("looking the way you looked when you marked it (270)", abs(Earth.puts[jumps[0]]["heading"] - 270.0) < 1e-6, Earth.puts[jumps[0]]["heading"])
 check("gate at mark 1 faces the way you looked there (90)", ga and abs(ga["facing"] - 90.0) < 1e-6, ga and ga["facing"])
+check("hold Button 2: file deleted", not os.path.exists(kmz))
+check("hold Button 2: map layer removed (DELETE /arcgisearth/layer/x)", Earth.deletes == ["/arcgisearth/layer/x"], Earth.deletes)
+check("hold Button 2: gates disarmed", "Dropped_Gate_01.kmz deleted and disarmed (0 gates armed)" in text, [l for l in printed if "deleted" in l])
 print("ALL PASS" if ok else "FAILURES")
 shutil.rmtree(tmp)

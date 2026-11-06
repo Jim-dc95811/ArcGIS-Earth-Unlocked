@@ -15,7 +15,7 @@ Base URL: `http://localhost:8000` (Settings > Advanced > Automation API). Local 
 | Drawings | `DELETE /arcgisearth/drawings`, `DELETE /arcgisearth/drawings/{id}` | clear all / delete one | **Proven** (tracker) |
 | Graphics | `POST /arcgisearth/graphics`, `GET`/`PATCH`/`DELETE /arcgisearth/graphics/{id}` | temporary graphics; PATCH updates in place | Documented |
 | Layers | `POST /arcgisearth/layer` | add a layer by `URI` (or `URIs`) with optional `target` and `type` | Documented |
-| Layers | `GET`/`DELETE /arcgisearth/layer/{id}`, `DELETE /arcgisearth/layers/{target}` | load status / remove one / clear a target | Documented |
+| Layers | `GET`/`DELETE /arcgisearth/layer/{id}`, `DELETE /arcgisearth/layers/{target}` | load status / remove one / clear a target | **POST /arcgisearth/layer (KML) and DELETE /arcgisearth/layer/{id} PROVEN** on ArcGIS Earth 3.0.1 (EarthStick 1.3.6 Gate Dropper, 2026-11-06: add shows in My Data, delete removes it); clear-a-target documented |
 | Workspace | `GET`/`PUT`/`DELETE /arcgisearth/workspace` | export as .zip / import / clear | Documented |
 | Snapshot | `GET /arcgisearth/snapshot` | image of the current view | Documented |
 

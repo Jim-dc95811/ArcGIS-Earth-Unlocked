@@ -1,0 +1,26 @@
+<section id="data" data-transition="fade" style="background:#F6F3EC;color:#14213D;font-family:'Inter', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;color:#8A5A00;letter-spacing:3px;text-transform:uppercase">5 · Public data and tracking</p>
+<h2 style="font-family:'Poppins', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.1;color:#14213D">Public data and live units, offline</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFDF8;border:1px solid #E2DCCB;border-radius:16px;padding:32px">
+<img src="/_blob/7327f9f9c1ffdab823d36dc03f2d966d" alt="Fire hydrants downloaded with PointLayer shown in ArcGIS Earth" style="width:468px;height:263px;object-fit:cover;border-radius:12px">
+<h3 style="font-family:'Poppins', Arial, sans-serif;font-size:40px;font-weight:700;color:#14213D">PointLayer</h3>
+<p style="font-size:30px;line-height:1.35;color:#3E4A5C">30,688 published hydrants in one county, saved as one offline KMZ</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFDF8;border:1px solid #E2DCCB;border-radius:16px;padding:32px">
+<img src="/_blob/f8865d78cfbbf0fde437c2694bb6cf8d" alt="Clickable property parcels from Parcel100 in ArcGIS Earth" style="width:468px;height:263px;object-fit:cover;border-radius:12px">
+<h3 style="font-family:'Poppins', Arial, sans-serif;font-size:40px;font-weight:700;color:#14213D">Parcel100</h3>
+<p style="font-size:30px;line-height:1.35;color:#3E4A5C">Click any parcel for owner and address</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#FFFDF8;border:1px solid #E2DCCB;border-radius:16px;padding:32px">
+<img src="/_blob/17597f6d3f00ef68ab21b1771c557f14" alt="Radio units tracked live on the map with the PRAVE/ME Tracker" style="width:468px;height:263px;object-fit:cover;border-radius:12px">
+<h3 style="font-family:'Poppins', Arial, sans-serif;font-size:40px;font-weight:700;color:#14213D">PRAVE/ME Tracker</h3>
+<p style="font-size:30px;line-height:1.35;color:#3E4A5C">Radio GPS units drawn live on the map</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1000px;font-size:24px;color:#6B7486">ArcGIS Earth Unlocked</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#6B7486">9</p>
+<aside>PointLayer pulls a whole public ArcGIS point layer, with completeness checks, and writes an offline KMZ with level-of-detail settings: 3,250 features in Nassau County, 30,688 in Duval. Parcel100 fills the same 100-cell Master 4 grid with clickable parcel GeoJSON from Florida’s statewide parcel service. The PRAVE/ME Tracker reads radio GPS reports from a serial port and draws each unit through the Automation API, with signal strength shown on the icon.</aside>
+</section>

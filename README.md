@@ -24,6 +24,8 @@ Each page has its own downloads, user manuals, pictures and videos:
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
+📊 **[Briefing for Esri (PDF)](site/ArcGIS_Earth_Unlocked_Briefing_for_Esri.pdf)** - the five gaps, how each tool fills one, and what building on ArcGIS Earth taught us.
+
 ## 🆕 New: World Gates - fly city to city through wormholes
 
 [![Arriving in London through World Gates: Welcome to London high in the sky, with five coloured site names above gold stars - Tower Bridge, Tower of London, St Paul's Cathedral, London Eye, Big Ben](images/world_gates_v19.jpg)](https://www.youtube.com/watch?v=2N8-4cWMoPw)

@@ -6,6 +6,22 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 > **The world is already built. We add the maps, movement, data, and objects.**
 
+## The project pages
+
+This family of projects has **7 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
+
+1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
+2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
+3. **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
+4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
+5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
+6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
+7. **[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** - turn giant pictures into maps you can fly into
+
+[![The 7 programs in action: 1 MBTiles to TPKX - QGIS maps offline in ArcGIS Earth; 2 Offline Maps and Tracking - radio units live on the map; 3 EarthStick - fly the world with a joystick; 4 Object Factory - beacons and objects in the sky; 5 PointLayer - hydrants and public points offline; 6 Parcel100 - click a parcel for owner and address; 7 Picture World Maker - fly into giant photographs](images/seven_projects_montage.jpg)](images/seven_projects_montage.jpg)
+
+*The 7 programs in action - the numbers match the list above.*
+
 ## 🆕 New: World Gates - fly city to city through wormholes
 
 [![Arriving in London through World Gates: Welcome to London high in the sky, with five coloured site names above gold stars - Tower Bridge, Tower of London, St Paul's Cathedral, London Eye, Big Ben](images/world_gates_v19.jpg)](https://www.youtube.com/watch?v=2N8-4cWMoPw)
@@ -27,18 +43,6 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 [![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/picture_world_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
 **⬇️ [Download Picture World Maker v0.2.3](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.3.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
-
-## The project pages
-
-This family of projects has **7 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
-
-1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
-2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
-3. **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
-4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
-5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
-6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
-7. **[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** - turn giant pictures into maps you can fly into
 
 ## Try it in 2 minutes - no Python needed
 

@@ -46,7 +46,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 ## Try it in 2 minutes - no Python needed
 
-Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)**, then download any of these and drag it onto the ArcGIS Earth map (or use the **+** Add data button). They are all near Jacksonville, Florida.
+Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)**, download one of these already constructed sample KML/KMZ files the tools make and drag it onto the map (or use the **+** Add data button). They are all near Jacksonville, Florida.
 
 - 📡 **[Live traffic camera](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Live_Traffic_Camera.kmz)** - click the floating camera: a live FL511 traffic camera opens and refreshes every 10 seconds.
 - 🔴 **[Beacon](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Beacon.kmz)** - a tall red beacon you can see and fly to from far away.
@@ -54,6 +54,7 @@ Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth
 - 🚁 **[Object set](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz)** - floating fuel, helicopter, bird, camera and hazard objects; click them for their information.
 
 - 🌐 **[World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** - golden gates from Jacksonville to an Atlanta hub and around the world: New York, London, Paris, Rome, Tokyo, Sydney and Rio, each with a welcome sign and site stars. Fly through them with EarthStick and you arrive at the landmark. ▶️ [Watch the video](https://www.youtube.com/watch?v=2N8-4cWMoPw) (YouTube).
+- 🗽 **[World Gate: Bryceville ↔ Central Park](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gate_Bryceville_Central_Park_v1.kmz)** - one golden gate over Bryceville, Florida, and its partner over Central Park, New York, made with World Gate Maker. Put it in EarthStick's `Gates` folder and fly through: Bryceville to New York and back.
 
 Made with the Object Factory and EarthStick. Make your own with the tools below.
 

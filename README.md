@@ -22,11 +22,11 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 ## 🆕 New: Picture worlds - fly into giant photographs
 
-**[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** turns a giant picture into a map. A photo has no real location, so Rasta parks it on the ocean off Jacksonville with simulated coordinates - then you fly over it and dive in with EarthStick, from the whole panorama down to the people on a cathedral tower. Every spot gets a latitude and longitude, so World Gates can take you into a picture: worlds of our own creation, one gate away.
+**[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** turns a giant picture into a map. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - then you fly over it and dive in with EarthStick, from the whole panorama down to the people on a cathedral tower. Every spot gets a latitude and longitude, so World Gates can take you into a picture: worlds of our own creation, one gate away.
 
-[![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/rasta_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)
+[![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/picture_world_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
-**⬇️ [Download Rasta Pyramid Factory v0.1.6](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/raw/main/releases/Rasta_Pyramid_Factory_v0.1.6.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/USER_MANUAL.md)
+**⬇️ [Download Picture World Maker v0.2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.1.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
 ## The project pages
 
@@ -38,7 +38,7 @@ This family of projects has **7 pages**, one for each part. Each page has its ow
 4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
 6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
-7. **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** - turn giant pictures into maps you can fly into
+7. **[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** - turn giant pictures into maps you can fly into
 
 ## Try it in 2 minutes - no Python needed
 
@@ -94,15 +94,15 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD RASTA PYRAMID FACTORY v0.1.6](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/raw/main/releases/Rasta_Pyramid_Factory_v0.1.6.zip)**
-**📖 [User manual](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/USER_MANUAL.md)**
-**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory/blob/main/docs/images/rasta_whats_in_the_zip_full.png)**
+### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v0.2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.1.zip)**
+**📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
-Turn a giant picture - a city panorama, a drone map, a scanned map - into a zoomable TPKX or MBTiles map, built by QGIS behind the scenes.
+Turn a giant picture - a city panorama, a drone map, a scanned map - into a zoomable TPKX or MBTiles map. Photos need no QGIS: photo mode builds a 50,000-pixel-wide panorama in about a minute.
 
-[![A London panorama photo made with Rasta, lying flat on the Atlantic off Jacksonville in ArcGIS Earth at 29.99 N, 80.05 W, elevation 0 ft](images/rasta_pyramid_factory.jpg)](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)
+[![A London panorama photo made with Picture World Maker, lying flat on the Atlantic off Jacksonville in ArcGIS Earth at 29.99 N, 80.05 W, elevation 0 ft](images/picture_world_maker.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
-*A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Rasta parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory).*
+*A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Picture-World-Maker).*
 
 ### **⬇️ [DOWNLOAD EARTHSTICK v1.3.4](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
@@ -176,13 +176,13 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 | Put beacons, sky objects, icons, information, or object sets into Earth | [ArcGIS Earth Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory) |
 | Turn public ArcGIS point services into offline KMZ/GeoJSON layers | [Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps) |
 | Build offline clickable parcel layers | [Parcel100](https://github.com/Jim-dc95811/Parcel100) |
-| Turn a giant picture into a map I can fly into | [Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory) |
+| Turn a giant picture into a map I can fly into | [Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker) |
 
 ## How the pieces fit
 
 ```text
 Foundation maps  -> what the world looks like      MBTiles converter, Master 4, Batch Factory
-Picture worlds   -> giant pictures as places       Rasta Pyramid Factory
+Picture worlds   -> giant pictures as places       Picture World Maker
 Operational data -> what databases know about it   PointLayer, Parcel100
 EarthStick       -> how you move through it
 World Gates      -> where you can jump to          World Gates pack, World Gate Maker

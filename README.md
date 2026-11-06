@@ -46,7 +46,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 [![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/picture_world_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
-**⬇️ [Download Picture World Maker v0.2.3](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.3.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
+**⬇️ [Download Picture World Maker v0.2.4](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.4.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
 ## Try it in 2 minutes - no Python needed
 
@@ -103,11 +103,11 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v0.2.3](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.3.zip)**
+### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v0.2.4](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 
-Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - into a zoomable TPKX map you can fly into. A 50,000-pixel-wide panorama builds in about a minute. Needs only Python.
+Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - into a zoomable TPKX map you can fly into. A 50,000-pixel-wide panorama builds in about a minute. Needs only Python. New in v0.2.4: 20 World spots on the ocean, so a whole gallery of pictures can sit side by side.
 
 [![A London panorama photo made with Picture World Maker, lying flat on the Atlantic off Jacksonville in ArcGIS Earth at 29.99 N, 80.05 W, elevation 0 ft](images/picture_world_maker.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 

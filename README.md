@@ -174,6 +174,12 @@ ArcGIS Earth     -> the common viewer
 
 **Keep the big maps separate from the changing data.** Imagery packages are built once; parcels, hydrants and objects sit on top as small layers that can be rebuilt any time.
 
+## Human-AI engineering collaboration
+
+Every tool here was conceived, directed and field-tested by **Jim Gaddy** - a fire-service radio and electronics veteran, not a programmer - working with AI coding and documentation partners. **OpenAI's ChatGPT** helped build the first versions of the tools. **Anthropic's Claude** then hardened every script, rebuilt the user manuals and these pages, made the picture guides and 'What's in the zip' sheets, and built the newest work with Jim: EarthStick's trigger-click and readout, **World Gates** with square gates and the tractor beam, World Gate Maker, Object Factory's Hide above, and the self-installing launchers. Each project page says exactly who built what.
+
+This acknowledgment is not a claim of OpenAI or Anthropic sponsorship or endorsement.
+
 ## Independence
 
 These are independent projects. ArcGIS, ArcGIS Pro, and ArcGIS Earth are Esri products and trademarks. These repositories are not Esri products or official Esri distributions.

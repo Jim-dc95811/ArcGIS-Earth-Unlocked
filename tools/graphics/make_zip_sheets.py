@@ -177,11 +177,11 @@ SHEETS = {
             ("go", "START HERE · DOUBLE-CLICK", ["Start Picture World Maker.bat"], "Opens Picture World Maker",
              "Choose a giant picture, pick TPKX or MBTiles, press <b>BUILD RASTER PYRAMID</b>. The first time, it installs the Pillow helper by itself."),
             ("folder_parts", "LEAVE IT ALONE", ["System Files"], "The engine room",
-             "The program, the photo tiler, the QGIS worker, the TPKX converter and <m>Picture_World_Maker_Config.ini</m>. Keep it next to the .bat."),
+             "The program, the photo tiler, the TPKX converter and <m>Picture_World_Maker_Config.ini</m>. Keep it next to the .bat."),
             ("tpkx", "MADE FOR YOU", ["your_picture.tpkx", "your_picture.mbtiles"], "Your picture as a map",
              "Saved in the folder you choose. <b>Drag the .tpkx onto ArcGIS Earth</b> - a photo lands on the ocean off Jacksonville, ready to fly over.", "out"),
         ],
-        tips=[("clock", "<b>Photos need no QGIS</b> (photo mode): about 1 minute for a 50,000 px wide photo. QGIS is only for real map rasters (GeoTIFFs)."),
+        tips=[("clock", "<b>Fast:</b> about 1 minute for a 50,000 px wide photo. Real map files (GeoTIFFs) open straight in ArcGIS Earth - no need to build them."),
               ("plug", "<b>Memory:</b> about 5 bytes per picture pixel - 3 GB for a 600-million-pixel photo. Close other programs for giant ones."),
               WARN]),
 

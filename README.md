@@ -36,9 +36,11 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 *Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 
-**⬇️ [Download EarthStick v1.3.5 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.5.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
+**⬇️ [Download EarthStick v1.3.6 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.6.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.2.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
+
+**🆕 Or drop them as you fly (EarthStick 1.3.6):** press Button 2 at one place and again at another - a pair of thin black gates appears in front of you, no typing. Hold Button 2 to undo. **[How the Gate Dropper works](https://github.com/Jim-dc95811/EarthStick#drop-gates-as-you-fly-new-in-136)**
 
 ## 🆕 New: Picture worlds - fly into giant photographs
 
@@ -113,7 +115,7 @@ Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - in
 
 *A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Picture-World-Maker).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.3.5](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.5.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3.6](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.6.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**
 

@@ -2,7 +2,8 @@
 folder (gate A 1 km ahead of the rig's start, facing the rig's heading; partner B over NYC),
 runs the standard replay script through earthstick_rig.py, and checks the camera stream.
 
-python3 earthstick_rig_wormhole.py <EarthStick.py>
+python3 earthstick_rig_wormhole.py <EarthStick.py> [--system-files]
+  --system-files: EarthStick 1.3.5+ layout - EarthStick.py in "System Files", Gates beside that folder.
 """
 import json, math, os, shutil, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -11,14 +12,16 @@ from make_gate_kmz import gate, write_kmz, dest
 
 src = sys.argv[1]
 tmp = tempfile.mkdtemp()
-shutil.copy(src, os.path.join(tmp, "EarthStick.py"))
+prog_dir = os.path.join(tmp, "System Files") if "--system-files" in sys.argv else tmp
+os.makedirs(prog_dir, exist_ok=True)
+shutil.copy(src, os.path.join(prog_dir, "EarthStick.py"))
 os.mkdir(os.path.join(tmp, "Gates"))
 start = (30.4191, -81.9265); alt = 1500.0
 alat, alon = dest(*start, 30.0, 1000.0)
 write_kmz(os.path.join(tmp, "Gates", "test.kmz"), "test", [
     gate("A", alat, alon, alt, facing=30.0, to="B"),
     gate("B", 40.6892, -74.0445, 457.0, facing=213.2, to="A")])
-out = subprocess.run([sys.executable, os.path.join(HERE, "earthstick_rig.py"), os.path.join(tmp, "EarthStick.py"), "replay"],
+out = subprocess.run([sys.executable, os.path.join(HERE, "earthstick_rig.py"), os.path.join(prog_dir, "EarthStick.py"), "replay"],
                      capture_output=True, text=True).stdout
 res = json.loads(out)
 puts = json.load(open(os.path.join(HERE, f"es_puts_{res['version']}.json")))

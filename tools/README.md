@@ -6,6 +6,7 @@ All of them assume the seven repositories are cloned side by side under `/home/c
 
 | Tool | What it does | Run |
 |---|---|---|
+| `make_release_zip.py` | Builds a release zip in Jim's one-obvious-file layout: one top folder, files copied byte-for-byte, fixed timestamps, no `__pycache__`, refuses any `.bat` that is not CRLF. | `python3 tools/make_release_zip.py releases/Tool_v1.2.zip Tool_v1.2 Tool.bat "System Files"` |
 | `linkcheck.py` | Checks every link in all seven repos: relative files, cross-repo GitHub links (including pinned commits and branches) and `#anchors`. | `python3 tools/linkcheck.py` - only known failures are three links in the preserved `legacy/Earth_Beacon_v1.0/README_original.md` |
 | `check_binaries.py` | Opens every image, PDF, SVG and zip and reports damaged ones. Several uploads were found truncated at about 15 KB. | `python3 tools/check_binaries.py` |
 | `tpkx_compare.py` | Compares two TPKX tile packages layer by layer: zip entries, root.json / iteminfo.json, every bundle header field, the index (missing-tile value), and every tile's bytes. Used to prove Picture World Maker's (then Rasta's) converter v0.3.0 writes exactly what mb2tpkx writes (Jim's London TPKX: 0 differences, bundles byte-identical). | `python3 tools/tpkx_compare.py reference.tpkx candidate.tpkx` |

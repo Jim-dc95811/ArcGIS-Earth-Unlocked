@@ -16,9 +16,9 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 *Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 
-**⬇️ [Download EarthStick v1.3.4 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.4.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
+**⬇️ [Download EarthStick v1.3.5 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.5.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
 
-**🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.1.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
+**🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.2.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
 
 ## 🆕 New: Picture worlds - fly into giant photographs
 
@@ -64,7 +64,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
+### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v1.1.2](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/images/mb2tpkx_whats_in_the_zip_full.png)**
 
@@ -74,7 +74,7 @@ Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
 
 *A converted Bryceville, Florida, map open offline in ArcGIS Earth. ▶️ [Watch the video](https://www.youtube.com/watch?v=C71n8TAByuE) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
-### **⬇️ [DOWNLOAD MASTER 4 GRID MAKER v3.1.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip)**
+### **⬇️ [DOWNLOAD MASTER 4 GRID MAKER v3.1.2](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/Master4_Grid_Maker_User_Manual.pdf)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/images/master4_grid_maker_whats_in_the_zip_full.png)**
 
@@ -104,7 +104,7 @@ Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - in
 
 *A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Picture-World-Maker).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.3.4](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.4.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3.5](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.5.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**
 
@@ -114,7 +114,7 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. Let go and i
 
 *Flying low over the St. Johns River with a beacon and sky compass on the horizon. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/EarthStick).*
 
-### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.1.zip)**
+### **⬇️ [DOWNLOAD WORLD GATE MAKER v1.2](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.2.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/world_gate_maker_whats_in_the_zip_full.png)**
 
@@ -124,7 +124,7 @@ Make your own World Gates: pick any two places and it builds the pair of golden 
 
 *Jacksonville to Seattle and back with World Gate Maker 1.1: the "jax" gate home, seen from the side in Seattle - the legs show the way in at a glance. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
-### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.2.zip)**
+### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v1.3](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v1.3.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/assets/object_factory_whats_in_the_zip_full.png)**
 
@@ -134,7 +134,7 @@ Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth,
 
 *A Jacksonville beacon and an airborne fire-truck object. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory).*
 
-### **⬇️ [DOWNLOAD POINTLAYER v1.4](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v1.4.zip)**
+### **⬇️ [DOWNLOAD POINTLAYER v1.4.1](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v1.4.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Point-Maps/blob/main/assets/pointlayer_whats_in_the_zip_full.png)**
 
@@ -144,7 +144,7 @@ Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KM
 
 *Nassau County hydrants around Callahan, Florida, with one hydrant's details open. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Point-Maps).*
 
-### **⬇️ [DOWNLOAD PARCEL100 v1.5](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v1.5.zip)**
+### **⬇️ [DOWNLOAD PARCEL100 v1.5.1](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v1.5.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Parcel100/blob/main/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Parcel100/blob/main/images/parcel100_whats_in_the_zip_full.png)**
 
@@ -154,7 +154,7 @@ Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see
 
 *A St. Johns County parcel with its owner, address and acres. ▶️ [Watch the video](https://www.youtube.com/watch?v=_hMB_TOODOQ) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Parcel100).*
 
-### **⬇️ [DOWNLOAD PRAVE / ME TRACKER v1.2.1](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip)**
+### **⬇️ [DOWNLOAD PRAVE / ME TRACKER v1.2.2](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/PRAVE_ME_TRACKER.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/images/prave_me_tracker_whats_in_the_zip_full.png)**
 

@@ -1,4 +1,4 @@
-"""World Gate Maker 1.1 - make your own pair of World Gates for EarthStick (1.3 or later).
+"""World Gate Maker 1.2 - make your own pair of World Gates for EarthStick (1.3 or later).
 
 Jim's idea (2026-11-04): two places (GPS coordinates + name), one height above ground,
 and you get a pair of golden rings: the ring at place 1 takes you to place 2 and the
@@ -28,7 +28,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 APP = "World Gate Maker"
-VERSION = "1.1"
+VERSION = "1.2"
 FT = 0.3048
 R = 6371008.8
 GOLD = "ff00d7ff"          # KML aabbggrr for #FFD700
@@ -375,7 +375,13 @@ def save_settings(data):
 def guess_gates_folder():
     """EarthStick's Gates folder if this tool sits in or next to the EarthStick folder."""
     here = Path(__file__).resolve().parent
-    for cand in [here / "Gates", here.parent / "Gates"] + sorted(here.parent.glob("EarthStick*/Gates")):
+    # 1.2: this file lives in "System Files" inside the World Gate Maker folder, so also look one level higher
+    # (Downloads\EarthStick_v1.3.5\Gates next to Downloads\World_Gate_Maker_v1.2).
+    top = here.parent if here.name == "System Files" else here
+    cands = [here / "Gates", top / "Gates", top.parent / "Gates"]
+    # newest EarthStick folder first (Downloads often holds several versions)
+    cands += sorted(top.parent.glob("EarthStick*/Gates"), reverse=True) + sorted(top.parent.parent.glob("EarthStick*/Gates"), reverse=True)
+    for cand in cands:
         if cand.is_dir():
             return cand
     return None
@@ -473,7 +479,7 @@ def run_gui():
                 return
         folder = Path(gates_dir.get())
         if folder.name.lower() != "gates" and not messagebox.askyesno(
-                APP, f"{folder}\nis not named 'Gates'. EarthStick only reads the Gates folder beside EarthStick.py.\n\nSave here anyway?"):
+                APP, f"{folder}\nis not named 'Gates'. EarthStick only reads the Gates folder in the EarthStick folder.\n\nSave here anyway?"):
             return
         n1, n2 = vals[0][0].strip(), vals[1][0].strip()
         out = folder / gate_file_name(n1, n2)

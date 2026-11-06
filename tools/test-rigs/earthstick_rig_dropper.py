@@ -95,7 +95,7 @@ def script():
             (1, S(act=lambda: setattr(Earth, "camera", at(lat2, lon2, 300.0, 270.0)))), (30, S()),
             (5, S(btn=B2)), (40, S()),
             (1, S(act=lambda: setattr(Earth, "camera", at(lat0, lon0, 152.4, 90.0)))), (30, S()),
-            (90, S(fwd=1.0, thr=0.8)), (30, S())]
+            (90, S(fwd=1.0, thr=1.0)), (30, S())]
     for n, (st, act) in segs:
         for i in range(n):
             if act and i == 0:
@@ -134,13 +134,14 @@ check("one layer request, KML, path of the file", len(Earth.layers) == 1 and Ear
       and Earth.layers[0]["URI"].endswith("Dropped_Gate_01.kmz"), Earth.layers)
 gates, problems = es.load_gates(os.path.join(tmp, "Gates"))
 ga = next((g for g in gates if g["name"] == "Drop 01 B"), None)
-check("gate at mark 1 = start position and hover height", ga and abs(ga["lat"] - 30.0) < 1e-6 and abs(ga["lon"] + 80.0) < 1e-6 and abs(ga["alt_m"] - 152.4) < 0.01, ga)
+glon, glat = es.move_lonlat(-80.0, 30.0, 90.0, 500.0, 0.0)                        # TEST3: 500 m in front of mark 1
+check("gate at mark 1 = 500 m ahead, at hover height", ga and abs(ga["lat"] - glat) < 1e-6 and abs(ga["lon"] - glon) < 1e-5 and abs(ga["alt_m"] - 152.4) < 0.01, ga)
 jumps = [i for i in range(1, len(Earth.puts)) if abs(Earth.puts[i]["position"]["x"] - Earth.puts[i - 1]["position"]["x"]) > 0.005]
 check("exactly one jump while flying through", len(jumps) == 1, jumps)
 if jumps:
     j = Earth.puts[jumps[0]]["position"]
-    land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 300.0, 0.0)          # TEST2: past mark 2 the way you looked there
-    check("landed 300 m past mark 2 (the way you looked there), at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
+    land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 800.0, 0.0)          # TEST3: gate 500 m ahead of mark 2 + 300 m past it
+    check("landed 300 m past the gate ahead of mark 2 (the way you looked there), at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
     check("looking the way you looked when you marked it (270)", abs(Earth.puts[jumps[0]]["heading"] - 270.0) < 1e-6, Earth.puts[jumps[0]]["heading"])
 check("gate at mark 1 faces the way you looked there (90)", ga and abs(ga["facing"] - 90.0) < 1e-6, ga and ga["facing"])
 print("ALL PASS" if ok else "FAILURES")

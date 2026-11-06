@@ -1,14 +1,10 @@
 # ArcGIS Earth Unlocked
 
-**Offline worlds, direct navigation, operational GIS, and programmable geographic objects - all inside ArcGIS Earth.**
-
 Free Windows tools for building offline maps, flying the map with a joystick, adding parcels, hydrants and other public data, placing your own objects, and tracking units live, all inside **ArcGIS Earth**.
 
-> **The world is already built. We add the maps, movement, data, and objects.**
+## The 7 project pages
 
-## The project pages
-
-This family of projects has **7 pages**, one for each part. Each page has its own downloads, user manuals, pictures and videos:
+Each page has its own downloads, user manuals, pictures and videos:
 
 1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
 2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
@@ -21,6 +17,10 @@ This family of projects has **7 pages**, one for each part. Each page has its ow
 [![The 7 programs in action: 1 MBTiles to TPKX - QGIS maps offline in ArcGIS Earth; 2 Offline Maps and Tracking - radio units live on the map; 3 EarthStick - fly the world with a joystick; 4 Object Factory - beacons and objects in the sky; 5 PointLayer - hydrants and public points offline; 6 Parcel100 - click a parcel for owner and address; 7 Picture World Maker - fly into giant photographs](images/seven_projects_montage.jpg)](images/seven_projects_montage.jpg)
 
 *The 7 programs in action - the numbers match the list above.*
+
+**Offline worlds, direct navigation, operational GIS, and programmable geographic objects - all inside ArcGIS Earth.**
+
+> **The world is already built. We add the maps, movement, data, and objects.**
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 

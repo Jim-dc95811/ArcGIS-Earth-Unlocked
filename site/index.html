@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ArcGIS Earth Unlocked</title>
+<meta name="description" content="Free Windows tools for offline maps, joystick flying, public data, your own objects, live tracking and picture worlds, all inside ArcGIS Earth.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b1a33; --panel: #12264a; --line: #23406f;
+    --text: #eef3fb; --muted: #a9bad6; --gold: #f5b82e; --gold-ink: #1b1300;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 Poppins, system-ui, sans-serif;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 40px 0 8px; }
+  h1 { margin: 0; font-size: clamp(30px, 5vw, 48px); font-weight: 800; letter-spacing: -0.5px; }
+  h1 span { color: var(--gold); }
+  .lead { margin: 8px 0 0; color: var(--muted); font-size: clamp(15px, 2vw, 18px); max-width: 760px; }
+  h2 { font-size: 22px; margin: 32px 0 12px; }
+  ol.projects { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  ol.projects a {
+    display: flex; gap: 14px; align-items: center; text-decoration: none;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; transition: border-color .15s, transform .15s;
+  }
+  ol.projects a:hover, ol.projects a:focus-visible { border-color: var(--gold); transform: translateY(-1px); outline: none; }
+  .num {
+    flex: none; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gold); color: var(--gold-ink);
+    display: grid; place-items: center; font-weight: 800; font-size: 18px;
+  }
+  .name { font-weight: 600; display: block; }
+  .what { color: var(--muted); font-size: 14px; display: block; }
+  figure { margin: 24px 0 0; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+  figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; text-align: center; }
+  .quote { margin: 32px 0 0; padding: 18px 20px; border-left: 4px solid var(--gold);
+    background: var(--panel); border-radius: 0 14px 14px 0; font-weight: 600; font-size: 18px; }
+  ul.samples { padding-left: 20px; margin: 0; }
+  ul.samples li { margin: 6px 0; }
+  ul.samples a { color: var(--gold); font-weight: 600; }
+  .muted { color: var(--muted); }
+  .button {
+    display: inline-block; margin-top: 12px; padding: 12px 20px; border-radius: 999px;
+    background: var(--gold); color: var(--gold-ink); font-weight: 800; text-decoration: none;
+  }
+  footer { margin: 40px 0 32px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+  @media (max-width: 400px) { ol.projects { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ArcGIS Earth <span>Unlocked</span></h1>
+    <p class="lead">Free Windows tools for building offline maps, flying the map with a joystick, adding parcels, hydrants and other public data, placing your own objects, tracking units live and flying into giant pictures, all inside ArcGIS Earth.</p>
+  </header>
+
+  <h2>The 7 project pages</h2>
+  <ol class="projects">
+    <li><a href="https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX"><span class="num">1</span><span><span class="name">MBTiles to TPKX</span><span class="what">Offline maps: MBTiles converter and Master 4 Grid Maker</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting"><span class="num">2</span><span><span class="name">Offline Maps &amp; Field Tracking</span><span class="what">TPKX Batch Factory and PRAVE / ME Tracker</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/EarthStick"><span class="num">3</span><span><span class="name">EarthStick</span><span class="what">Fly ArcGIS Earth with a joystick, through World Gates</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory"><span class="num">4</span><span><span class="name">Object Factory</span><span class="what">Beacons, sky compass and clickable objects</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/Point-Maps"><span class="num">5</span><span><span class="name">Point Maps / PointLayer</span><span class="what">Hydrants and other public point data</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/Parcel100"><span class="num">6</span><span><span class="name">Parcel100</span><span class="what">Clickable property parcels: owner and address</span></span></a></li>
+    <li><a href="https://github.com/Jim-dc95811/Picture-World-Maker"><span class="num">7</span><span><span class="name">Picture World Maker</span><span class="what">Turn giant pictures into maps you can fly into</span></span></a></li>
+  </ol>
+
+  <figure>
+    <img src="images/seven_projects_montage.jpg" width="2000" height="749"
+      alt="The 7 programs in action: 1 MBTiles to TPKX, 2 Offline Maps and Tracking, 3 EarthStick, 4 Object Factory, 5 PointLayer, 6 Parcel100, 7 Picture World Maker">
+    <figcaption>The 7 programs in action. The numbers match the list above.</figcaption>
+  </figure>
+
+  <p class="quote">The world is already built. We add the maps, movement, data, and objects.</p>
+
+  <h2>Try it in 2 minutes, no Python needed</h2>
+  <p class="muted">Install <a href="https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads">ArcGIS Earth</a>, download one of these and drag it onto the map (or use the + Add data button). They are all near Jacksonville, Florida.</p>
+  <ul class="samples">
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Live_Traffic_Camera.kmz">Live traffic camera</a>: click the floating camera and a live traffic camera opens.</li>
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Beacon.kmz">Beacon</a>: a tall red beacon you can see and fly to from far away.</li>
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Sky_Compass.kmz">Sky Compass</a>: giant N / E / S / W letters in the sky.</li>
+    <li><a href="https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/samples/SAMPLE_Object_Set.kmz">Object set</a>: floating objects you can click for their information.</li>
+    <li><a href="https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz">World Gates</a>: golden gates from Jacksonville to an Atlanta hub and around the world.</li>
+  </ul>
+
+  <h2>All downloads, manuals and videos</h2>
+  <p class="muted">Every tool, its user manual and a "What's in the zip" sheet are on the main GitHub page.</p>
+  <a class="button" href="https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked#download-the-tools">Go to the downloads</a>
+
+  <footer>
+    Made by Jim G (<a href="https://www.youtube.com/@dc95811">YouTube @dc95811</a>) with ChatGPT and Claude.
+    Free tools for ArcGIS Earth; not affiliated with Esri.
+  </footer>
+</div>
+</body>
+</html>

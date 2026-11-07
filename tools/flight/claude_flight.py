@@ -92,11 +92,36 @@ def orbit(degrees=360.0, seconds=60.0, hz=20.0):
     print("Finished:"); show(call("GET"))
 
 
+def glide(dist_m=600.0, climb_ft=0.0, seconds=25.0, hz=20.0):
+    """Lesson 3: straight and level (or a gentle climb/descent) along the heading, eased, then hover."""
+    cam = call("GET")
+    print("Starting point:"); show(cam)
+    p = cam["position"]; hd = cam.get("heading", 0.0)
+    print(f"Gliding {dist_m:,.0f} m on heading {hd:.1f}, height change {climb_ft:+,.0f} ft, in {seconds:.0f} s")
+    n = int(seconds * hz); sent = cam
+    for i in range(1, n + 1):
+        now = call("GET")
+        if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 2.0
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 5.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 2e-4
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 2e-4):
+            print("\nSomeone else moved the camera - Claude lets go. Your plane.")
+            return
+        ease = (1 - math.cos(math.pi * i / n)) / 2
+        lat, lon = dest(p["y"], p["x"], hd, dist_m * ease)
+        nxt = dict(cam); nxt["position"] = dict(p, x=lon, y=lat, z=p["z"] + climb_ft * 0.3048 * ease)
+        call("PUT", nxt); sent = nxt
+        time.sleep(1.0 / hz)
+    print("Hovering. Finished:"); show(call("GET"))
+
+
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "orbit":
+        if mode == "glide":
+            glide(float(sys.argv[2]) if len(sys.argv) > 2 else 600.0, float(sys.argv[3]) if len(sys.argv) > 3 else 0.0)
+        elif mode == "orbit":
             orbit(float(sys.argv[2]) if len(sys.argv) > 2 else 360.0)
         elif mode == "turn":
             turn(float(sys.argv[2]) if len(sys.argv) > 2 else 30.0)

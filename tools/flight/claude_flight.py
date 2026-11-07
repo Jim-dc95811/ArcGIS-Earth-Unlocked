@@ -142,11 +142,59 @@ def driveby(dist_m=1200.0, low_ft=150.0, seconds=40.0, hz=20.0):
     print("Hovering. Finished:"); show(call("GET"))
 
 
+def bearing(lat1, lon1, lat2, lon2):
+    la1, lo1, la2, lo2 = map(math.radians, (lat1, lon1, lat2, lon2))
+    y = math.sin(lo2 - lo1) * math.cos(la2)
+    x = math.cos(la1) * math.sin(la2) - math.sin(la1) * math.cos(la2) * math.cos(lo2 - lo1)
+    return (math.degrees(math.atan2(y, x)) + 360) % 360
+
+
+def distance_m(lat1, lon1, lat2, lon2):
+    la1, la2 = math.radians(lat1), math.radians(lat2)
+    a = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    return 2 * 6371008.8 * math.asin(min(1.0, math.sqrt(a)))
+
+
+def goto(tlat, tlon, stop_short_m=700.0, cruise_ft=1500.0, arrive_ft=600.0, seconds=45.0, hz=20.0):
+    """Lesson 6: point to point - turn toward the target, climb to cruise, fly, descend, arrive stop_short_m
+    before the target, looking at it."""
+    cam = call("GET")
+    print("Starting point:"); show(cam)
+    p = cam["position"]; h0 = cam.get("heading", 0.0); z0 = p["z"]
+    brg = bearing(p["y"], p["x"], tlat, tlon)
+    total = distance_m(p["y"], p["x"], tlat, tlon)
+    leg = max(total - stop_short_m, 0.0)
+    zc, za = cruise_ft * 0.3048, arrive_ft * 0.3048
+    dh = ((brg - h0 + 540) % 360) - 180
+    print(f"Target {tlat:.5f}, {tlon:.5f}: {total:,.0f} m on bearing {brg:.0f}; fly {leg:,.0f} m, cruise {cruise_ft:,.0f} ft, arrive {arrive_ft:,.0f} ft, {seconds:.0f} s")
+    sm = lambda x: 0.0 if x <= 0 else 1.0 if x >= 1 else (1 - math.cos(math.pi * x)) / 2
+    n = int(seconds * hz); sent = cam
+    for i in range(1, n + 1):
+        now = call("GET")
+        if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 2.0
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 5.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 3e-4
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 3e-4):
+            print("\nSomeone else moved the camera - Claude lets go. Your plane.")
+            return
+        f = i / n
+        hd = (h0 + dh * sm(f / 0.25)) % 360                         # turn onto the bearing in the first quarter
+        lat, lon = dest(p["y"], p["x"], brg, leg * sm((f - 0.1) / 0.9))   # roll forward after the turn starts
+        up, down = sm(f / 0.4), sm((f - 0.6) / 0.4)
+        z = z0 + (zc - z0) * up + (za - zc) * down                  # climb out, cruise, descend in
+        nxt = dict(cam); nxt["position"] = dict(p, x=lon, y=lat, z=z); nxt["heading"] = hd
+        call("PUT", nxt); sent = nxt
+        time.sleep(1.0 / hz)
+    print("Arrived. Hovering:"); show(call("GET"))
+
+
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "driveby":
+        if mode == "downtown":
+            goto(30.3297, -81.6589)                     # Dark Jacksonville's downtown (realsim DOWNTOWN)
+        elif mode == "driveby":
             driveby(float(sys.argv[2]) if len(sys.argv) > 2 else 1200.0, float(sys.argv[3]) if len(sys.argv) > 3 else 150.0)
         elif mode == "return":
             # Lesson 4: about-face, then glide back down to where lesson 3 started

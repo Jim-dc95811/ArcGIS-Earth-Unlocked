@@ -210,9 +210,35 @@ def straight(cam, dist_m, seconds, ease_in, ease_out, hz=20.0):
     return nxt
 
 
-def gaterun():
-    """Lesson 7: show the gates, fly to the Jacksonville 'ATL' gate, line up, go through, come out over Atlanta."""
-    g = ATL_GATE
+JAX_GATE = dict(lat=33.6216204215681, lon=-84.40478996943199, alt_m=769.9248, facing=135.0,   # v21 'JAX' gate in Atlanta
+                dest_lat=30.491909110294706, dest_lon=-81.68607279899436, dest_alt_m=457.2, dest_heading=144.29662315032238)
+
+
+def gaterun(g=ATL_GATE, add_layer=True, approach_s=50.0, cruise_ft=2500.0, exit_m=1000.0, name="Atlanta"):
+    """Lesson 7: show the gates, fly to a gate, line up, go through, come out on the other side."""
+    if add_layer:
+        add_gates()
+    back = (g["facing"] + 180) % 360
+    alat, alon = dest(g["lat"], g["lon"], back, 1500.0)          # line-up point 1.5 km before the gate
+    print("Leg: to the line-up point")
+    goto(alat, alon, stop_short_m=0.0, cruise_ft=cruise_ft, arrive_ft=g["alt_m"] / 0.3048, seconds=approach_s)
+    cam = call("GET")
+    dh = ((g["facing"] - cam["heading"] + 540) % 360) - 180
+    print(f"Leg: line up on the gate ({dh:+.0f} degrees)")
+    turn(dh, seconds=6.0)
+    cam = call("GET"); cam["heading"] = g["facing"]
+    cam["position"] = dict(cam["position"], x=alon, y=alat, z=g["alt_m"])
+    print("Leg: through the gate")
+    straight(cam, 1500.0, 12.0, ease_in=True, ease_out=False)
+    out = {"position": {"x": g["dest_lon"], "y": g["dest_lat"], "z": g["dest_alt_m"], "spatialReference": {"wkid": 4326}},
+           "heading": g["dest_heading"], "tilt": cam.get("tilt", 70.0), "roll": 0.0}
+    call("PUT", out)
+    print(f"JUMP - {name}")
+    straight(out, exit_m, 10.0, ease_in=False, ease_out=True)
+    print("Out of the gate:"); show(call("GET"))
+
+
+def add_gates():
     try:
         req = urllib.request.Request("http://localhost:8000/arcgisearth/layer", method="POST",
                                      data=json.dumps({"URI": GATES_KMZ, "target": "operationalLayers", "type": "KML"}).encode(),
@@ -221,31 +247,35 @@ def gaterun():
         print("World Gates v21 added to the map.")
     except Exception as exc:
         print(f"(Could not add the gate layer: {exc} - flying anyway.)")
-    back = (g["facing"] + 180) % 360
-    alat, alon = dest(g["lat"], g["lon"], back, 1500.0)          # line-up point 1.5 km before the gate
-    print("Leg 1: to the line-up point")
-    goto(alat, alon, stop_short_m=0.0, cruise_ft=2500.0, arrive_ft=g["alt_m"] / 0.3048, seconds=50.0)
+
+
+def tour():
+    """Lesson 8: the first multi-stop tour - Atlanta home through the JAX gate, downtown Dark Jacksonville,
+    a chopper orbit, the neighbourhood drive-by, and a climb-out over the city."""
+    print("== Stop 1: home through the JAX gate ==")
+    gaterun(JAX_GATE, add_layer=False, approach_s=30.0, cruise_ft=3000.0, exit_m=800.0, name="Jacksonville")
+    print("== Stop 2: downtown Dark Jacksonville ==")
+    goto(30.3297, -81.6589, stop_short_m=700.0, cruise_ft=2000.0, arrive_ft=600.0, seconds=40.0)
+    print("== Stop 3: chopper orbit over downtown ==")
+    orbit(360.0, seconds=45.0)
+    print("== Stop 4: the neighbourhood ==")
+    goto(30.309021, -81.655049, stop_short_m=0.0, cruise_ft=900.0, arrive_ft=438.0, seconds=30.0)
     cam = call("GET")
-    dh = ((g["facing"] - cam["heading"] + 540) % 360) - 180
-    print(f"Leg 2: line up on the gate ({dh:+.0f} degrees)")
-    turn(dh, seconds=6.0)
-    cam = call("GET"); cam["heading"] = g["facing"]
-    cam["position"] = dict(cam["position"], x=alon, y=alat, z=g["alt_m"])
-    print("Leg 3: through the gate")
-    straight(cam, 1500.0, 12.0, ease_in=True, ease_out=False)
-    out = {"position": {"x": g["dest_lon"], "y": g["dest_lat"], "z": g["dest_alt_m"], "spatialReference": {"wkid": 4326}},
-           "heading": g["dest_heading"], "tilt": cam.get("tilt", 70.0), "roll": 0.0}
-    call("PUT", out)
-    print("JUMP - Atlanta")
-    straight(out, 1000.0, 10.0, ease_in=False, ease_out=True)
-    print("Arrived. Hovering:"); show(call("GET"))
+    turn((((42.3 - cam["heading"]) + 540) % 360) - 180, seconds=6.0)
+    print("== Stop 5: low drive-by ==")
+    driveby(1200.0, 150.0, seconds=40.0)
+    print("== Stop 6: climb out over the city ==")
+    glide(400.0, 2500.0, seconds=18.0)
+    print("Tour complete.")
 
 
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "gaterun":
+        if mode == "tour":
+            tour()
+        elif mode == "gaterun":
             gaterun()
         elif mode == "downtown":
             goto(30.3297, -81.6589)                     # Dark Jacksonville's downtown (realsim DOWNTOWN)

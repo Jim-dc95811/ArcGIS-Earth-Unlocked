@@ -57,11 +57,48 @@ def turn(deg=30.0, seconds=10.0, hz=20.0):
     print("Finished:"); show(call("GET"))
 
 
+def dest(lat, lon, brg, d):
+    R = 6371008.8
+    la, lo, b = map(math.radians, (lat, lon, brg)); dd = d / R
+    la2 = math.asin(math.sin(la) * math.cos(dd) + math.cos(la) * math.sin(dd) * math.cos(b))
+    lo2 = lo + math.atan2(math.sin(b) * math.sin(dd) * math.cos(la), math.cos(dd) - math.sin(la) * math.sin(la2))
+    return math.degrees(la2), math.degrees(lo2)
+
+
+def orbit(degrees=360.0, seconds=60.0, hz=20.0):
+    """Circle the spot in the middle of the screen, always looking at it (eased start and stop)."""
+    cam = call("GET")
+    print("Starting point:"); show(cam)
+    p = cam["position"]; h0 = cam.get("heading", 0.0); tilt = cam.get("tilt", 0.0)
+    height_m = max(p["z"] - 2.0, 20.0)
+    radius = min(height_m * math.tan(math.radians(min(tilt, 80.0))), 3000.0)
+    tlat, tlon = dest(p["y"], p["x"], h0, radius)            # the spot under the screen centre
+    print(f"Orbiting the spot {radius:,.0f} m ahead ({tlat:.6f}, {tlon:.6f}), {degrees:.0f} degrees in {seconds:.0f} s")
+    n = int(seconds * hz); sent = cam
+    for i in range(1, n + 1):
+        now = call("GET")
+        if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 2.0
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 5.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 2e-4
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 2e-4):
+            print("\nSomeone else moved the camera - Claude lets go. Your plane.")
+            return
+        ease = (1 - math.cos(math.pi * i / n)) / 2
+        hd = (h0 + degrees * ease) % 360
+        clat, clon = dest(tlat, tlon, (hd + 180) % 360, radius)   # stand behind the spot, facing it
+        nxt = dict(cam); nxt["position"] = dict(p, x=clon, y=clat); nxt["heading"] = hd
+        call("PUT", nxt); sent = nxt
+        time.sleep(1.0 / hz)
+    print("Finished:"); show(call("GET"))
+
+
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "turn":
+        if mode == "orbit":
+            orbit(float(sys.argv[2]) if len(sys.argv) > 2 else 360.0)
+        elif mode == "turn":
             turn(float(sys.argv[2]) if len(sys.argv) > 2 else 30.0)
         else:
             print("ArcGIS Earth camera right now:"); show(call("GET"))

@@ -13,6 +13,8 @@ Written for the next person + AI team that wants to build their own world for Ar
 
 Each folder's `.bat` is the kit launcher (one obvious file; the `.py` files go in `System Files`). `world_tiles.py` and `realsim.py` also need `MBTiles_to_TPKX_v0_3_0.py` (Picture-World-Maker `System Files`) beside them; `realsim.py` needs `darkcity.py` for people and drawing helpers.
 
+![Dark Jacksonville sitting inside the real world, with a window to the real streets by the stadium](../../images/dark_jacksonville_window_to_reality.jpg)
+
 ## Pick your route
 
 1. **One picture** (fastest to try): draw a JPEG, then Picture World Maker places it on a World spot (30 N 80 W = spot 1, +1 degree east per spot, spots 11-20 one degree north). Limit: JPEG max 65,535 px a side, and RAM ~2x the picture at build + ~5 bytes per pixel in Picture World Maker -> about 1.5-2 gigapixels on 16 GB.

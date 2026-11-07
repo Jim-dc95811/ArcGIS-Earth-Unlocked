@@ -52,6 +52,16 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 **⬇️ [Download Picture World Maker v0.2.4](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v0.2.4.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
+## 🆕 New: Real Sim City - a fictional night city on a real town's lot lines
+
+**Dark Jacksonville** keeps the real structure of 8 x 7 km of Jacksonville - every one of its 31,897 lot outlines from [Parcel100](https://github.com/Jim-dc95811/Parcel100) and the land use from an OpenStreetMap street map - and gives it an invented life: lit houses, cars, streetlights and towers, a night city with nobody's name or address in it. It sits at its real location, so ArcGIS Earth's layer order does the rest: the city claims every pixel it draws, and wherever it leaves a hole - a **window into reality** - the real Jacksonville shows through. Built on Jim's PC in 260 seconds (132 MB); flown by Claude itself through the ArcGIS Earth API on 2026-11-07.
+
+[![Dark Jacksonville at night sitting inside the real world: a window by the stadium shows the real daytime streets below, and the real St. Johns River and the Atlantic carry on past the edges of the fictional city](images/dark_jacksonville_window_to_reality.jpg)](tools/worlds/README.md)
+
+[![Dark Jacksonville downtown from 600 ft: streetlight pools, lit office windows and cars in the lots](images/dark_jacksonville_downtown_600ft.jpg)](tools/worlds/README.md)
+
+**TEST - not released yet.** The code and the homework-saver guide for building your own world are in the [Claude toolbox](tools/worlds/README.md). Street data (c) OpenStreetMap contributors; imagery under the windows: ArcGIS Earth basemap (Esri and its partners).
+
 ## Try it in 2 minutes - no Python needed
 
 Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)**, download one of these already constructed sample KML/KMZ files the tools make and drag it onto the map (or use the **+** Add data button). They are all near Jacksonville, Florida.

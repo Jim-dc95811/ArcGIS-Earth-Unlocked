@@ -115,11 +115,46 @@ def glide(dist_m=600.0, climb_ft=0.0, seconds=25.0, hz=20.0):
     print("Hovering. Finished:"); show(call("GET"))
 
 
+def driveby(dist_m=1200.0, low_ft=150.0, seconds=40.0, hz=20.0):
+    """Lesson 5: low pass - dip to low_ft and look ahead (tilt up), cruise, climb back; distance along the heading."""
+    cam = call("GET")
+    print("Starting point:"); show(cam)
+    p = cam["position"]; hd = cam.get("heading", 0.0); t0 = cam.get("tilt", 0.0)
+    z0 = p["z"]; zl = low_ft * 0.3048; tl = max(t0, 80.0)
+    print(f"Low pass: {dist_m:,.0f} m on heading {hd:.1f}, down to {low_ft:,.0f} ft, tilt {t0:.0f} -> {tl:.0f}, in {seconds:.0f} s")
+    sm = lambda x: 0.0 if x <= 0 else 1.0 if x >= 1 else (1 - math.cos(math.pi * x)) / 2
+    n = int(seconds * hz); sent = cam
+    for i in range(1, n + 1):
+        now = call("GET")
+        if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 2.0
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 5.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 2e-4
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 2e-4):
+            print("\nSomeone else moved the camera - Claude lets go. Your plane.")
+            return
+        f = i / n
+        low = sm(f / 0.3) - sm((f - 0.7) / 0.3)            # 0 -> 1 over the first 30 %, back to 0 over the last 30 %
+        lat, lon = dest(p["y"], p["x"], hd, dist_m * sm(f))
+        nxt = dict(cam); nxt["position"] = dict(p, x=lon, y=lat, z=z0 + (zl - z0) * low)
+        nxt["tilt"] = t0 + (tl - t0) * low
+        call("PUT", nxt); sent = nxt
+        time.sleep(1.0 / hz)
+    print("Hovering. Finished:"); show(call("GET"))
+
+
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "glide":
+        if mode == "driveby":
+            driveby(float(sys.argv[2]) if len(sys.argv) > 2 else 1200.0, float(sys.argv[3]) if len(sys.argv) > 3 else 150.0)
+        elif mode == "return":
+            # Lesson 4: about-face, then glide back down to where lesson 3 started
+            dist = float(sys.argv[2]) if len(sys.argv) > 2 else 600.0
+            drop = float(sys.argv[3]) if len(sys.argv) > 3 else 200.0
+            turn(180.0, seconds=8.0)
+            glide(dist, -drop)
+        elif mode == "glide":
             glide(float(sys.argv[2]) if len(sys.argv) > 2 else 600.0, float(sys.argv[3]) if len(sys.argv) > 3 else 0.0)
         elif mode == "orbit":
             orbit(float(sys.argv[2]) if len(sys.argv) > 2 else 360.0)

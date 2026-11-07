@@ -4,6 +4,8 @@
 
 Free Windows tools for building offline maps, flying the map with a joystick, adding parcels, hydrants and other public data, placing your own objects, and tracking units live, all inside **ArcGIS Earth**.
 
+> 🤖 **Using AI assistance?** Have the agent read the [CLAUDE.md](CLAUDE.md) file first.
+
 ## The 7 project pages
 
 Each page has its own downloads, user manuals, pictures and videos:

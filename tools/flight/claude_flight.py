@@ -172,9 +172,9 @@ def goto(tlat, tlon, stop_short_m=700.0, cruise_ft=1500.0, arrive_ft=600.0, seco
     for i in range(1, n + 1):
         now = call("GET")
         if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 2.0
-                or abs(now["position"]["z"] - sent["position"]["z"]) > 5.0
-                or abs(now["position"]["x"] - sent["position"]["x"]) > 3e-4
-                or abs(now["position"]["y"] - sent["position"]["y"]) > 3e-4):
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 15.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 1.5e-3
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 1.5e-3):
             print("\nSomeone else moved the camera - Claude lets go. Your plane.")
             return
         f = i / n
@@ -188,11 +188,66 @@ def goto(tlat, tlon, stop_short_m=700.0, cruise_ft=1500.0, arrive_ft=600.0, seco
     print("Arrived. Hovering:"); show(call("GET"))
 
 
+GATES_KMZ = r"C:\Users\dc958\Downloads\EarthStick_v1.3.6_TEST5\EarthStick_v1.3.6_TEST5\Gates\World_Gates_JAX_ATL_v21.kmz"
+ATL_GATE = dict(lat=30.4941, lon=-81.6879, alt_m=457.2, facing=324.2966231503224,       # World Gates v21 'ATL' gate
+                dest_lat=33.6407, dest_lon=-84.4277, dest_alt_m=769.9248, dest_heading=22.5)
+
+
+def straight(cam, dist_m, seconds, ease_in, ease_out, hz=20.0):
+    """Fly straight along cam's heading; ease only where asked so two legs can join at full speed."""
+    p = cam["position"]; hd = cam["heading"]; n = int(seconds * hz)
+    def prog(f):
+        if ease_in and ease_out: return (1 - math.cos(math.pi * f)) / 2
+        if ease_in: return 1 - math.cos(math.pi * f / 2)      # speed up, end at full speed
+        if ease_out: return math.sin(math.pi * f / 2)         # start at full speed, slow to a stop
+        return f
+    nxt = cam
+    for i in range(1, n + 1):
+        lat, lon = dest(p["y"], p["x"], hd, dist_m * prog(i / n))
+        nxt = dict(cam); nxt["position"] = dict(p, x=lon, y=lat)
+        call("PUT", nxt)
+        time.sleep(1.0 / hz)
+    return nxt
+
+
+def gaterun():
+    """Lesson 7: show the gates, fly to the Jacksonville 'ATL' gate, line up, go through, come out over Atlanta."""
+    g = ATL_GATE
+    try:
+        req = urllib.request.Request("http://localhost:8000/arcgisearth/layer", method="POST",
+                                     data=json.dumps({"URI": GATES_KMZ, "target": "operationalLayers", "type": "KML"}).encode(),
+                                     headers={"Content-Type": "application/json", "Accept": "application/json"})
+        _OPEN.open(req, timeout=10).read()
+        print("World Gates v21 added to the map.")
+    except Exception as exc:
+        print(f"(Could not add the gate layer: {exc} - flying anyway.)")
+    back = (g["facing"] + 180) % 360
+    alat, alon = dest(g["lat"], g["lon"], back, 1500.0)          # line-up point 1.5 km before the gate
+    print("Leg 1: to the line-up point")
+    goto(alat, alon, stop_short_m=0.0, cruise_ft=2500.0, arrive_ft=g["alt_m"] / 0.3048, seconds=50.0)
+    cam = call("GET")
+    dh = ((g["facing"] - cam["heading"] + 540) % 360) - 180
+    print(f"Leg 2: line up on the gate ({dh:+.0f} degrees)")
+    turn(dh, seconds=6.0)
+    cam = call("GET"); cam["heading"] = g["facing"]
+    cam["position"] = dict(cam["position"], x=alon, y=alat, z=g["alt_m"])
+    print("Leg 3: through the gate")
+    straight(cam, 1500.0, 12.0, ease_in=True, ease_out=False)
+    out = {"position": {"x": g["dest_lon"], "y": g["dest_lat"], "z": g["dest_alt_m"], "spatialReference": {"wkid": 4326}},
+           "heading": g["dest_heading"], "tilt": cam.get("tilt", 70.0), "roll": 0.0}
+    call("PUT", out)
+    print("JUMP - Atlanta")
+    straight(out, 1000.0, 10.0, ease_in=False, ease_out=True)
+    print("Arrived. Hovering:"); show(call("GET"))
+
+
 if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "downtown":
+        if mode == "gaterun":
+            gaterun()
+        elif mode == "downtown":
             goto(30.3297, -81.6589)                     # Dark Jacksonville's downtown (realsim DOWNTOWN)
         elif mode == "driveby":
             driveby(float(sys.argv[2]) if len(sys.argv) > 2 else 1200.0, float(sys.argv[3]) if len(sys.argv) > 3 else 150.0)

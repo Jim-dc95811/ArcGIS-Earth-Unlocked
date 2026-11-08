@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""EarthStick 1.3.6
+"""EarthStick 1.3.9
+
+1.3.9: hardening (Jim approved 1, 2, 3, 5, 6 on 2026-11-08) - flying, gates and Gate Dropper unchanged:
+  1. only one EarthStick at a time: a second copy (an extra double-click on a slow PC) says so and closes,
+     instead of two programs fighting over the camera
+  2. the tractor beam no longer pulls you back while you move the map with the mouse near a gate: when
+     the stick is let go it re-reads the camera before each nudge and only changes the height
+  3. the status line fits the window, so it updates in place instead of scrolling on a normal-size window
+  5. hold-Button-2 undo removes the highest-numbered dropped gate (Dropped_Gate_100 after 99, not 99)
+  6. the 'waiting for ArcGIS Earth' message names the exact setting: Settings > Advanced application
+     settings > Enable Automation API
 
 1.3.6: the Gate Dropper (Jim, 2026-11-06: 'manually entering that info is a huge pain ... I would love
   to automate that procedure') - fly to a place and hover, press Button 2: mark 1 saved. Fly to a second
@@ -108,6 +118,7 @@ import ctypes
 import json
 import math
 import os
+import shutil
 import sys
 import time
 import urllib.error
@@ -117,7 +128,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
 
-VERSION = "1.3.6"
+VERSION = "1.3.9"
 BASE_URL = "http://localhost:8000"
 CAMERA_URL = BASE_URL + "/arcgisearth/camera"
 TARGET_NAME = "T.A320 Pilot"
@@ -488,7 +499,8 @@ def print_status(name: str, state, cam, speed: float, active: bool):
         f"RZ {state['yaw']:+.2f}  THR {state['throttle']:.2f}  "
         f"SPD {speed:7.1f} m/s  HDG {cam['heading']:6.1f}  TILT {cam['tilt']:5.1f}"
     )
-    sys.stdout.write("\r" + line[:150].ljust(150))
+    width = min(150, max(40, shutil.get_terminal_size((151, 20)).columns - 1))   # 1.3.9: fit the window (no wrap)
+    sys.stdout.write("\r" + line[:width].ljust(width))
     sys.stdout.flush()
 
 
@@ -884,6 +896,13 @@ def gate_dropper_module():
     return _GATE_DROPPER
 
 
+def _drop_number(f):
+    """1.3.9: Dropped_Gate_NN.kmz -> NN, so undo picks the real newest (100 after 99); other names sort first."""
+    import re
+    m = re.fullmatch(r"Dropped_Gate_(\d+)\.kmz", f.name)
+    return (1, int(m.group(1)), f.name) if m else (0, 0, f.name)
+
+
 class GateDropper:
     """1.3.6: Button 2 marks a place; the second mark writes a gate pair (gate_dropper.py)."""
 
@@ -918,7 +937,8 @@ class GateDropper:
             self.mark = None
             return "MARK 1 CLEARED", None
         gd = gate_dropper_module()
-        files = sorted(self.folder.glob(gd.DROP_FILE_PREFIX + "*.kmz"), key=lambda f: f.name)
+        files = sorted(self.folder.glob(gd.DROP_FILE_PREFIX + "*.kmz"), key=_drop_number)   # 1.3.9: by number
+        files = [f for f in files if _drop_number(f)[0]]                  # 1.3.9: only Dropped_Gate_NN.kmz files
         if not files:
             return "NOTHING TO UNDO", None
         last = files[-1]
@@ -1075,6 +1095,28 @@ def gate_label(gate):
     return gate["name"]
 
 
+_INSTANCE = None
+
+
+def single_instance(name="Local\\EarthStick_single_instance"):
+    """1.3.9: True if this is the only EarthStick running (holds a Windows named mutex for the program's
+    life). Anything unexpected = True, so EarthStick never refuses to fly because of this check."""
+    global _INSTANCE
+    try:
+        k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        k32.CreateMutexW.restype = wintypes.HANDLE
+        k32.CreateMutexW.argtypes = [ctypes.c_void_p, wintypes.BOOL, wintypes.LPCWSTR]
+        h = k32.CreateMutexW(None, False, name)
+        if not h:
+            return True
+        if ctypes.get_last_error() == 183:          # ERROR_ALREADY_EXISTS
+            return False
+        _INSTANCE = h
+        return True
+    except Exception:
+        return True
+
+
 def run():
     print(f"EarthStick {VERSION}")
     print("Minimal T.A320 Pilot -> ArcGIS Earth bridge")
@@ -1085,6 +1127,10 @@ def run():
 
     if os.name != "nt":
         raise RuntimeError("EarthStick requires Windows")
+    if not single_instance():
+        print("EarthStick is already running in another window - use that one.")
+        print("(Only one EarthStick can fly the camera at a time. You can close this window.)")
+        return
 
     # Same retry used after a mid-flight unplug, so EarthStick can be started
     # before the joystick is plugged in.
@@ -1107,8 +1153,8 @@ def run():
             reason = str(exc)
             if reason != last_reason:
                 print(f"  Still waiting: {reason}")
-                print("  Check that ArcGIS Earth is open with Automation API enabled "
-                      "(Settings > Advanced).")
+                print("  Check that ArcGIS Earth is open with its Automation API switched on: "
+                      "Settings > Advanced application settings > tick 'Enable Automation API'.")
                 last_reason = reason
             time.sleep(1.0)
     print("ArcGIS Earth: connected")
@@ -1324,11 +1370,16 @@ def run():
             # TEST6: the tractor beam also works while hovering near a ring
             tractor_on = False
             if TRACTOR_BEAM and gates:
-                held = {"position": dict(cam["position"]), "heading": cam["heading"], "tilt": cam["tilt"], "roll": cam["roll"]}
-                tractor_on, moved = tractor_pull(held, gates, dt, 0.0, zoom_dir)
+                probe = {"position": dict(cam["position"]), "heading": cam["heading"], "tilt": cam["tilt"], "roll": cam["roll"]}
+                tractor_on, moved = tractor_pull(probe, gates, dt, 0.0, zoom_dir)
                 if moved:
                     try:
-                        put_camera(held)
+                        # 1.3.9: start from where ArcGIS Earth is NOW (the mouse may have moved the map),
+                        # change only the height, so two-handed mouse moves are never pulled back
+                        held = get_camera()
+                        tractor_on, moved = tractor_pull(held, gates, dt, 0.0, zoom_dir)
+                        if moved:
+                            put_camera(held)
                         cam = held
                         last_idle_sync = loop_start
                     except EarthAPIError:
@@ -1540,6 +1591,12 @@ def selftest():
     assert [b.update(x, t) for x, t in ((True, 0.0), (True, 0.5), (False, 0.6))] == [None, None, "press"]       # short press
     assert [b.update(x, t) for x, t in ((True, 1.0), (True, 2.9), (True, 3.1), (True, 5.0), (False, 5.1))] == [None, None, "undo", None, None]  # hold
     assert [b.update(x, t) for x, t in ((True, 6.0), (False, 6.1), (True, 6.2), (False, 6.3))] == [None, "press", None, None]   # bounce ignored
+
+    # 1.3.9: undo goes by number; other files in the folder are never chosen over a numbered gate
+    order = sorted((Path(n) for n in ("Dropped_Gate_99.kmz", "Dropped_Gate_100.kmz", "Dropped_Gate_02 (1).kmz")), key=_drop_number)
+    assert order[-1].name == "Dropped_Gate_100.kmz"
+    if os.name != "nt":
+        assert single_instance()                      # not Windows: the check stays out of the way
 
     print("EarthStick self-test PASS")
 

@@ -249,6 +249,24 @@ def add_gates():
         print(f"(Could not add the gate layer: {exc} - flying anyway.)")
 
 
+def jaxtour():
+    """The recorded tour: Dark Jacksonville only, no gate - downtown, chopper orbit, the neighbourhood,
+    drive-by, climb-out. Starts from wherever the camera is over Jacksonville."""
+    print("== Stop 1: downtown Dark Jacksonville ==")
+    goto(30.3297, -81.6589, stop_short_m=700.0, cruise_ft=1800.0, arrive_ft=600.0, seconds=35.0)
+    print("== Stop 2: chopper orbit over downtown ==")
+    orbit(360.0, seconds=45.0)
+    print("== Stop 3: the neighbourhood ==")
+    goto(30.309021, -81.655049, stop_short_m=0.0, cruise_ft=900.0, arrive_ft=438.0, seconds=30.0)
+    cam = call("GET")
+    turn((((42.3 - cam["heading"]) + 540) % 360) - 180, seconds=6.0)
+    print("== Stop 4: low drive-by ==")
+    driveby(1200.0, 150.0, seconds=40.0)
+    print("== Stop 5: climb out over the city ==")
+    glide(400.0, 2500.0, seconds=18.0)
+    print("Tour complete.")
+
+
 def tour():
     """Lesson 8: the first multi-stop tour - Atlanta home through the JAX gate, downtown Dark Jacksonville,
     a chopper orbit, the neighbourhood drive-by, and a climb-out over the city."""
@@ -273,7 +291,9 @@ if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "tour":
+        if mode == "jaxtour":
+            jaxtour()
+        elif mode == "tour":
             tour()
         elif mode == "gaterun":
             gaterun()

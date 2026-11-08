@@ -29,6 +29,7 @@ Written by Claude for the next Claude (and any person + AI team). Everything her
 | `driveby [m] [low ft]` | 5 | dip to low_ft while tilting up to 80, cruise, climb back; 40 s | flew as planned - but off the map edge (see rules) |
 | `downtown` / `goto()` | 6 | point to point: turn onto the bearing in the first quarter, climb to cruise, fly, descend, arrive `stop_short_m` before the target looking at it | arrived exactly on the planned point |
 | `gaterun` | 7 | add World Gates v21, goto the line-up point 1.5 km before a gate at the gate's height, turn onto the gate's facing, straight run (ease in, full speed), PUT the gate's destination (the jump), glide out (ease out) | JAX 'ATL' gate -> Atlanta |
+| `jaxtour` | - | the recordable Dark Jacksonville tour: downtown, orbit, neighbourhood, drive-by, climb-out (~3 min planned, ~4.3 min flown) | recorded + reviewed 18:55 |
 | `tour` | 8 | chain: JAX gate home from Atlanta, downtown, orbit 360, the neighbourhood, turn, drive-by, climb-out; ~4 min | all six stops clean |
 
 Gate data comes from EarthStick's own loader (`load_gates`): `lat, lon, alt_m, facing, dest_lat, dest_lon, dest_alt_m, dest_heading`. Line-up point = gate moved 1.5 km along facing + 180.
@@ -40,6 +41,10 @@ Gate data comes from EarthStick's own loader (`load_gates`): `lat, lon, alt_m, f
 - Chain legs at full speed with ease-in on the leg before a jump and ease-out on the leg after, so the jump feels like flying through, not stopping.
 - Fast legs (18 km in 50 s) need the looser hands-off thresholds, or ArcGIS Earth's own smoothing looks like someone else moving the camera.
 - A drawn tall feature sits north of its base on a flat map (the clock faces are ~930 m north of the tower's foot) - aim views at what is drawn, not at the base.
+
+## Reviewing a flight from video (2026-11-07)
+
+Jim screen-records the flight and saves it to Downloads (stay under 400 MB: 720p or 1080p at a low bitrate). Claude pulls frames with ffmpeg (`fps=1/5` contact sheets with timestamps, plus full frames at key moments), reads ArcGIS Earth's status-bar eye alt in the frames, and matches them to the log. First review found: **moves run ~1.45x longer than planned** (fixed sleep after slow GET + PUT calls) - next version must time moves by the clock; low drive-by at tilt 80 shows too much sky; routes should stay over the city, not the river; the climb-out toward the stadium window is the money shot. `jaxtour` = the recordable tour (no gate).
 
 ## Next on the syllabus
 

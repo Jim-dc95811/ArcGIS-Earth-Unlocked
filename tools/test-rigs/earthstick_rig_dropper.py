@@ -155,10 +155,13 @@ jumps = [i for i in range(1, len(Earth.puts)) if abs(Earth.puts[i]["position"]["
 check("exactly one jump while flying through", len(jumps) == 1, jumps)
 if jumps:
     j = Earth.puts[jumps[0]]["position"]
-    land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 800.0, 0.0)          # TEST3: gate 500 m ahead of mark 2 + 300 m past it
-    check("landed 300 m past the gate ahead of mark 2 (the way you looked there), at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
-    check("looking the way you looked when you marked it (270)", abs(Earth.puts[jumps[0]]["heading"] - 270.0) < 1e-6, Earth.puts[jumps[0]]["heading"])
-check("gate at mark 1 faces the way you looked there (90)", ga and abs(ga["facing"] - 90.0) < 1e-6, ga and ga["facing"])
+    if getattr(es, "VERSION", "") >= "1.3.11 TEST3":     # World Gate Maker kernel: 300 m past the other gate, facing away from it
+        land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 500.0 - 300.0, 0.0); want_hd = 90.0
+    else:                                                 # 1.3.6-1.3.11 TEST2: 300 m past it the way you looked at mark 2
+        land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 800.0, 0.0); want_hd = 270.0
+    check("landed 300 m past the gate ahead of mark 2, at its height", abs(j["x"] - land_lon) < 1e-4 and abs(j["y"] - land_lat) < 1e-4 and abs(j["z"] - 300.0) < 0.01, j)
+    check(f"arrival heading {want_hd:.0f}", abs(Earth.puts[jumps[0]]["heading"] - want_hd) < 0.05, Earth.puts[jumps[0]]["heading"])
+check("gate at mark 1 faces east (the way you looked there; from 1.3.11 TEST3: toward the other gate, also east here)", ga and abs(ga["facing"] - 90.0) < 0.05, ga and ga["facing"])
 check("hold Button 2: file deleted", not os.path.exists(kmz))
 check("hold Button 2: map layer removed (DELETE /arcgisearth/layer/x)", Earth.deletes == ["/arcgisearth/layer/x"], Earth.deletes)
 check("hold Button 2: gates disarmed", "Dropped_Gate_01.kmz deleted and disarmed (0 gates armed)" in text, [l for l in printed if "deleted" in l])

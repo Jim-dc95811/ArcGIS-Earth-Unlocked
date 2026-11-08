@@ -90,9 +90,9 @@ def at(lat, lon, z, heading):
 
 
 
-# Jim's 2026-11-08 15:22 case: both marks taken looking EAST (heading 90), 3 km apart, then the round trip
-lon2, lat2 = es.move_lonlat(-80.0, 30.0, 90.0, 3000.0, 0.0)          # mark 2: 3 km east, still looking east
-lon0, lat0 = es.move_lonlat(-80.0, 30.0, 90.0, -500.0, 0.0)          # 500 m before mark 1
+# Jim's two flights of 2026-11-08: mark 2 taken looking EAST (15:22) or looking back WEST (15:36, the loop)
+HD2 = float(sys.argv[2]) if len(sys.argv) > 2 else 90.0
+lon2, lat2 = es.move_lonlat(-80.0, 30.0, 90.0, 3000.0, 0.0)          # mark 2: 3 km east of mark 1
 DROP = 1 << (es.DROP_BUTTON - 1)
 marks = {}
 
@@ -101,22 +101,31 @@ def mark(n):
     marks[n] = len(Earth.puts)
 
 
-def turn_round(height_off=0.0):
+def gates():
+    return sorted(es.load_gates(os.path.join(tmp, "Gates"))[0], key=lambda g: g["name"])   # [A (mark 2), B (mark 1)]
+
+
+def line_up(g, back_m, dz):
+    lon, lat = es.move_lonlat(g["lon"], g["lat"], g["facing"], -back_m, 0.0)
+    Earth.camera = at(lat, lon, g["alt_m"] + dz, g["facing"])
+
+
+def turn_round(dz):
     c = Earth.camera
-    Earth.camera = at(c["position"]["y"], c["position"]["x"], c["position"]["z"] + height_off, (c["heading"] + 180.0) % 360)
+    Earth.camera = at(c["position"]["y"], c["position"]["x"], c["position"]["z"] + dz, (c["heading"] + 180.0) % 360)
 
 
 def script():
     S = lambda fwd=0.0, thr=0.0, btn=0, act=None: (dict(strafe=0.0, forward=fwd, yaw=0.0, throttle=thr, tilt=0.0, buttons=btn), act)
     segs = [(20, S()), (5, S(btn=DROP)), (40, S()),
-            (1, S(act=lambda: setattr(Earth, "camera", at(lat2, lon2, 300.0, 90.0)))), (30, S()),
+            (1, S(act=lambda: setattr(Earth, "camera", at(lat2, lon2, 300.0, HD2)))), (30, S()),
             (5, S(btn=DROP)), (40, S()),
-            (1, S(act=lambda: setattr(Earth, "camera", at(lat0, lon0, 152.4, 90.0)))), (30, S(act=lambda: mark("out"))),
-            (90, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("arrived2"))),          # eastbound through gate 1
-            (1, S(act=lambda: turn_round(100.0))), (60, S(act=lambda: mark("home"))),  # turn round, 100 m high
-            (90, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("arrived1"))),          # westbound: the way home
+            (1, S(act=lambda: line_up(gates()[1], 1500.0, 0.0))), (30, S(act=lambda: mark("out"))),
+            (150, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("arrived2"))),
+            (1, S(act=lambda: turn_round(100.0))), (60, S(act=lambda: mark("home"))),     # turn round once, 100 m high
+            (150, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("arrived1"))),
             (1, S(act=lambda: turn_round(0.0))), (60, S(act=lambda: mark("again"))),
-            (90, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("end")))]
+            (150, S(fwd=1.0, thr=1.0)), (30, S(act=lambda: mark("end")))]
     for n, (st, act) in segs:
         for i in range(n):
             if act and i == 0:
@@ -148,29 +157,26 @@ def check(name, cond, detail=""):
 
 def jumps(a, b):
     p = Earth.puts[marks[a]:marks[b]]
-    return [p[i] for i in range(1, len(p)) if abs(p[i]["position"]["x"] - p[i - 1]["position"]["x"]) > 0.005]
+    return [(i, p[i]) for i in range(1, len(p)) if abs(p[i]["position"]["x"] - p[i - 1]["position"]["x"]) > 0.005]
 
-g1lon, g1lat = es.move_lonlat(-80.0, 30.0, 90.0, 500.0, 0.0)          # gate at mark 1
-g2lon, g2lat = es.move_lonlat(lon2, lat2, 90.0, 500.0, 0.0)           # gate at mark 2
+gA, gB = gates()
+def lands_past(j, g):
+    away = (g["facing"] + 180.0) % 360
+    lon, lat = es.move_lonlat(g["lon"], g["lat"], away, 300.0, 0.0)
+    p = j["position"]
+    return abs(p["x"] - lon) < 1e-4 and abs(p["y"] - lat) < 1e-4 and abs(j["heading"] - away) < 1e-6 and abs(p["z"] - g["alt_m"]) < 0.01
+
+print(f"mark 2 looking {HD2:.0f}: gate at mark 1 faces {gB['facing']:.1f}, gate at mark 2 faces {gA['facing']:.1f}")
+check("gates face each other", abs(((gA["facing"] - gB["facing"]) % 360) - 180.0) < 0.1)
 j = jumps("out", "arrived2")
-want = es.move_lonlat(g2lon, g2lat, 90.0, 300.0, 0.0)
-check("1 eastbound through the first gate: one jump, out 300 m past the second gate heading east",
-      len(j) == 1 and abs(j[0]["position"]["x"] - want[0]) < 1e-4 and abs(j[0]["heading"] - 90.0) < 1e-6, j and (j[0]["position"], j[0]["heading"]))
+check("1 through the first gate: exactly one jump (no loop), out 300 m past the second gate facing away", len(j) == 1 and lands_past(j[0][1], gA), len(j))
 j = jumps("home", "arrived1")
-want = es.move_lonlat(g1lon, g1lat, 270.0, 300.0, 0.0)
-check("2 turn round once, fly home west: one jump through the second gate (from 100 m high: tractor beam)",
-      len(j) == 1, len(j))
+check("2 turn round once (100 m high), push forward: exactly one jump home, 300 m past the first gate facing away",
+      len(j) == 1 and lands_past(j[0][1], gB), len(j))
 if j:
-    check("  ...out 300 m in front of the first gate, heading west (the way home), at its height",
-          abs(j[0]["position"]["x"] - want[0]) < 1e-4 and abs(j[0]["position"]["y"] - want[1]) < 1e-4
-          and abs(j[0]["heading"] - 270.0) < 1e-6 and abs(j[0]["position"]["z"] - 152.4) < 0.01, (j[0]["position"], j[0]["heading"]))
     pre = Earth.puts[marks["home"]:marks["arrived1"]]
-    k = pre.index(j[0])
-    check("  ...tractor beam pulled the height to the gate before the jump", abs(pre[k - 1]["position"]["z"] - 300.0) < 5.0, pre[k - 1]["position"]["z"])
+    check("  ...tractor beam pulled the height to the gate first", abs(pre[j[0][0] - 1]["position"]["z"] - gA["alt_m"]) < 5.0, pre[j[0][0] - 1]["position"]["z"])
 j = jumps("again", "end")
-check("3 turn round once more, fly east: through the first gate again", len(j) == 1, len(j))
-gates, _ = es.load_gates(os.path.join(tmp, "Gates"))
-g2 = next(g for g in gates if g["name"].endswith("A"))
-check("the second gate faces back the way you came (270)", abs(g2["facing"] - 270.0) < 1e-6, g2["facing"])
+check("3 turn round once more: exactly one jump out again", len(j) == 1 and lands_past(j[0][1], gA), len(j))
 print("ALL PASS" if ok else "FAILURES")
 shutil.rmtree(tmp)

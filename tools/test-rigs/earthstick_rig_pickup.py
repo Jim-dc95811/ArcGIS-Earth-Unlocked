@@ -196,7 +196,11 @@ check("no restart needed: armed within 4 s of the file being complete", t_arm is
 j = jumps("armed", "flown")
 check("fly through the new gate: exactly one jump", len(j) == 1, j)
 if j:
-    land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 800.0, 0.0)
+    _ga = next(g for g in es.gates_in_file(new_file)[0] if g["name"].endswith("A"))   # the gate at mark 2
+    if es.VERSION >= "1.3.11 TEST3":     # World Gate Maker kernel: 300 m past the other gate, facing away from it
+        land_lon, land_lat = es.move_lonlat(_ga["lon"], _ga["lat"], (_ga["facing"] + 180) % 360, 300.0, 0.0)
+    else:
+        land_lon, land_lat = es.move_lonlat(lon2, lat2, 270.0, 800.0, 0.0)
     jp = Earth.puts[marks["armed"][0] + j[0]]["position"]
     check("landed 300 m past the partner", abs(jp["x"] - land_lon) < 1e-4 and abs(jp["y"] - land_lat) < 1e-4, jp)
 dels = Earth.deletes[between("flown", "removed", 2)]

@@ -5,8 +5,9 @@ import math, zipfile
 R = 6371008.8
 HALF = 75.0   # half the square's side (m): hoops are 150 m (~490 ft) across
 # name, lat, lon, alt_m (sea level), facing (direction you fly through it)
-NAME = "Obstacle Course v2"
-FILE = "Obstacle_Course_v2.kmz"
+NAME = "Obstacle Course v2.1"
+FILE = "Obstacle_Course_v2_1.kmz"
+LABEL_RANGE_M = 1300.0   # 2.1: a hoop's name shows only within this distance (no skyline clutter)
 HOOPS = [   # College Park -> Kings Road -> north side -> along 21st St -> Springfield -> back to downtown
     ("1 START",   30.3300, -81.6920, 120.0,  50.0),
     ("2",         30.3400, -81.6800, 100.0,  45.0),
@@ -29,6 +30,17 @@ def enu(lat0, lon0, lat, lon):
     return (math.radians(lon - lon0) * R * math.cos(math.radians(lat0)), math.radians(lat - lat0) * R)
 
 
+def label_region(lat, lon, alt, box=300.0):
+    """KML Region: the label shows only when the camera is within LABEL_RANGE_M
+    (beacon formula: minLodPixels = sqrt(box area) * 1818 / distance)."""
+    n, _ = dest(lat, lon, 0, box / 2); s_, _ = dest(lat, lon, 180, box / 2)
+    _, e = dest(lat, lon, 90, box / 2); _, w = dest(lat, lon, 270, box / 2)
+    lod = box * 1818.0 / LABEL_RANGE_M
+    return (f"<Region><LatLonAltBox><north>{n:.7f}</north><south>{s_:.7f}</south><east>{e:.7f}</east><west>{w:.7f}</west>"
+            f"<minAltitude>{alt - box / 2:.1f}</minAltitude><maxAltitude>{alt + box / 2:.1f}</maxAltitude><altitudeMode>absolute</altitudeMode></LatLonAltBox>"
+            f"<Lod><minLodPixels>{lod:.0f}</minLodPixels><maxLodPixels>-1</maxLodPixels></Lod></Region>")
+
+
 def kml():
     pm = []
     for i, (name, lat, lon, alt, fac) in enumerate(HOOPS):
@@ -38,9 +50,9 @@ def kml():
         coords = " ".join(f"{x:.7f},{y:.7f},{z:.1f}" for x, y, z in ring)
         pm.append(f"""<Placemark><name>{name}</name><Style><LineStyle><color>{col}</color><width>6</width></LineStyle></Style>
 <LineString><altitudeMode>absolute</altitudeMode><coordinates>{coords}</coordinates></LineString></Placemark>
-<Placemark><name>{name}</name><Style><IconStyle><scale>0</scale></IconStyle><LabelStyle><color>{col}</color><scale>1.3</scale></LabelStyle></Style>
+<Placemark><name>{name}</name>{label_region(lat, lon, alt)}<Style><IconStyle><scale>0</scale></IconStyle><LabelStyle><color>{col}</color><scale>1.3</scale></LabelStyle></Style>
 <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{alt + HALF + 25:.1f}</coordinates></Point></Placemark>""")
-    return ('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Obstacle Course v2</name>'
+    return ('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Obstacle Course v2.1</name>'
             + "\n".join(pm) + "</Document></kml>")
 
 

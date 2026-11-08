@@ -249,6 +249,18 @@ def add_gates():
         print(f"(Could not add the gate layer: {exc} - flying anyway.)")
 
 
+def tilt_to(target, seconds=4.0, hz=20.0):
+    """Ease the view's tilt to target in place (clock-timed)."""
+    cam = call("GET"); t0 = cam.get("tilt", 70.0); start = time.perf_counter()
+    while True:
+        f = min(1.0, (time.perf_counter() - start) / seconds)
+        nxt = dict(cam); nxt["tilt"] = t0 + (target - t0) * (1 - math.cos(math.pi * f)) / 2
+        call("PUT", nxt)
+        if f >= 1.0:
+            return
+        time.sleep(1.0 / hz)
+
+
 def run_course(seconds=100.0, hz=20.0, course_tilt=85.0):
     """Obstacle Course v1: line up on hoop 1, then one smooth curve through every hoop's centre
     (Hermite spline, the curve's direction at each hoop = the hoop's facing), timed by the clock.
@@ -270,6 +282,7 @@ def run_course(seconds=100.0, hz=20.0, course_tilt=85.0):
     l0 = C.dest(h[0][1], h[0][2], h[0][4] + 180, 600.0)
     lN = C.dest(h[-1][1], h[-1][2], h[-1][4], 300.0)
     knots = [(l0[0], l0[1], h[0][3], h[0][4])] + [(la, lo, al, fa) for _, la, lo, al, fa in h] + [(lN[0], lN[1], h[-1][3], h[-1][4])]
+    tilt_to(course_tilt, seconds=4.0)                 # 2.1: eyes up to the horizon BEFORE the approach
     print("Leg: to the start line")
     goto(knots[0][0], knots[0][1], stop_short_m=0.0, cruise_ft=1200.0, arrive_ft=knots[0][2] / 0.3048, seconds=35.0)
     cam = call("GET")

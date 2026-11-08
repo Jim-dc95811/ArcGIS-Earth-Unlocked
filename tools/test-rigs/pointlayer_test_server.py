@@ -108,6 +108,11 @@ class Handler(BaseHTTPRequestHandler):
                 if rest[1] == "query":
                     if q.get("returnCountOnly") == "true":
                         return self._send(json.dumps({"count": len(rows)}))
+                    if q.get("returnExtentOnly") == "true":
+                        pts = [r[-1] for r in rows if isinstance(r[-1][0], float)]
+                        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+                        return self._send(json.dumps({"extent": {"xmin": min(xs), "ymin": min(ys), "xmax": max(xs), "ymax": max(ys),
+                                                                  "spatialReference": {"wkid": 4326}}, "count": len(rows)}))
                     if q.get("returnIdsOnly") == "true":
                         return self._send(json.dumps({"objectIdFieldName": "OBJECTID", "objectIds": [r[0] for r in rows]}))
                     ids = {int(x) for x in (q.get("objectIds") or "").split(",") if x.strip()}

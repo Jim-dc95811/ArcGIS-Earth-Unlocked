@@ -87,6 +87,27 @@ e_old, e_new = err(lambda: OLD.discover_point_layers(login)), err(lambda: NEW.di
 check("2.0 login page -> programmer message", e_old and "Expecting value" in e_old, e_old)
 check("2.1 login page -> plain message", e_new and "did not send map data" in e_new, e_new)
 
+# 5b. Show below (ft), bigger default icon, ground marker
+ext = NEW.query_extent(BASE + "/0")
+check("2.1 measures the layer (extent query)", ext and -81.95 < ext[0] < ext[1] < -81.93, ext)
+check("2.1 small layer suggestion = 10,000 ft", NEW.suggest_show_below_ft(6, ext) == 10000)
+px = NEW.lod_pixels_for_feet(10000, ext)
+check("small layer at 10,000 ft -> a small pixel LOD (was 6000)", 100 < px < 1500, px)
+nassau = (-81.95, -81.25, 30.40, 30.75); duval = (-82.05, -81.40, 30.10, 30.58)
+for name, n, b, old in (("Nassau-size", 3250, nassau, 12000), ("Duval-size", 30688, duval, 30000)):
+    ft = NEW.suggest_show_below_ft(n, b); p2 = NEW.lod_pixels_for_feet(ft, b)
+    check(f"{name}: suggestion keeps the accepted LOD ({ft:,} ft -> {p2} px)", abs(p2 - old) / old < 0.06, (ft, p2))
+# server without extent support -> 10,000 ft suggestion, no crash
+check("no extent -> 10,000 ft", NEW.suggest_show_below_ft(3250, None) == 10000)
+k, feats = build(NEW, BASE + "/0", W / "ground21.kmz")
+NEW.write_kmz(W / "ground21.kmz", feats, ["HYDRANT_ID"], {}, "u", "G", px, 1.0, NEW.built_in_icon_bytes("Blue dot"), True, ground_m=4, ground_rgb=NEW.GROUND_COLORS["Blue dot"])
+kg = zipfile.ZipFile(W / "ground21.kmz").read("doc.kml").decode()
+xml.dom.minidom.parseString(kg.encode())
+check("ground marker: one disc per located point, blue, 21-point ring", kg.count("<Polygon>") == 4 and "<PolyStyle><color>e6eb691e</color>" in kg and kg.count("<MultiGeometry>") == 4)
+ring = re.search(r"<coordinates>([^<]*)</coordinates></LinearRing>", kg).group(1).split()
+check("ground disc closes and is about 4 m across", ring[0] == ring[-1] and len(ring) == 21 and
+      3.8 < (float(ring[0].split(",")[0]) - float(ring[10].split(",")[0])) * 111320 * 0.8636 < 4.2)
+
 # 6. desktop fallback and the self-test
 check("desktop_dir fallback off Windows", NEW.desktop_dir() == pathlib.Path.home() / "Desktop")
 check("2.1 self-test", err(lambda: NEW.run_self_test(W / "selftest")) is None, err(lambda: NEW.run_self_test(W / "selftest2")))

@@ -78,6 +78,8 @@ Made with the Object Factory and EarthStick. Make your own with the tools below.
 
 ## Download the tools
 
+🐍 **[Py Vault](Py%20Vault/README.md)** - every Python script in the family in one folder, copied from the current release zips, so you can read the code without unzipping anything.
+
 Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User manual** for step-by-step instructions. Click a picture to see that tool's page.
 
 **Before you start:** most tools need two free programs, **⬇️ [ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)** (Windows desktop version) and **⬇️ [Python 3](https://www.python.org/downloads/windows/)** (install with the default options). Each tool's page lists exactly what it needs, at the top.

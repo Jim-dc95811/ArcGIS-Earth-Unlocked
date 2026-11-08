@@ -167,7 +167,7 @@ Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth,
 
 *A Jacksonville beacon and an airborne fire-truck object. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory).*
 
-### **⬇️ [DOWNLOAD POINTLAYER v2.0](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.0.zip)**
+### **⬇️ [DOWNLOAD POINTLAYER v2.1](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Point-Maps/blob/main/assets/pointlayer_whats_in_the_zip_full.png)**
 

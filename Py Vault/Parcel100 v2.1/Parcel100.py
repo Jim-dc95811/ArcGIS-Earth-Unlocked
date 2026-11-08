@@ -1,4 +1,20 @@
-"""Parcel100 1.5
+"""Parcel100 2.1
+
+2.1 re-hardening (2026-11-08) - a normal build writes exactly the same files as 2.0:
+  - BUILD checks the cell files already in the folder: if they came from a different layer
+    or hold different fields, it asks Replace / Keep / Cancel (a true resume still skips
+    quietly)
+  - URLs copied from the browser with ?f=pjson or #... on the end are accepted
+  - a login page or other non-map answer gets a plain message
+  - a parcel the server sends with an empty shape {} is written without a shape and
+    counted, instead of stopping the whole build
+  - plain messages for the Coordinate precision box and a Master 4 box typed as numbers
+  - the end message shows the 100 cells as written / already there / empty, with the parcel
+    count on its own line (Jim: '64 written, 36 skipped')
+
+2.0 = 1.5 (2.0 Reference, 2026-11-08).
+
+Parcel100 1.5
 
 1.5 adds service-root discovery: paste a FeatureServer/MapServer service or a layer URL;
 if the service has several polygon layers, a chooser lists them.
@@ -27,7 +43,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
 APP_NAME = "Parcel100"
-VERSION = "2.0"   # 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point - program = 1.5, only this text changed
+VERSION = "2.1"
 FLORIDA_URL = "https://services5.arcgis.com/GcvM6vDlR2gM4x31/arcgis/rest/services/FL_Parcels/FeatureServer/0"
 DEFAULT_MASTER4 = "82w,81w,30n,31n"
 DEFAULT_PRECISION = 7
@@ -49,7 +65,8 @@ FLORIDA_PREFERRED_FIELDS = [
 def parse_coord(token, longitude):
     match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*([NSEWnsew])\s*", token)
     if not match:
-        raise ValueError(f"Invalid coordinate: {token.strip()}")
+        raise ValueError(f"Invalid coordinate: {token.strip()}\n\nWrite each edge as whole degrees with a "
+                         f"letter, west,east,south,north - for example {DEFAULT_MASTER4}")
     value = float(match.group(1))
     direction = match.group(2).upper()
     if longitude and direction not in ("E", "W"):
@@ -136,6 +153,10 @@ def output_name(master_label, cell_id):
     return f"{padded_master_label(master_label)}-{cell_id:03d}-Parcels.geojson"
 
 
+NOT_MAP_DATA = ("The server did not send map data. It may need a login, or this is not an ArcGIS REST "
+                "service URL (it should end in /FeatureServer or /MapServer, maybe with a layer number).")
+
+
 def _request(url, params, expect_json=True, retry_callback=None):
     data = urllib.parse.urlencode(params).encode("utf-8")
     last_error = None
@@ -155,7 +176,10 @@ def _request(url, params, expect_json=True, retry_callback=None):
                 raw = response.read()
             if not expect_json:
                 return raw
-            result = json.loads(raw.decode("utf-8"))
+            try:
+                result = json.loads(raw.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                raise RuntimeError(NOT_MAP_DATA) from None
             if isinstance(result, dict) and "error" in result:
                 err = result["error"]
                 msg = err.get("message", "ArcGIS service error") if isinstance(err, dict) else str(err)
@@ -174,7 +198,8 @@ def _request(url, params, expect_json=True, retry_callback=None):
 
 
 def _service_url_parts(url):
-    clean = url.strip().rstrip("/")
+    # 2.1: a URL copied from the browser may end in ?f=pjson or #...; drop that first.
+    clean = re.split(r"[?#]", url.strip(), maxsplit=1)[0].rstrip("/")
     # A URL copied from a browser query page ends in /query; the layer is the part before it.
     clean = re.sub(r"/query(?:\?.*)?$", "", clean, flags=re.IGNORECASE).rstrip("/")
     match = re.fullmatch(r"(.+/(?:FeatureServer|MapServer))(?:/(\d+))?", clean, re.IGNORECASE)
@@ -426,6 +451,8 @@ def esri_feature_to_geojson(feature, selected_fields):
         geometry = None
     elif "rings" in geom:
         geometry = esri_rings_to_geojson(geom.get("rings"))
+    elif not any(k in geom for k in ("x", "points", "paths")):
+        geometry = None   # 2.1: an empty shape {} - written without a shape, counted by the caller
     else:
         raise ValueError("Service returned a non-polygon geometry.")
     return {"type": "Feature", "properties": props, "geometry": geometry}
@@ -541,6 +568,48 @@ def is_complete_cell(path):
         return data.get("type") == "FeatureCollection" and isinstance(data.get("features"), list)
     except (OSError, ValueError, AttributeError):
         return False
+
+
+def read_cell_header(path, limit=262144):
+    """2.1: (source URL, field names) of an existing cell file, read from its first bytes only
+    (cell files can be large). Field names come from the first parcel; None if not found."""
+    try:
+        with path.open("r", encoding="utf-8", errors="replace") as f:
+            head = f.read(limit)
+    except OSError:
+        return None, None
+    dec = json.JSONDecoder()
+
+    def value_after(key):
+        m = re.search(r'"%s"\s*:\s*' % key, head)
+        if not m:
+            return None
+        try:
+            return dec.raw_decode(head, m.end())[0]
+        except ValueError:
+            return None
+
+    source = value_after("source")
+    props = value_after("properties")
+    fields = list(props) if isinstance(props, dict) else None
+    return source, fields
+
+
+def mismatched_cells(out_dir, label, layer_url, fields):
+    """2.1: cell files of this Master 4 box already in out_dir that were made from another layer
+    or with other fields: [(cell_id, reason)]."""
+    out = []
+    want_url = layer_url.rstrip("/").lower()
+    for cell_id in range(1, 101):
+        path = Path(out_dir) / output_name(label, cell_id)
+        if not path.exists():
+            continue
+        source, have = read_cell_header(path)
+        if source is not None and str(source).rstrip("/").lower() != want_url:
+            out.append((cell_id, "another layer"))
+        elif have is not None and have != list(fields):
+            out.append((cell_id, "other fields"))
+    return out
 
 
 def recommended_indices(fields):
@@ -783,11 +852,15 @@ class Parcel100App(tk.Tk):
             return
         try:
             master = parse_master4(self.master_var.get())
-            precision = int(self.precision_var.get())
-            if precision < 5 or precision > 12:
-                raise ValueError("Coordinate precision must be between 5 and 12.")
         except Exception as exc:
-            messagebox.showerror(APP_NAME, str(exc))
+            messagebox.showerror(APP_NAME, f"Master 4: {exc}")
+            return
+        try:
+            precision = int(str(self.precision_var.get()).strip())
+            if precision < 5 or precision > 12:
+                raise ValueError
+        except (ValueError, tk.TclError):
+            messagebox.showerror(APP_NAME, "Coordinate precision: type a whole number from 5 to 12 (7 is the usual).")
             return
         fields = self._selected_field_names()
         if not fields:
@@ -800,17 +873,35 @@ class Parcel100App(tk.Tk):
             messagebox.showerror(APP_NAME, f"Cannot create output folder:\n{exc}")
             return
 
+        # 2.1: cell files left from another layer or field list are not skipped without a word.
+        replace = set()
+        clash = mismatched_cells(out_dir, master[4], self.layer_url, fields)
+        if clash:
+            listed = ", ".join(f"{c:03d}" for c, _ in clash[:20]) + (" ..." if len(clash) > 20 else "")
+            reasons = sorted({r for _, r in clash})
+            answer = messagebox.askyesnocancel(
+                APP_NAME,
+                f"{len(clash)} cell file(s) already in this folder were made from {' / '.join(reasons)}:\n{listed}\n\n"
+                "Yes = replace them with this layer and these fields\n"
+                "No = keep the old files (they are skipped)\n"
+                "Cancel = stop", icon="warning")
+            if answer is None:
+                self.status_var.set("Not built.")
+                return
+            if answer:
+                replace = {c for c, _ in clash}
+
         self.progress["value"] = 0
         self.set_busy(True)
         self.status_var.set("Starting...")
         self.worker = threading.Thread(
             target=self._build_worker,
-            args=(master, fields, precision, out_dir),
+            args=(master, fields, precision, out_dir, replace),
             daemon=True,
         )
         self.worker.start()
 
-    def _build_worker(self, master, fields, precision, out_dir):
+    def _build_worker(self, master, fields, precision, out_dir, replace=frozenset()):
         west, east, south, north, label = master
         cells = cell_bounds(west, east, south, north)
         max_count = int(self.meta.get("maxRecordCount") or 2000)
@@ -823,17 +914,23 @@ class Parcel100App(tk.Tk):
         empty_cells = 0
         rebuilt = []
         shortfalls = []
+        no_shape = 0
+        replaced = []
         try:
             for index, (cell_id, w, e, s, n) in enumerate(cells, start=1):
                 path = out_dir / output_name(label, cell_id)
                 if path.exists():
-                    if is_complete_cell(path):
+                    if cell_id in replace:
+                        replaced.append(cell_id)
+                        self.after(0, self.status_var.set, f"Cell {cell_id:03d}: replacing the old file")
+                    elif is_complete_cell(path):
                         existing_files += 1
                         self.after(0, self.status_var.set, f"Cell {cell_id:03d}: existing file - skipped")
                         self.after(0, self.progress.configure, {"value": index})
                         continue
-                    rebuilt.append(cell_id)
-                    self.after(0, self.status_var.set, f"Cell {cell_id:03d}: existing file is incomplete - rebuilding")
+                    else:
+                        rebuilt.append(cell_id)
+                        self.after(0, self.status_var.set, f"Cell {cell_id:03d}: existing file is incomplete - rebuilding")
 
                 def set_cell_status(text):
                     self.after(0, self.status_var.set, f"Cell {cell_id:03d}: {text}")
@@ -845,6 +942,12 @@ class Parcel100App(tk.Tk):
                     status_callback=set_cell_status,
                 )
                 if not ids:
+                    if cell_id in replace:
+                        # 2.1: the new layer has nothing here - remove the old layer's file too.
+                        try:
+                            path.unlink()
+                        except OSError:
+                            pass
                     empty_cells += 1
                     self.after(0, self.status_var.set, f"Cell {cell_id:03d}: EMPTY - skipped")
                     self.after(0, self.progress.configure, {"value": index})
@@ -863,31 +966,42 @@ class Parcel100App(tk.Tk):
                 )
                 if missing:
                     shortfalls.append((cell_id, len(missing), len(ids)))
+                no_shape += sum(1 for f in features if f.get("geometry") is None)
                 total_features += len(features)
                 write_feature_collection(path, features, label, cell_id, (w, e, s, n), url)
                 files_written += 1
                 self.after(0, self.progress.configure, {"value": index})
             self.after(0, self._build_done, out_dir, total_features, files_written, existing_files, empty_cells,
-                       rebuilt, shortfalls)
+                       rebuilt, shortfalls, no_shape, replaced)
         except Exception as exc:
             self.after(0, self._error, f"Build stopped:\n\n{exc}")
 
     def _build_done(self, out_dir, total_features, files_written, existing_files, empty_cells,
-                    rebuilt=(), shortfalls=()):
+                    rebuilt=(), shortfalls=(), no_shape=0, replaced=()):
         self.set_busy(False)
         missing_total = sum(n for _, n, _ in shortfalls)
+        # 2.1: the three cell counts are shown together so they visibly add up to 100; the parcel
+        # count (which can run to many thousands) is a separate line.
+        cells = files_written + existing_files + empty_cells
         self.status_var.set(
-            f"Complete{' with warning' if shortfalls else ''}: {files_written} GeoJSON files written, "
-            f"{existing_files} existing files skipped, {empty_cells} empty cells skipped, "
-            f"{total_features:,} parcel records written."
+            f"Complete{' with warning' if shortfalls else ''}: {cells} cells - {files_written} written, "
+            f"{existing_files} already there, {empty_cells} empty. {total_features:,} parcels written."
             + (f" {missing_total:,} parcels not returned by the service." if shortfalls else "")
         )
         text = (
-            f"Complete.\n\n{files_written} GeoJSON files written to:\n{out_dir}"
-            f"\n\n{existing_files} existing files skipped."
-            f"\n{empty_cells} empty cells skipped."
-            f"\n{total_features:,} parcel records written."
+            f"Complete.\n\n{cells} cells:\n"
+            f"   {files_written} written\n"
+            f"   {existing_files} already there (skipped)\n"
+            f"   {empty_cells} empty - no parcels (skipped)\n\n"
+            f"{total_features:,} parcels written into the {files_written} new file{'s' if files_written != 1 else ''}.\n\n"
+            f"Folder:\n{out_dir}"
         )
+        if replaced:
+            text += ("\n\nReplaced old cell files from another layer or field list: " +
+                     ", ".join(f"{c:03d}" for c in replaced) + ".")
+        if no_shape:
+            text += (f"\n\n{no_shape:,} parcel record(s) came from the service with no shape; they are in the "
+                     "files with their fields but draw nothing.")
         if rebuilt:
             text += ("\n\nRebuilt incomplete cell files left by an interrupted build: " +
                      ", ".join(f"{c:03d}" for c in rebuilt) + ".")

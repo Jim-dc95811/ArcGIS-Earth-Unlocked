@@ -177,7 +177,7 @@ Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KM
 
 *Nassau County hydrants around Callahan, Florida, with one hydrant's details open. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Point-Maps).*
 
-### **⬇️ [DOWNLOAD PARCEL100 v2.0](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.0.zip)**
+### **⬇️ [DOWNLOAD PARCEL100 v2.1](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Parcel100/blob/main/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Parcel100/blob/main/images/parcel100_whats_in_the_zip_full.png)**
 

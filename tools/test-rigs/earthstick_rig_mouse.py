@@ -81,7 +81,7 @@ es.sys = types.SimpleNamespace(stdout=types.SimpleNamespace(write=lambda *a: Non
 es.TriggerClick = types.SimpleNamespace(start=lambda: None)
 
 gd = es.gate_dropper_module()
-gd.drop_pair(gates_dir, (30.0, -80.0, 500.0, 0.0), (30.0, -79.0, 500.0, 0.0))   # gate B 500 m north of (30,-80), facing north
+gd.drop_pair(gates_dir, (30.0, -80.0, 500.0, 0.0), (31.0, -80.0, 500.0, 0.0))   # gate B 500 m north of (30,-80), facing north (partner due north, so true for both the old rule and the 2.0 kernel)
 glat, glon = gd.dest(30.0, -80.0, 0.0, 500.0)
 slat, slon = gd.dest(glat, glon, 180.0, 2000.0)                                  # 2 km before it
 Earth.camera = {"position": {"x": slon, "y": slat, "z": 200.0, "spatialReference": {"wkid": 4326}},

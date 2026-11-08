@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 r"""
-ArcGIS Earth PRAVE / ME Tracker - 2.0 (= v1.2; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
+ArcGIS Earth PRAVE / ME Tracker - 2.1 (2.0 = v1.2, the 2.0 Reference of 2026-11-08)
+
+2.1 re-hardening (Gold RMC/PRAVE parsing unchanged):
+    * ArcGIS Earth closed or restarted while tracking: "lost" and "back" are
+      logged once each (no line every second), and when it comes back every
+      known unit and ME are drawn again at once at their last positions
+    * a missing or busy COM port is explained in plain words (with the ports
+      this PC has), said once, then the tracker keeps waiting quietly
+    * the logs start a new file every day (..._2026-11-08.csv)
+    * a unit not heard from for STALE_AFTER_MINUTES shows its age in the map
+      label, for example "7-101 · 12 min" (refreshed once a minute)
 
 v1.2: the local ArcGIS Earth Automation API connection never goes through a
       system or agency proxy (Windows proxy settings could otherwise block
@@ -100,6 +110,10 @@ SESSION_STATE_FILENAME = "AE_PRAVE_previous_units.json"
 AUTO_RECONNECT = True
 RECONNECT_DELAY_SECONDS = 5.0
 
+# A unit not heard from for this many minutes shows its age in its map label,
+# for example "7-101 · 12 min". 0 = never.
+STALE_AFTER_MINUTES = 5
+
 # Console.
 SHOW_VALID_RMC = False
 SHOW_VALID_PRAVE = True
@@ -132,13 +146,24 @@ except ImportError:
     msvcrt = None
 
 
-VERSION = "2.0"   # program = v1.2, only this text changed
+VERSION = "2.1"   # 2.1 (2026-11-08) re-hardening: ArcGIS Earth lost/back + redraw, plain COM port messages, daily logs, stale-unit age labels
 
 me_tracking_enabled = ME_TRACKING_ENABLED_AT_START
 
 
 class RMCNoFix(ValueError):
     """RMC sentence is valid but the GPS reports no fix (status V)."""
+
+
+class EarthUnreachable(RuntimeError):
+    """ArcGIS Earth is not answering on this PC (closed, restarting or busy)."""
+
+
+class PortProblem(RuntimeError):
+    """The serial port is missing or held by another program (plain message)."""
+
+
+EARTH_RETRY_SECONDS = 5.0
 
 
 @dataclass
@@ -168,6 +193,7 @@ class PRAVEUnit:
     last_seen_local: datetime
     packet_count: int
     raw_sentence: str
+    received_monotonic: float = 0.0
 
 
 @dataclass
@@ -191,6 +217,14 @@ class TrackerState:
     me: RMCPosition | None = None
     startup_clean_done: bool = False
     gps_no_fix: bool = False
+    earth_down: bool = False
+    earth_next_try: float = 0.0
+    last_problem: str = ""
+    drawn: dict = None
+
+    def __post_init__(self):
+        if self.drawn is None:
+            self.drawn = {}
 
 
 def script_dir() -> Path:
@@ -201,16 +235,22 @@ def log_dir() -> Path:
     return script_dir() / LOG_FOLDER_NAME
 
 
+def daily(filename: str) -> str:
+    """One file per day: AE_RMC_Position_History.csv -> AE_RMC_Position_History_2026-11-08.csv"""
+    path = Path(filename)
+    return f"{path.stem}_{datetime.now().strftime('%Y-%m-%d')}{path.suffix}"
+
+
 def activity_log_path() -> Path:
-    return log_dir() / ACTIVITY_LOG_FILENAME
+    return log_dir() / daily(ACTIVITY_LOG_FILENAME)
 
 
 def prave_csv_path() -> Path:
-    return log_dir() / PRAVE_CSV_FILENAME
+    return log_dir() / daily(PRAVE_CSV_FILENAME)
 
 
 def rmc_csv_path() -> Path:
-    return log_dir() / RMC_CSV_FILENAME
+    return log_dir() / daily(RMC_CSV_FILENAME)
 
 
 def session_state_path() -> Path:
@@ -461,6 +501,7 @@ def parse_prave_sentence(sentence: str) -> PRAVEUnit | None:
         last_seen_local=datetime.now(),
         packet_count=1,
         raw_sentence=text,
+        received_monotonic=time.monotonic(),
     )
 
 
@@ -519,8 +560,8 @@ def http_json(method: str, path: str, payload: dict | None = None) -> object:
     except error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"ArcGIS Earth API HTTP {exc.code}: {body or exc.reason}") from exc
-    except error.URLError as exc:
-        raise RuntimeError(
+    except (error.URLError, TimeoutError, ConnectionError) as exc:
+        raise EarthUnreachable(
             "ArcGIS Earth Automation API is not reachable at "
             f"{ARCGIS_EARTH_API_BASE}. "
             "In ArcGIS Earth open Settings > Advanced application settings "
@@ -568,11 +609,23 @@ def check_icon_folder() -> None:
         log_message(f"ICON_WARNING missing in {folder}: {', '.join(missing)}")
 
 
+def unit_label(unit: PRAVEUnit) -> str:
+    """'7-101', or '7-101 · 12 min' once the unit has been quiet for STALE_AFTER_MINUTES."""
+    if not STALE_AFTER_MINUTES or not unit.received_monotonic:
+        return unit.display_id
+    minutes = int((time.monotonic() - unit.received_monotonic) // 60)
+    if minutes < STALE_AFTER_MINUTES:
+        return unit.display_id
+    if minutes < 60:
+        return f"{unit.display_id} · {minutes} min"
+    return f"{unit.display_id} · {minutes // 60} h {minutes % 60:02d} min"
+
+
 def build_unit_drawing(unit: PRAVEUnit) -> dict:
     payload = {
         "id": drawing_id(unit.raw_id),
         "visible": True,
-        "title": unit.display_id,
+        "title": unit_label(unit),
         "geometry": {
             "x": unit.lon,
             "y": unit.lat,
@@ -783,9 +836,37 @@ def record_prave(unit: PRAVEUnit) -> None:
 # Serial engine
 # ------------------------------------------------------------
 
+def ports_on_this_pc() -> list[str]:
+    try:
+        from serial.tools import list_ports
+        return sorted(p.device for p in list_ports.comports())
+    except Exception:
+        return []
+
+
 def open_input_port():
     if serial is None:
         raise RuntimeError("pyserial is not installed; run: py -m pip install pyserial")
+    try:
+        return _open_serial()
+    except serial.SerialException as exc:
+        text = str(exc)
+        ports = ports_on_this_pc()
+        if "PermissionError" in text or "Access is denied" in text or "Errno 13" in text or "Errno 16" in text:
+            raise PortProblem(
+                f"{INPUT_PORT} is in use by another program (the PRAVE tester, another tracker or a "
+                "terminal program). Close that program - the tracker keeps trying."
+            ) from None
+        if INPUT_PORT not in ports and ("FileNotFoundError" in text or "Errno 2" in text or "cannot find" in text):
+            raise PortProblem(
+                f"{INPUT_PORT} was not found. Serial ports on this PC: {', '.join(ports) or 'none'}. "
+                "Plug in the radio cable, or set INPUT_PORT at the top of System Files\\PRAVE_ME_Tracker.py "
+                "to one of those ports. The tracker keeps trying."
+            ) from None
+        raise
+
+
+def _open_serial():
     return serial.Serial(
         port=INPUT_PORT,
         baudrate=INPUT_BAUD,
@@ -850,6 +931,62 @@ def print_summary(counters: Counters, units: dict[str, PRAVEUnit], me: RMCPositi
     )
 
 
+def redraw_everything(state: TrackerState) -> None:
+    """ArcGIS Earth came back (or was restarted): put every known unit and ME back at once."""
+    for unit in list(state.units.values()):
+        replace_unit_drawing(unit)
+        state.drawn[unit.raw_id] = unit_label(unit)
+    if state.me is not None and me_tracking_enabled:
+        replace_me_drawing(state.me)
+
+
+def earth_action(state: TrackerState, action, count: bool = True) -> bool:
+    """Run one ArcGIS Earth update. While ArcGIS Earth is gone, say so once and retry every
+    EARTH_RETRY_SECONDS; when it answers again, say so once and redraw everything."""
+    now = time.monotonic()
+    if state.earth_down:
+        if now < state.earth_next_try:
+            return False
+        try:
+            redraw_everything(state)
+        except EarthUnreachable:
+            state.earth_next_try = now + EARTH_RETRY_SECONDS
+            return False
+        state.earth_down = False
+        log_message(f"ARCGIS_EARTH_BACK - redrew {len(state.units)} unit(s)"
+                    + (" and ME" if state.me is not None and me_tracking_enabled else ""))
+    try:
+        action()
+    except EarthUnreachable as exc:
+        state.counters.api_bad += 1
+        state.earth_down = True
+        state.earth_next_try = now + EARTH_RETRY_SECONDS
+        log_message(f"ARCGIS_EARTH_LOST {exc} Units keep being logged; they come back on the map "
+                    "as soon as ArcGIS Earth answers again.")
+        return False
+    if count:
+        state.counters.api_ok += 1
+    return True
+
+
+def refresh_stale_labels(state: TrackerState) -> None:
+    """Once a minute a quiet unit's label shows its age ('7-101 · 12 min')."""
+    if not STALE_AFTER_MINUTES or state.earth_down:
+        return
+    for unit in list(state.units.values()):
+        label = unit_label(unit)
+        if state.drawn.get(unit.raw_id) == label:
+            continue
+        try:
+            if earth_action(state, lambda u=unit: replace_unit_drawing(u)):
+                state.drawn[unit.raw_id] = label
+        except Exception as api_exc:
+            state.counters.api_bad += 1
+            log_message(f"API_BAD unit={unit.display_id} reason={api_exc}")
+        if state.earth_down:
+            return
+
+
 def run_gateway_once(state: TrackerState) -> None:
     ensure_directories()
     check_arcgis_earth_api()
@@ -863,16 +1000,21 @@ def run_gateway_once(state: TrackerState) -> None:
     counters = state.counters
     me = state.me
     last_summary = time.monotonic()
-
-    log_message(
-        f"START input={INPUT_PORT}@{INPUT_BAUD} api={ARCGIS_EARTH_API_BASE} "
-        f"icons={ICON_FOLDER}"
-    )
-    log_message("ARCGIS_EARTH_API_CONNECTED")
+    if state.earth_down:          # ArcGIS Earth answered the startup check again
+        state.earth_down = False
+        state.earth_next_try = 0.0
+        redraw_everything(state)
+        log_message(f"ARCGIS_EARTH_BACK - redrew {len(units)} unit(s)")
 
     with open_input_port() as ser_in:
         ser_in.reset_input_buffer()
+        log_message(
+            f"START input={INPUT_PORT}@{INPUT_BAUD} api={ARCGIS_EARTH_API_BASE} "
+            f"icons={ICON_FOLDER}"
+        )
+        log_message("ARCGIS_EARTH_API_CONNECTED")
         log_message(f"SERIAL_CONNECTED {INPUT_PORT}@{INPUT_BAUD} 8-N-1 flow=none")
+        state.last_problem = ""
 
         while True:
             poll_me_tracking_toggle()
@@ -909,9 +1051,7 @@ def run_gateway_once(state: TrackerState) -> None:
                     record_rmc(me)
 
                     try:
-                        update_me_when_tracking(me)
-                        if me_tracking_enabled:
-                            counters.api_ok += 1
+                        earth_action(state, lambda: update_me_when_tracking(me), count=me_tracking_enabled)
                     except Exception as api_exc:
                         # An ArcGIS Earth problem, not a bad sentence.
                         counters.api_bad += 1
@@ -938,10 +1078,10 @@ def run_gateway_once(state: TrackerState) -> None:
                     counters.valid_prave += 1
                     record_prave(unit)
 
+                    save_current_unit_ids(units)
                     try:
-                        replace_unit_drawing(unit)
-                        counters.api_ok += 1
-                        save_current_unit_ids(units)
+                        if earth_action(state, lambda: replace_unit_drawing(unit)):
+                            state.drawn[unit.raw_id] = unit_label(unit)
                     except Exception as api_exc:
                         # An ArcGIS Earth problem, not a bad sentence.
                         counters.api_bad += 1
@@ -967,6 +1107,9 @@ def run_gateway_once(state: TrackerState) -> None:
             if now_mono - last_summary >= 10.0:
                 print_summary(counters, units, state.me)
                 last_summary = now_mono
+                if state.earth_down:
+                    earth_action(state, lambda: None, count=False)   # quiet retry + redraw when back
+                refresh_stale_labels(state)
 
 
 # ------------------------------------------------------------
@@ -1101,10 +1244,17 @@ def main() -> int:
             log_message("STOP user keyboard interrupt")
             return 0
         except Exception as exc:
-            log_message(f"ERROR {exc}")
-            if not AUTO_RECONNECT:
+            # Say each problem once; while it lasts, keep trying quietly.
+            if isinstance(exc, EarthUnreachable):
+                state.earth_down = True
+            if str(exc) != state.last_problem:
+                state.last_problem = str(exc)
+                log_message(f"ERROR {exc}")
+                if not AUTO_RECONNECT:
+                    return 1
+                log_message(f"RECONNECT trying every {RECONNECT_DELAY_SECONDS:.0f} seconds (quietly until something changes)")
+            elif not AUTO_RECONNECT:
                 return 1
-            log_message(f"RECONNECT waiting {RECONNECT_DELAY_SECONDS:.1f} seconds")
             try:
                 time.sleep(RECONNECT_DELAY_SECONDS)
             except KeyboardInterrupt:

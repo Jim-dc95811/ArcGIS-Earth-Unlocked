@@ -29,6 +29,7 @@ Written by Claude for the next Claude (and any person + AI team). Everything her
 | `driveby [m] [low ft]` | 5 | dip to low_ft while tilting up to 80, cruise, climb back; 40 s | flew as planned - but off the map edge (see rules) |
 | `downtown` / `goto()` | 6 | point to point: turn onto the bearing in the first quarter, climb to cruise, fly, descend, arrive `stop_short_m` before the target looking at it | arrived exactly on the planned point |
 | `gaterun` | 7 | add World Gates v21, goto the line-up point 1.5 km before a gate at the gate's height, turn onto the gate's facing, straight run (ease in, full speed), PUT the gate's destination (the jump), glide out (ease out) | JAX 'ATL' gate -> Atlanta |
+| `course [s]` | - | Obstacle Course v1 (`course.py`): adds the hoop KMZ, lines up 600 m before hoop 1, one clock-timed Hermite curve through every hoop centre, scorecard + `course_path.csv` (scorer also reads Flight Recorder CSVs) | 7/7 dead centre, 100.0 s exactly, 19:22 |
 | `jaxtour` | - | the recordable Dark Jacksonville tour: downtown, orbit, neighbourhood, drive-by, climb-out (~3 min planned, ~4.3 min flown) | recorded + reviewed 18:55 |
 | `tour` | 8 | chain: JAX gate home from Atlanta, downtown, orbit 360, the neighbourhood, turn, drive-by, climb-out; ~4 min | all six stops clean |
 
@@ -45,6 +46,8 @@ Gate data comes from EarthStick's own loader (`load_gates`): `lat, lon, alt_m, f
 ## Reviewing a flight from video (2026-11-07)
 
 Jim screen-records the flight and saves it to Downloads (stay under 400 MB: 720p or 1080p at a low bitrate). Claude pulls frames with ffmpeg (`fps=1/5` contact sheets with timestamps, plus full frames at key moments), reads ArcGIS Earth's status-bar eye alt in the frames, and matches them to the log. First review found: **moves run ~1.45x longer than planned** (fixed sleep after slow GET + PUT calls) - next version must time moves by the clock; low drive-by at tilt 80 shows too much sky; routes should stay over the city, not the river; the climb-out toward the stadium window is the money shot. `jaxtour` = the recordable tour (no gate).
+
+**Second review (Obstacle Course v1, 19:30):** the clock timing works (100 s planned = 100.0 s flown). For hoop runs fly at tilt ~85 so hoops stay centred as you pass through; keep courses over the lit city, not the river at the map's edge.
 
 ## Next on the syllabus
 

@@ -1,18 +1,20 @@
-"""Obstacle Course v1 - square hoops over Dark Jacksonville, a KMZ to see them, and a scorer.
+"""Obstacle Course v2 - square hoops over the lit streets of Dark Jacksonville (v1 started over the river), a KMZ to see them, and a scorer.
 Shared by Claude's runner (claude_flight.py course) and by people (Flight Recorder CSV -> score_csv)."""
 import math, zipfile
 
 R = 6371008.8
 HALF = 75.0   # half the square's side (m): hoops are 150 m (~490 ft) across
 # name, lat, lon, alt_m (sea level), facing (direction you fly through it)
-HOOPS = [
-    ("1 START",   30.3040, -81.6720, 150.0,  45.0),
-    ("2",         30.3120, -81.6640, 120.0,  45.0),
-    ("3 CLIMB",   30.3200, -81.6640, 200.0,   0.0),
-    ("4 HIGH",    30.3280, -81.6620, 300.0,  20.0),
-    ("5 DIVE",    30.3330, -81.6540,  80.0,  90.0),
-    ("6 TURN",    30.3290, -81.6450, 100.0, 160.0),
-    ("7 FINISH",  30.3220, -81.6400, 150.0, 200.0),
+NAME = "Obstacle Course v2"
+FILE = "Obstacle_Course_v2.kmz"
+HOOPS = [   # College Park -> Kings Road -> north side -> along 21st St -> Springfield -> back to downtown
+    ("1 START",   30.3300, -81.6920, 120.0,  50.0),
+    ("2",         30.3400, -81.6800, 100.0,  45.0),
+    ("3 CLIMB",   30.3500, -81.6680, 180.0,  48.0),
+    ("4 HIGH",    30.3580, -81.6540, 260.0,  87.0),
+    ("5 DIVE",    30.3520, -81.6410,  90.0, 157.0),
+    ("6 TURN",    30.3420, -81.6440, 110.0, 206.0),
+    ("7 FINISH",  30.3330, -81.6520, 150.0, 220.0),
 ]
 
 
@@ -38,7 +40,7 @@ def kml():
 <LineString><altitudeMode>absolute</altitudeMode><coordinates>{coords}</coordinates></LineString></Placemark>
 <Placemark><name>{name}</name><Style><IconStyle><scale>0</scale></IconStyle><LabelStyle><color>{col}</color><scale>1.3</scale></LabelStyle></Style>
 <Point><altitudeMode>absolute</altitudeMode><coordinates>{lon:.7f},{lat:.7f},{alt + HALF + 25:.1f}</coordinates></Point></Placemark>""")
-    return ('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Obstacle Course v1</name>'
+    return ('<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Obstacle Course v2</name>'
             + "\n".join(pm) + "</Document></kml>")
 
 
@@ -93,4 +95,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1].endswith(".csv"):
         print("\n".join(score_csv(sys.argv[1])[0]))
     else:
-        write_kmz("Obstacle_Course_v1.kmz"); print("wrote Obstacle_Course_v1.kmz")
+        write_kmz(FILE); print("wrote", FILE)

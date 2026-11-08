@@ -249,20 +249,20 @@ def add_gates():
         print(f"(Could not add the gate layer: {exc} - flying anyway.)")
 
 
-def run_course(seconds=100.0, hz=20.0):
+def run_course(seconds=100.0, hz=20.0, course_tilt=85.0):
     """Obstacle Course v1: line up on hoop 1, then one smooth curve through every hoop's centre
     (Hermite spline, the curve's direction at each hoop = the hoop's facing), timed by the clock.
     The real camera path is scored hoop by hoop and written to course_path.csv."""
     import importlib.util
     spec = importlib.util.spec_from_file_location("course", str(Path(__file__).resolve().parent / "course.py"))
     C = importlib.util.module_from_spec(spec); spec.loader.exec_module(C)
-    kmz = Path(__file__).resolve().parent.parent / "Obstacle_Course_v1.kmz"
+    kmz = Path(__file__).resolve().parent.parent / C.FILE
     C.write_kmz(str(kmz))
     try:
         req = urllib.request.Request("http://localhost:8000/arcgisearth/layer", method="POST",
                                      data=json.dumps({"URI": str(kmz), "target": "operationalLayers", "type": "KML"}).encode(),
                                      headers={"Content-Type": "application/json", "Accept": "application/json"})
-        _OPEN.open(req, timeout=10).read(); print("Obstacle Course v1 added to the map.")
+        _OPEN.open(req, timeout=10).read(); print(f"{C.NAME} added to the map.")
     except Exception as exc:
         print(f"(Could not add the course layer: {exc})")
     h = C.HOOPS
@@ -308,6 +308,7 @@ def run_course(seconds=100.0, hz=20.0):
         ease = (1 - math.cos(math.pi * f)) / 2                           # gentle start and stop
         lat, lon, z, hd = at(total * ease)
         nxt = dict(cam); nxt["position"] = dict(cam["position"], x=lon, y=lat, z=z); nxt["heading"] = hd
+        nxt["tilt"] = cam.get("tilt", 70.0) + (course_tilt - cam.get("tilt", 70.0)) * min(1.0, el / 4.0)   # eyes up to the horizon
         call("PUT", nxt); sent = nxt
         if f >= 1.0:
             break
@@ -316,7 +317,7 @@ def run_course(seconds=100.0, hz=20.0):
         fh.write("t_s,lon,lat,alt_m\n")
         for p_ in path: fh.write(f"{p_[0]:.3f},{p_[1]:.7f},{p_[2]:.7f},{p_[3]:.2f}\n")
     lines, _ = C.score(path)
-    print("\n=== OBSTACLE COURSE v1 - SCORECARD ===")
+    print(f"\n=== {C.NAME.upper()} - SCORECARD ===")
     for ln in lines: print(ln)
     print("Hovering. Finished:"); show(call("GET"))
 

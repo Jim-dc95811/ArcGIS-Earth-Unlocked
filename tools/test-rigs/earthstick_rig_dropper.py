@@ -14,6 +14,7 @@ mock ArcGIS Earth API (camera GET/PUT + POST /arcgisearth/layer):
                                                      it looked at mark 2 (TEST2: gates face the pilot's heading)
 """
 import json, math, os, shutil, sys, tempfile, threading, types
+import tempfile as _tf; os.environ["LOCALAPPDATA"] = _tf.mkdtemp(prefix="es_lad_")   # 1.3.11: last-flown note goes here
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SRC = os.path.abspath(sys.argv[1])
@@ -76,7 +77,7 @@ class Clock:
 
 
 es.time = types.SimpleNamespace(perf_counter=Clock.perf_counter, sleep=Clock.sleep, monotonic=Clock.perf_counter)
-es.os = types.SimpleNamespace(name="nt")
+es.os = types.SimpleNamespace(**{**{k: getattr(os, k) for k in dir(os) if not k.startswith("__")}, "name": "nt"})  # 1.3.11: real os, Windows name
 printed = []
 es.print = lambda *a, **k: printed.append(" ".join(str(x) for x in a))
 es.sys = types.SimpleNamespace(stdout=types.SimpleNamespace(write=printed.append, flush=lambda: None), argv=sys.argv)
@@ -90,7 +91,7 @@ def at(lat, lon, z, heading):
 
 lon2, lat2 = es.move_lonlat(-80.0, 30.0, 90.0, 3000.0, 0.0)          # mark 2: 3 km east
 lon0, lat0 = es.move_lonlat(-80.0, 30.0, 90.0, -500.0, 0.0)          # 500 m before mark 1
-B2 = 1 << 1
+B2 = 1 << (getattr(es, "DROP_BUTTON", 2) - 1)   # the drop button (Button 2 in 1.3.6-1.3.9, the trigger = Button 1 from 1.3.10)
 SNAP = os.path.join(tmp, "snapshot")
 
 

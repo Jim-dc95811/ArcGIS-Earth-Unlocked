@@ -5,6 +5,7 @@ Hover 2 km before a dropped gate, 300 m below it (inside its grab zone), stick n
 pans the map 15 m east every time EarthStick reads the camera. Counts camera PUTs that put the map back.
 """
 import json, os, shutil, sys, tempfile, threading, types
+import tempfile as _tf; os.environ["LOCALAPPDATA"] = _tf.mkdtemp(prefix="es_lad_")   # 1.3.11: last-flown note goes here
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SRC = os.path.abspath(sys.argv[1])
@@ -74,7 +75,7 @@ class Clock:
 
 
 es.time = types.SimpleNamespace(perf_counter=Clock.perf_counter, sleep=Clock.sleep, monotonic=Clock.perf_counter)
-es.os = types.SimpleNamespace(name="nt")
+es.os = types.SimpleNamespace(**{**{k: getattr(os, k) for k in dir(os) if not k.startswith("__")}, "name": "nt"})  # 1.3.11: real os, Windows name
 es.print = lambda *a, **k: None
 es.sys = types.SimpleNamespace(stdout=types.SimpleNamespace(write=lambda *a: None, flush=lambda: None), argv=sys.argv)
 es.TriggerClick = types.SimpleNamespace(start=lambda: None)

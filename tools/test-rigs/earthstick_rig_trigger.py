@@ -3,6 +3,7 @@
 python3 es_rig.py <path to EarthStick.py> <scenario>   -> prints one JSON line
 """
 import json, os, sys, threading, types
+import tempfile as _tf; os.environ["LOCALAPPDATA"] = _tf.mkdtemp(prefix="es_lad_")   # 1.3.11: last-flown note goes here
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PATH, SCENARIO = sys.argv[1], sys.argv[2]
@@ -61,7 +62,7 @@ class Clock:
 
 
 es.time = types.SimpleNamespace(perf_counter=Clock.perf_counter, sleep=Clock.sleep, monotonic=Clock.perf_counter)
-es.os = types.SimpleNamespace(name="nt")            # pretend to be Windows
+es.os = types.SimpleNamespace(**{**{k: getattr(os, k) for k in dir(os) if not k.startswith("__")}, "name": "nt"})  # 1.3.11: real os, Windows name            # pretend to be Windows
 printed = []
 real_stdout = sys.stdout
 es.print = lambda *a, **k: printed.append(" ".join(str(x) for x in a))

@@ -188,7 +188,7 @@ Zip [`releases/PointLayer_v2.0.zip`](https://github.com/Jim-dc95811/Point-Maps/r
 
 Zip [`downloads/Parcel100_v2.0.zip`](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.0.zip) (repository [Parcel100](https://github.com/Jim-dc95811/Parcel100)):
 
-`8a314f1abf2020036e4669002abb82ce906ad2bafc57dcdac4613f2a3e8f58a9`  *(rebuilt by the repository's GitHub workflow - check the files inside)*
+`9f6066bd03306f03d9faa7d3a3afbc94055e6845c2a5cc25d3a64d31d0b6ee59`  *(rebuilt by the repository's GitHub workflow - check the files inside)*
 
 | File | SHA-256 |
 |---|---|

@@ -249,6 +249,78 @@ def add_gates():
         print(f"(Could not add the gate layer: {exc} - flying anyway.)")
 
 
+def run_course(seconds=100.0, hz=20.0):
+    """Obstacle Course v1: line up on hoop 1, then one smooth curve through every hoop's centre
+    (Hermite spline, the curve's direction at each hoop = the hoop's facing), timed by the clock.
+    The real camera path is scored hoop by hoop and written to course_path.csv."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("course", str(Path(__file__).resolve().parent / "course.py"))
+    C = importlib.util.module_from_spec(spec); spec.loader.exec_module(C)
+    kmz = Path(__file__).resolve().parent.parent / "Obstacle_Course_v1.kmz"
+    C.write_kmz(str(kmz))
+    try:
+        req = urllib.request.Request("http://localhost:8000/arcgisearth/layer", method="POST",
+                                     data=json.dumps({"URI": str(kmz), "target": "operationalLayers", "type": "KML"}).encode(),
+                                     headers={"Content-Type": "application/json", "Accept": "application/json"})
+        _OPEN.open(req, timeout=10).read(); print("Obstacle Course v1 added to the map.")
+    except Exception as exc:
+        print(f"(Could not add the course layer: {exc})")
+    h = C.HOOPS
+    # knots: line-up 600 m before hoop 1, every hoop, exit 300 m after the last
+    l0 = C.dest(h[0][1], h[0][2], h[0][4] + 180, 600.0)
+    lN = C.dest(h[-1][1], h[-1][2], h[-1][4], 300.0)
+    knots = [(l0[0], l0[1], h[0][3], h[0][4])] + [(la, lo, al, fa) for _, la, lo, al, fa in h] + [(lN[0], lN[1], h[-1][3], h[-1][4])]
+    print("Leg: to the start line")
+    goto(knots[0][0], knots[0][1], stop_short_m=0.0, cruise_ft=1200.0, arrive_ft=knots[0][2] / 0.3048, seconds=35.0)
+    cam = call("GET")
+    turn((((knots[0][3] - cam["heading"]) + 540) % 360) - 180, seconds=6.0)
+    lat0, lon0 = knots[0][0], knots[0][1]
+    P = [C.enu(lat0, lon0, k[0], k[1]) for k in knots]
+    seg = [math.hypot(P[i + 1][0] - P[i][0], P[i + 1][1] - P[i][1]) for i in range(len(P) - 1)]
+    total = sum(seg)
+    def at(sdist):
+        i = 0
+        while i < len(seg) - 1 and sdist > seg[i]:
+            sdist -= seg[i]; i += 1
+        u = max(0.0, min(1.0, sdist / seg[i])); L = seg[i]
+        (x0, y0), (x1, y1) = P[i], P[i + 1]
+        t0 = (math.sin(math.radians(knots[i][3])) * L, math.cos(math.radians(knots[i][3])) * L)
+        t1 = (math.sin(math.radians(knots[i + 1][3])) * L, math.cos(math.radians(knots[i + 1][3])) * L)
+        h00, h10, h01, h11 = 2*u**3 - 3*u**2 + 1, u**3 - 2*u**2 + u, -2*u**3 + 3*u**2, u**3 - u**2
+        d00, d10, d01, d11 = 6*u**2 - 6*u, 3*u**2 - 4*u + 1, -6*u**2 + 6*u, 3*u**2 - 2*u
+        x = h00*x0 + h10*t0[0] + h01*x1 + h11*t1[0]; y = h00*y0 + h10*t0[1] + h01*y1 + h11*t1[1]
+        dx = d00*x0 + d10*t0[0] + d01*x1 + d11*t1[0]; dy = d00*y0 + d10*t0[1] + d01*y1 + d11*t1[1]
+        z = knots[i][2] + (knots[i + 1][2] - knots[i][2]) * (3*u**2 - 2*u**3)
+        lat = lat0 + math.degrees(y / C.R); lon = lon0 + math.degrees(x / (C.R * math.cos(math.radians(lat0))))
+        return lat, lon, z, (math.degrees(math.atan2(dx, dy)) + 360) % 360
+    print(f"Leg: the course - {total:,.0f} m through {len(h)} hoops in {seconds:.0f} s")
+    cam = call("GET"); sent = cam; path = []; t0c = time.perf_counter()
+    while True:
+        el = time.perf_counter() - t0c
+        f = min(1.0, el / seconds)
+        now = call("GET")
+        path.append((el, now["position"]["x"], now["position"]["y"], now["position"]["z"]))
+        if (abs(((now.get("heading", 0) - sent.get("heading", 0) + 540) % 360) - 180) > 8.0
+                or abs(now["position"]["z"] - sent["position"]["z"]) > 20.0
+                or abs(now["position"]["x"] - sent["position"]["x"]) > 2e-3
+                or abs(now["position"]["y"] - sent["position"]["y"]) > 2e-3):
+            print("\nSomeone else moved the camera - Claude lets go. Your plane."); break
+        ease = (1 - math.cos(math.pi * f)) / 2                           # gentle start and stop
+        lat, lon, z, hd = at(total * ease)
+        nxt = dict(cam); nxt["position"] = dict(cam["position"], x=lon, y=lat, z=z); nxt["heading"] = hd
+        call("PUT", nxt); sent = nxt
+        if f >= 1.0:
+            break
+        time.sleep(max(0.0, (1.0 / hz) - 0.0))
+    with open(Path(__file__).resolve().parent.parent / "course_path.csv", "w", encoding="utf-8") as fh:
+        fh.write("t_s,lon,lat,alt_m\n")
+        for p_ in path: fh.write(f"{p_[0]:.3f},{p_[1]:.7f},{p_[2]:.7f},{p_[3]:.2f}\n")
+    lines, _ = C.score(path)
+    print("\n=== OBSTACLE COURSE v1 - SCORECARD ===")
+    for ln in lines: print(ln)
+    print("Hovering. Finished:"); show(call("GET"))
+
+
 def jaxtour():
     """The recorded tour: Dark Jacksonville only, no gate - downtown, chopper orbit, the neighbourhood,
     drive-by, climb-out. Starts from wherever the camera is over Jacksonville."""
@@ -291,7 +363,9 @@ if __name__ == "__main__":
     try:
         mode = sys.argv[1] if len(sys.argv) > 1 else "read"
         print(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {mode}")
-        if mode == "jaxtour":
+        if mode == "course":
+            run_course(float(sys.argv[2]) if len(sys.argv) > 2 else 100.0)
+        elif mode == "jaxtour":
             jaxtour()
         elif mode == "tour":
             tour()

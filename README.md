@@ -34,7 +34,7 @@ Each page has its own downloads, user manuals, pictures and videos:
 
 Fly through a golden gate over Jacksonville and come out over the Statue of Liberty. New in 1.3.4: square gates whose legs show you how to line up, a green light when you're at the right height, and a tractor beam that guides you through. Connect in Atlanta, then go around the world: **New York, London, Paris, Rome, Tokyo, Sydney and Rio**. Every city greets you with a welcome sign and its famous sites floating in the sky; pull the trigger on one and a coloured beacon lights it up. ▶️ **[Watch the video: ArcGIS Earth Flight - City to City Using Wormholes](https://www.youtube.com/watch?v=2N8-4cWMoPw)** (YouTube).
 
-[![Fly the real world in 7 steps: get ArcGIS Earth, turn on the Automation API, get Python 3, install the Thrustmaster driver then plug in the joystick, download EarthStick and Extract All, start it, open the KMZ file, fly through](images/earthstick_getting_started.png)](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_getting_started_full.png)
+[![Fly the real world in 7 steps: get ArcGIS Earth, turn on the Automation API, get Python 3, plug in the joystick (no driver needed), download EarthStick and Extract All, start it, open the KMZ file, fly through](images/earthstick_getting_started.png)](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_getting_started_full.png)
 
 *Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 

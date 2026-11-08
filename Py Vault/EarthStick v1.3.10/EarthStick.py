@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""EarthStick 1.3.9
+"""EarthStick 1.3.10
+
+1.3.10: buttons swapped (Jim, 2026-11-07, two-handed flying: the mouse does the clicking, so the trigger drops
+  gates) - Button 1 (trigger) = Gate Dropper (press at two places; hold 2 s = undo), Button 2 = click the object
+  under the crosshair. Nothing else changed from 1.3.9.
 
 1.3.9: hardening (Jim approved 1, 2, 3, 5, 6 on 2026-11-08) - flying, gates and Gate Dropper unchanged:
   1. only one EarthStick at a time: a second copy (an extra double-click on a slow PC) says so and closes,
@@ -104,8 +108,8 @@ Controls:
 
 Button 4 (red top button) zooms in / descends.
 Button 3 (black thumb button) zooms out / climbs.
-Button 1 (trigger) clicks the object under the crosshair.
-Button 2 drops gates: press once at each of two places (1.3.6).
+Button 1 (trigger) drops gates: press once at each of two places; hold 2 s = undo (1.3.10; was Button 2).
+Button 2 clicks the object under the crosshair (1.3.10; was Button 1).
 Neutral controls stop and hover in place.
 
 Standard-library only. Windows desktop ArcGIS Earth Automation API is expected
@@ -128,7 +132,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
 
-VERSION = "1.3.9"
+VERSION = "1.3.10"
 BASE_URL = "http://localhost:8000"
 CAMERA_URL = BASE_URL + "/arcgisearth/camera"
 TARGET_NAME = "T.A320 Pilot"
@@ -149,7 +153,7 @@ INVERT_TWIST = False
 INVERT_THROTTLE = True
 
 # Trigger-click (1.2)
-TRIGGER_BUTTON = 1            # joystick button that clicks (joy.cpl numbering)
+TRIGGER_BUTTON = 2            # 1.3.10: joystick button that clicks (joy.cpl numbering); was 1 (Jim: the trigger drops gates, the mouse does two-handed work)
 EARTH_EXE = "arcgisearth"     # matched against the window's program file name
 CENTER_OFFSET_X = 0           # nudge the crosshair (screen pixels) if needed
 CENTER_OFFSET_Y = 0
@@ -186,7 +190,7 @@ TRACTOR_CAPTURE = 1.0         # ...when within this many ring radii above or bel
 TRACTOR_HALF_LIFE_S = 1.0     # half the remaining height gap is closed every this many seconds
 TRACTOR_TEXT = "\u25cf LOCKED ON"
 
-DROP_BUTTON = 2               # 1.3.6: Gate Dropper button (joy.cpl numbering)
+DROP_BUTTON = 1               # 1.3.10: Gate Dropper on the trigger (was Button 2 in 1.3.6-1.3.9)
 DROP_ADD_TO_MAP = True        # 1.3.6: ask ArcGIS Earth to show a dropped gate file on the map
 DROP_UNDO_HOLD_S = 2.0        # 1.3.6 TEST4: hold Button 2 this long = undo
 NOTICE_S = 5.0                # 1.3.6: how long a Gate Dropper message stays above the readout
@@ -904,7 +908,7 @@ def _drop_number(f):
 
 
 class GateDropper:
-    """1.3.6: Button 2 marks a place; the second mark writes a gate pair (gate_dropper.py)."""
+    """1.3.6: the drop button (Button 1 since 1.3.10) marks a place; the second mark writes a gate pair (gate_dropper.py)."""
 
     def __init__(self, folder):
         self.folder = Path(folder)
@@ -952,7 +956,7 @@ class GateDropper:
         return f"UNDONE · {last.stem}", last.name
 
     def press(self, cam):
-        """Handle one Button 2 press at camera cam. Returns (message, written_path_or_None)."""
+        """Handle one drop-button press at camera cam. Returns (message, written_path_or_None)."""
         gd = gate_dropper_module()
         here = (float(cam["position"]["y"]), float(cam["position"]["x"]), float(cam["position"]["z"]),
                 float(cam.get("heading", 0.0)))           # TEST2: the gate faces the way you are looking
@@ -1121,8 +1125,8 @@ def run():
     print(f"EarthStick {VERSION}")
     print("Minimal T.A320 Pilot -> ArcGIS Earth bridge")
     print("Button 4 = descend/zoom in; Button 3 = climb/zoom out; neutral = hover.")
-    print(f"Button {TRIGGER_BUTTON} (trigger) = click the object under the crosshair.")
-    print(f"Button {DROP_BUTTON} = Gate Dropper: press at one place, then at another - a gate pair appears there.")
+    print(f"Button {TRIGGER_BUTTON} = click the object under the crosshair.")
+    print(f"Button {DROP_BUTTON} (trigger) = Gate Dropper (hold 2 s = undo): press at one place, then at another - a gate pair appears there.")
     print()
 
     if os.name != "nt":
@@ -1237,9 +1241,9 @@ def run():
         if clicker is not None:
             clicker.on_buttons(state["buttons"])
 
-        # 1.3.6: Gate Dropper (Button 2)
+        # 1.3.6: Gate Dropper (DROP_BUTTON: Button 1 since 1.3.10)
         drop_action = dropper.update(bool(state["buttons"] & (1 << (DROP_BUTTON - 1))), loop_start)
-        if drop_action == "undo":                          # TEST4: hold Button 2 = undo
+        if drop_action == "undo":                          # TEST4: hold the drop button = undo
             try:
                 msg, removed = dropper.undo()
                 if removed is not None:
@@ -1495,7 +1499,7 @@ def selftest():
     # press, hold, release, press too soon, release, press later
     assert [g.update(d, t) for d, t in ((True, 0.0), (True, 0.1), (False, 0.2), (True, 0.5),
                                          (False, 0.6), (True, 1.0))] == [True, False, False, False, False, True]
-    assert TRIGGER_BUTTON not in (3, 4)
+    assert TRIGGER_BUTTON not in (3, 4) and DROP_BUTTON not in (3, 4) and TRIGGER_BUTTON != DROP_BUTTON
     assert ACTIVATE_PAUSE_S > 0.5 and CLICK_LOCKOUT_S > ACTIVATE_PAUSE_S
 
     # Wormholes (1.3): a ring facing north over (30.0, -81.0) at 500 m, radius 150 m.

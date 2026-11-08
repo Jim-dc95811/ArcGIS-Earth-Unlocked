@@ -38,11 +38,11 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 *Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 
-**⬇️ [Download EarthStick v1.3.9 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.9.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
+**⬇️ [Download EarthStick v1.3.10 with World Gates](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.10.zip)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
 
 **🛠️ Make your own gates:** **[⬇️ World Gate Maker v1.2.1](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v1.2.1.zip)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
 
-**🆕 Or drop them as you fly (EarthStick 1.3.6):** press Button 2 at one place and again at another - a pair of thin black gates appears in front of you, no typing. Hold Button 2 to undo. **[How the Gate Dropper works](https://github.com/Jim-dc95811/EarthStick#drop-gates-as-you-fly-new-in-136)**
+**🆕 Or drop them as you fly (EarthStick 1.3.6):** pull the trigger at one place and again at another - a pair of thin black gates appears in front of you, no typing. Hold the trigger to undo. **[How the Gate Dropper works](https://github.com/Jim-dc95811/EarthStick#drop-gates-as-you-fly-new-in-136)**
 
 ## 🆕 New: Picture worlds - fly into giant photographs
 
@@ -133,11 +133,11 @@ Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - in
 
 *A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Picture-World-Maker).*
 
-### **⬇️ [DOWNLOAD EARTHSTICK v1.3.9](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.9.zip)**
+### **⬇️ [DOWNLOAD EARTHSTICK v1.3.10](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v1.3.10.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**
 
-Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. One double-click gets the PC ready (it even installs Python for you). Let go and it hovers; pull the trigger to open what's under the crosshair. **World Gates** - fly through a golden gate and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, your height, heading and map zoom on screen (1.3.3), and - new in 1.3.4 - square gates, a green ring-height light and a tractor beam that guides you through.
+Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. One double-click gets the PC ready (it even installs Python for you). Let go and it hovers; pull the trigger to drop gates as you fly, press Button 2 to open what's under the crosshair. **World Gates** - fly through a golden gate and come out on the other side of the world. Includes the round-the-world tour with welcome signs and one-click site beacons, a one-click taskbar start, your height, heading and map zoom on screen (1.3.3), and - new in 1.3.4 - square gates, a green ring-height light and a tractor beam that guides you through.
 
 [![Flying low over the St. Johns River with a beacon and sky compass on the horizon.](images/earthstick.jpg)](https://github.com/Jim-dc95811/EarthStick)
 

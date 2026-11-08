@@ -149,7 +149,8 @@ def inspect_raster_pillow(path: Path) -> RasterInfo:
     Image.MAX_IMAGE_PIXELS = None
     try:
         with Image.open(path) as im:
-            width, height = im.size
+            from PWM_PHOTO_TILER import upright_size
+            width, height = upright_size(im)      # 2.1: a phone photo stored sideways is measured upright
             driver = im.format or "Raster"
             tags = getattr(im, "tag_v2", None)
             geo = bool(tags) and any(t in tags for t in GEOTIFF_TAGS)
@@ -383,15 +384,65 @@ def _run_converter(converter: Path, mbtiles: Path, tpkx: Path, emit, cancel_even
         raise PictureWorldError("TPKX converter failed.\n\n" + "\n".join(tail[-15:]))
 
 
-def _publish(src: Path, dst: Path) -> None:
+def _publish(src: Path, dst: Path, replace_existing: bool = False) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    if dst.exists():
-        raise FileExistsError(f"Output already exists: {dst}")
+    if dst.exists() and not replace_existing:
+        raise PictureWorldError(f"{dst.name} is already in\n{dst.parent}\n\nChoose another name, or delete or move the old file.")
     partial = dst.with_name("." + dst.name + ".__publishing")
     if partial.exists():
         partial.unlink()
     shutil.copy2(src, partial)
-    partial.replace(dst)
+    partial.replace(dst)          # replaces an old file only when everything before succeeded
+
+
+# 2.1 disk-space check. Measured: Kings Reach 35,216 tiles -> MBTiles 465 MB, TPKX 442 MB (~13 KB a tile);
+# 20 KB a tile leaves room for busier pictures.
+SPACE_BYTES_PER_TILE = 20_000
+SPACE_SLACK_BYTES = 200_000_000
+
+
+def space_needed(tiles: int, output_mode: str) -> tuple[int, int]:
+    """(bytes needed in the temporary folder, bytes needed in the output folder)."""
+    one = tiles * SPACE_BYTES_PER_TILE
+    mode = output_mode.lower()
+    temp = one * (2 if mode in {"tpkx", "both"} else 1) + SPACE_SLACK_BYTES
+    out = one * (2 if mode == "both" else 1) + SPACE_SLACK_BYTES // 4
+    return temp, out
+
+
+def _gb(n: int) -> str:
+    return f"{n / 1e9:.1f} GB"
+
+
+def check_disk_space(tiles: int, output_mode: str, output_dir: Path, temp_dir: Optional[Path] = None) -> None:
+    """Stop before any long work when the temporary folder's or the output folder's drive is too full."""
+    temp_dir = Path(temp_dir or tempfile.gettempdir())
+    need_temp, need_out = space_needed(tiles, output_mode)
+    probe_out = Path(output_dir)
+    while not probe_out.exists() and probe_out.parent != probe_out:
+        probe_out = probe_out.parent
+    try:
+        free_temp = shutil.disk_usage(temp_dir).free
+        free_out = shutil.disk_usage(probe_out).free
+        same = os.path.splitdrive(str(temp_dir.resolve()))[0].lower() == os.path.splitdrive(str(probe_out.resolve()))[0].lower() \
+            and (os.name == "nt" or os.stat(temp_dir).st_dev == os.stat(probe_out).st_dev)
+    except OSError:
+        return
+    if same:
+        if free_temp < need_temp + need_out:
+            raise PictureWorldError(
+                f"Not enough disk space: this picture needs about {_gb(need_temp + need_out)} while it builds "
+                f"(working files + the finished file), and that drive has {_gb(free_temp)} free.\n\n"
+                "Free some space, choose a lower Max zoom, or save to another drive.")
+        return
+    if free_temp < need_temp:
+        raise PictureWorldError(
+            f"Not enough disk space for the working files: about {_gb(need_temp)} needed in\n{temp_dir}\n"
+            f"but that drive has {_gb(free_temp)} free.\n\nFree some space there, or choose a lower Max zoom.")
+    if free_out < need_out:
+        raise PictureWorldError(
+            f"Not enough disk space in the output folder's drive: about {_gb(need_out)} needed, "
+            f"{_gb(free_out)} free.\n\nChoose another folder, or a lower Max zoom.")
 
 
 def build(
@@ -406,6 +457,7 @@ def build(
     meters_per_pixel: float = 1.0,
     progress: Optional[ProgressCallback] = None,
     cancel_event: Optional[threading.Event] = None,
+    replace_existing: bool = False,
 ) -> BuildResult:
     input_file = Path(input_file).expanduser().resolve()
     output_dir = Path(output_dir).expanduser().resolve()
@@ -419,10 +471,9 @@ def build(
     output_dir.mkdir(parents=True, exist_ok=True)
     final_mb = output_dir / f"{output_stem}.mbtiles"
     final_tpkx = output_dir / f"{output_stem}.tpkx"
-    if output_mode in {"mbtiles", "both"} and final_mb.exists():
-        raise FileExistsError(final_mb)
-    if output_mode in {"tpkx", "both"} and final_tpkx.exists():
-        raise FileExistsError(final_tpkx)
+    for f, wanted in ((final_mb, output_mode in {"mbtiles", "both"}), (final_tpkx, output_mode in {"tpkx", "both"})):
+        if wanted and f.exists() and not replace_existing:
+            raise PictureWorldError(f"{f.name} is already in\n{f.parent}\n\nChoose another name, or delete or move the old file.")
 
     def emit(stage, msg, frac=None):
         if progress: progress(stage, msg, frac)
@@ -431,6 +482,8 @@ def build(
     if raster_mode.lower() not in {"auto", "flat"}:
         raise ValueError("Picture World Maker builds pictures only (Auto / Flat).")
     mode = "flat"
+    check_disk_space(estimate_synthetic_tiles(synthetic_bounds_for_config(config, info.width, info.height, meters_per_pixel),
+                                              zoom_min, zoom_max), output_mode, output_dir)
 
     work = Path(tempfile.mkdtemp(prefix="Picture_World_"))
     started = time.monotonic()
@@ -461,7 +514,7 @@ def build(
         bundle_count = 0
         if output_mode in {"mbtiles", "both"}:
             emit("publish_mb", "Publishing verified MBTiles...", 0.93)
-            _publish(temp_mb, final_mb)
+            _publish(temp_mb, final_mb, replace_existing)
             inspect_mbtiles(final_mb)
             published_mb = final_mb
 
@@ -473,7 +526,7 @@ def build(
             emit("verify_tpkx", "Verifying Compact Cache V2 TPKX...", 0.98)
             tinfo = inspect_tpkx(temp_tpkx)
             bundle_count = int(tinfo["bundle_count"])
-            _publish(temp_tpkx, final_tpkx)
+            _publish(temp_tpkx, final_tpkx, replace_existing)
             inspect_tpkx(final_tpkx)
             published_tpkx = final_tpkx
 

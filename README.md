@@ -54,7 +54,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 [![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/picture_world_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
-**⬇️ [Download Picture World Maker v2.0](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.0.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
+**⬇️ [Download Picture World Maker v2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
 ## 🆕 New: Real Sim City - a fictional night city on a real town's lot lines
 
@@ -127,7 +127,7 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
-### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v2.0](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.0.zip)**
+### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/images/picture_world_maker_whats_in_the_zip_full.png)**
 

@@ -115,6 +115,18 @@ try:
         out2 = Path(td) / 'photo_probe.tpkx'
         r2 = subprocess.run([sys.executable, str(conv), str(mbt), str(out2)], capture_output=True, text=True)
         if r2.returncode != 0: errors.append('converter rejected photo-mode MBTiles: ' + (r2.stdout + r2.stderr)[-200:])
+        # 2.1: sideways phone photos upright, 16-bit stretched, see-through -> white
+        from PWM_PHOTO_TILER import prepare_picture
+        side = Image.new('RGB', (160, 90), (200, 40, 40)); ex = side.getexif(); ex[0x0112] = 6
+        side.save(Path(td) / 'phone.jpg', exif=ex)
+        if inspect_raster_pillow(Path(td) / 'phone.jpg').width != 90: errors.append('2.1: a sideways phone photo should be read upright')
+        g16 = Image.new('I;16', (64, 64)); g16.putdata([i * 16 for i in range(64 * 64)])
+        m = sum(prepare_picture(g16, Image).convert('L').tobytes()) / 4096
+        if not 90 < m < 165: errors.append(f'2.1: 16-bit picture should be stretched, mean {m:.0f}')
+        see = prepare_picture(Image.new('RGBA', (8, 8), (0, 0, 0, 0)), Image)
+        if see.getpixel((0, 0)) != (255, 255, 255): errors.append('2.1: see-through pixels should turn white')
+        from PWM_PIPELINE import space_needed
+        if space_needed(35216, 'tpkx')[0] < 500_000_000: errors.append('2.1: disk-space estimate too small')
 except ImportError:
     print('NOTE: Pillow not installed - photo mode checks skipped (the launchers install it).')
 

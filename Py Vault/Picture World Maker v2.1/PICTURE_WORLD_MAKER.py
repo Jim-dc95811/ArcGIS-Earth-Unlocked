@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 import threading
 import time
@@ -15,7 +16,7 @@ from PWM_PIPELINE import (
 )
 
 APP = "PICTURE WORLD MAKER"
-VERSION = "2.0"   # 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point - program = v0.2.4, only this text changed
+VERSION = "2.1"   # 2.1 (2026-11-08) re-hardening: phone photos upright, 16-bit pictures stretched, see-through -> white, Replace question, disk-space check, real Desktop
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"
@@ -24,6 +25,29 @@ ACCENT = "#d6a300"
 GOOD = "#176b3a"
 BLUE = "#1756A9"
 _GUI_MUTEX_HANDLE = None
+
+
+def desktop_dir() -> Path:
+    """2.1: the Desktop folder Windows really shows (it may have been moved into OneDrive)."""
+    if os.name == "nt":
+        try:
+            import ctypes
+            from ctypes import wintypes
+
+            class _GUID(ctypes.Structure):
+                _fields_ = [("Data1", wintypes.DWORD), ("Data2", wintypes.WORD),
+                            ("Data3", wintypes.WORD), ("Data4", ctypes.c_ubyte * 8)]
+            fid = _GUID(0xB4BFCC3A, 0xDB2C, 0x424C,
+                        (ctypes.c_ubyte * 8)(0xB0, 0x29, 0x7F, 0xE9, 0x9A, 0x87, 0xC6, 0x41))
+            buf = ctypes.c_wchar_p()
+            if ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(fid), 0, None, ctypes.byref(buf)) == 0:
+                path = buf.value
+                ctypes.windll.ole32.CoTaskMemFree(buf)
+                if path and Path(path).is_dir():
+                    return Path(path)
+        except Exception:
+            pass
+    return Path.home() / "Desktop"
 
 
 def acquire_single_instance() -> bool:
@@ -53,7 +77,7 @@ class App(tk.Tk):
         self.input_var = tk.StringVar()
         self.mode_var = tk.StringVar(value="auto")
         self.output_mode_var = tk.StringVar(value="tpkx")
-        self.output_dir_var = tk.StringVar(value=str(Path.home() / "Desktop"))
+        self.output_dir_var = tk.StringVar(value=str(desktop_dir()))
         self.output_name_var = tk.StringVar(value="")
         self.zoom_min_var = tk.IntVar(value=self.cfg.default_min_zoom)
         self.zoom_max_var = tk.IntVar(value=self.cfg.default_max_zoom)
@@ -239,6 +263,19 @@ class App(tk.Tk):
         stem = self.output_name_var.get().strip() or self.raster_info.path.stem[:60]
         if not stem.lower().endswith(f"_spot{spot:02d}"):
             stem = f"{stem}_spot{spot:02d}"
+        # 2.1: an output of the same name gets a plain Replace question before anything starts.
+        out_dir = Path(self.output_dir_var.get()).expanduser()
+        mode = self.output_mode_var.get()
+        clean = re.sub(r'[<>:"/\\|?*]+', "_", stem.strip()).strip(" .") or self.raster_info.path.stem   # same rule as build()
+        existing = [out_dir / f"{clean}.{ext}" for ext, wanted in (("mbtiles", mode in ("mbtiles", "both")), ("tpkx", mode in ("tpkx", "both")))
+                    if wanted and (out_dir / f"{clean}.{ext}").exists()]
+        replace_existing = False
+        if existing:
+            if not messagebox.askyesno(APP, "\n".join(f.name for f in existing) + f"\n\nis already in\n{out_dir}\n\nReplace it?",
+                                       icon="warning", default="no"):
+                self.status_var.set("Not built - the existing file was kept.")
+                return
+            replace_existing = True
         self.cancel_event.clear(); self.progress_var.set(0)
         self.build_btn.config(state="disabled"); self.cancel_btn.config(state="normal")
         self._build_started = time.monotonic()
@@ -251,6 +288,7 @@ class App(tk.Tk):
             output_mode=self.output_mode_var.get(), output_dir=Path(self.output_dir_var.get()),
             output_stem=stem, zoom_min=zmin, zoom_max=zmax,
             meters_per_pixel=mpp, progress=self._progress_from_worker, cancel_event=self.cancel_event,
+            replace_existing=replace_existing,
         )
         self.thread = threading.Thread(target=self._run_build, kwargs=args, daemon=True); self.thread.start()
 

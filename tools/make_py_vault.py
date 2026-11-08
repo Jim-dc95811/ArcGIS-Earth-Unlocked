@@ -25,7 +25,7 @@ RELEASES = [
     ("Object Factory", "ArcGIS-Earth-Object-Factory", "releases/ArcGIS_Earth_Object_Factory_v2.1.zip"),
     ("PointLayer", "Point-Maps", "releases/PointLayer_v2.1.zip"),
     ("Parcel100", "Parcel100", "downloads/Parcel100_v2.1.zip"),
-    ("Picture World Maker", "Picture-World-Maker", "releases/Picture_World_Maker_v2.0.zip"),
+    ("Picture World Maker", "Picture-World-Maker", "releases/Picture_World_Maker_v2.1.zip"),
 ]
 
 

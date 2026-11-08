@@ -66,6 +66,69 @@ def _lonlat(x, y):
     return lon, lat
 
 
+EXIF_ORIENTATION = 0x0112
+ROTATED = {5, 6, 7, 8}          # orientations that swap width and height
+
+
+def orientation(im) -> int:
+    """The camera's 'rotate me' note (EXIF Orientation), 1 = upright / none."""
+    try:
+        o = int(im.getexif().get(EXIF_ORIENTATION, 1))
+    except Exception:
+        return 1
+    return o if 1 <= o <= 8 else 1
+
+
+def upright_size(im) -> tuple[int, int]:
+    """Size as a photo viewer shows it (width and height swap for a sideways-stored photo)."""
+    w, h = im.size
+    return (h, w) if orientation(im) in ROTATED else (w, h)
+
+
+def _stretch_high_bit(picture, Image):
+    """16-bit (or 32-bit / float) single-band picture -> 8-bit grey with its real range stretched
+    to full brightness (0.1 % - 99.9 %), instead of Pillow's clip that turned it white."""
+    if picture.mode.startswith("I;16"):
+        picture = picture.convert("I")
+    w, h = picture.size
+    k = max(1, int(math.ceil(max(w, h) / 1024)))
+    sample = picture.reduce(k) if k > 1 else picture
+    values = sorted(sample.getdata() if not hasattr(sample, "get_flattened_data") else sample.get_flattened_data())
+    lo = values[int(0.001 * (len(values) - 1))]
+    hi = values[int(0.999 * (len(values) - 1))]
+    if hi <= lo:
+        lo, hi = values[0], values[-1]
+    if hi <= lo:
+        hi = lo + 1
+    scale = 255.0 / (hi - lo)
+    out = picture.point(lambda v: v * scale - lo * scale)   # still I / F, now 0-255 (clipped next)
+    return out.convert("L").convert("RGB")
+
+
+def prepare_picture(picture, Image):
+    """2.1: the picture as a viewer shows it, in RGB.
+    - a photo stored sideways with a 'rotate me' note is turned upright (phone portraits);
+    - 16-bit / 32-bit / float pictures are stretched to normal brightness (they used to come out white);
+    - see-through parts (PNG transparency) become white (they used to come out black).
+    Ordinary 8-bit RGB pictures without a rotate note come back unchanged (same object)."""
+    o = orientation(picture)
+    if o != 1:
+        from PIL import ImageOps
+        picture = ImageOps.exif_transpose(picture)
+    mode = picture.mode
+    if mode.startswith("I;16") or mode in ("I", "F"):
+        return _stretch_high_bit(picture, Image)
+    has_alpha = mode in ("RGBA", "LA", "PA", "La", "RGBa") or (mode == "P" and "transparency" in picture.info)
+    if has_alpha:
+        rgba = picture.convert("RGBA")
+        white = Image.new("RGB", rgba.size, (255, 255, 255))
+        white.paste(rgba, mask=rgba.getchannel("A"))
+        return white
+    if mode != "RGB":
+        return picture.convert("RGB")
+    return picture
+
+
 def build_photo_mbtiles(source: Path, out_mbtiles: Path, bounds, zmin: int, zmax: int,
                         name: str = "", jpeg: bool = True, quality: int = 85,
                         emit=None, cancel_event=None) -> int:
@@ -87,8 +150,7 @@ def build_photo_mbtiles(source: Path, out_mbtiles: Path, bounds, zmin: int, zmax
         raise
     except Exception as exc:
         raise PhotoTilerError(f"Could not open this picture: {exc}") from exc
-    if picture.mode != "RGB":
-        picture = picture.convert("RGB")
+    picture = prepare_picture(picture, Image)        # 2.1: upright, 16-bit stretched, transparency -> white
     width, height = picture.size
     mpp = (xmax - xmin) / width                       # metres per picture pixel
     if abs((ymax - ymin) / height - mpp) > 1e-9 * max(1.0, mpp):

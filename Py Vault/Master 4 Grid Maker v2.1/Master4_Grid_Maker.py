@@ -1,4 +1,7 @@
-"""Master 4 Grid Maker 2.0 (= v3.1; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
+"""Master 4 Grid Maker 2.1 (2.0 = v3.1, the 2.0 Reference of 2026-11-08)
+
+2.1 re-hardening (grid, numbering, georeferencing, file names and demo tiles unchanged):
+- a box typed wrong (for example -82,-81,30,31) shows the right way to type it
 
 v3.1 hardening (grid geometry, cell numbering, georeferencing, filenames and
 demo tiles unchanged from v3):
@@ -33,9 +36,10 @@ except ImportError:
         "Pillow is required. Install it with: py -3 -m pip install Pillow"
     )
 
-VERSION = "2.0"   # program = v3.1, only this text changed
+VERSION = "2.1"   # 2.1 (2026-11-08): typing mistakes show an example; everything else = v3.1
 EPSG = 3857
 EARTH_RADIUS = 6378137.0
+EXAMPLE = "Type the box like 82w, 81w, 30n, 31n (west, east, south, north - whole degrees with a letter)."
 OUTPUT_DIR = Path(r"C:\downloads")
 IMAGE_SIZE = 5000
 WEB_MERCATOR_MAX_LAT = 85.05112878
@@ -67,7 +71,7 @@ REFERENCE_HEADER = bytes.fromhex("0300000000000000a30002000500000000000000000000
 def parse_coord(token, longitude):
     match = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*([NSEWnsew])\s*", token)
     if not match:
-        raise ValueError(f"Invalid coordinate: {token.strip()}")
+        raise ValueError(f"Invalid coordinate: {token.strip()}\n{EXAMPLE}")
 
     value = float(match.group(1))
     direction = match.group(2).upper()
@@ -90,7 +94,7 @@ def parse_coord(token, longitude):
 def parse_master4(text):
     parts = [p.strip() for p in text.split(",")]
     if len(parts) != 4:
-        raise ValueError("Enter exactly four coordinates separated by commas.")
+        raise ValueError(f"Enter exactly four coordinates separated by commas.\n{EXAMPLE}")
 
     west, west_dir = parse_coord(parts[0], True)
     east, east_dir = parse_coord(parts[1], True)

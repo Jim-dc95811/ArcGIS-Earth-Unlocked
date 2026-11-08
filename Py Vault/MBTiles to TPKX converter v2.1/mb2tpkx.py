@@ -14,6 +14,12 @@ v1.1 hardening (no change to tile copying or bundle structure):
 - the source path is escaped so names containing #, % or ? open correctly, read-only
 - common problems are reported as one plain ERROR line instead of a traceback
 - the database connection is closed explicitly
+
+2.1 re-hardening (tile bytes and bundle structure unchanged from 2.0 / 1.1):
+- disk space is checked before any work; a full drive stops at once with a plain message
+- progress shows "bundle N of M (P%)"
+- an existing TPKX: asks "Replace it? [y/N]" (a TPKX open in ArcGIS Earth is caught before building)
+- an empty tile record says the MBTiles is damaged instead of showing a programmer error
 """
 import contextlib
 import copy
@@ -36,7 +42,7 @@ try:
 except ImportError:
     sys.exit("ERROR: Pillow is not installed. Install it with: py -3 -m pip install Pillow")
 
-VERSION = "2.0"   # 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point - program = 1.1, only this text changed
+VERSION = "2.1"   # 2.1 (2026-11-08) re-hardening: disk-space check, bundle progress, Replace question, damaged-tile message
 
 # Metadata and bundle-header bytes extracted from the Bryce TPKX accepted by
 # both ArcGIS Earth and ArcGIS Pro. Only content-dependent values change.
@@ -57,22 +63,38 @@ def zip_entry(name, now, ntfs_extra):
     return entry
 
 
-def convert(source, destination):
+def _gb(n):
+    return f"{n / 1e9:.1f} GB" if n >= 1e9 else f"{n / 1e6:.0f} MB"
+
+
+def convert(source, destination, replace=False):
     if source.resolve() == destination.resolve():
         raise ValueError("Input and output paths cannot be the same.")
     if not source.is_file():
         raise FileNotFoundError(f"MBTiles file not found: {source}")
     if destination.exists():
-        raise FileExistsError(f"Output already exists: {destination} - delete or rename it and run again.")
+        if not replace:
+            raise FileExistsError(f"Output already exists: {destination} - delete or rename it and run again.")
+        # Find out now (not after a long build) if ArcGIS Earth or another program holds the old file.
+        try:
+            with open(destination, "ab"):
+                pass
+        except OSError:
+            raise PermissionError(f"Could not replace {destination.name} - it may be open in ArcGIS Earth "
+                                  "or another program. Close it and run again.") from None
 
     # Build under a temporary name so a failed or cancelled run never leaves a
     # complete-looking but incomplete .tpkx behind.
     partial = destination.with_name(destination.name + ".partial")
     try:
         written, bundles = _build(source, partial)
-        if destination.exists():
+        if destination.exists() and not replace:
             raise FileExistsError(f"Output appeared during conversion: {destination} - nothing was overwritten.")
-        partial.replace(destination)
+        try:
+            partial.replace(destination)
+        except PermissionError:
+            raise PermissionError(f"Could not replace {destination.name} - it may be open in ArcGIS Earth "
+                                  "or another program. Close it and run again.") from None
     except BaseException:
         with contextlib.suppress(OSError):
             partial.unlink()
@@ -102,6 +124,17 @@ def _build(source, destination):
             GROUP BY zoom_level, br, bc
             ORDER BY zoom_level, br, bc
         """).fetchall()
+
+        # 2.1: stop before any work when the output drive is too full. The TPKX holds every tile
+        # unchanged plus a 4-byte length each and a 128 KB index per bundle.
+        tile_bytes = db.execute("SELECT SUM(LENGTH(tile_data)) FROM tiles").fetchone()[0] or 0
+        need = tile_bytes + 4 * tile_count + len(groups) * (64 + 131072) + 50_000_000
+        folder = destination.resolve().parent
+        free = shutil.disk_usage(folder).free
+        if free < need:
+            raise ValueError(f"Not enough disk space: the TPKX needs about {_gb(need)} in\n  {folder}\n"
+                             f"and that drive has {_gb(free)} free. Free some space, or move the MBTiles "
+                             "to a drive with more room and run again.")
         origin = REFERENCE_ROOT["tileInfo"]["origin"]
         resolution = {z: entry["resolution"] for z, entry in levels.items()}
         left = bottom = float("inf")
@@ -150,6 +183,8 @@ def _build(source, destination):
 
         # A real thumbnail uses the source image; source tiles stay byte-for-byte intact.
         first_tile = db.execute("SELECT tile_data FROM tiles ORDER BY zoom_level LIMIT 1").fetchone()[0]
+        if not first_tile:
+            raise ValueError("The first tile is empty - the MBTiles is damaged. Make it again in QGIS.")
         with Image.open(io.BytesIO(first_tile)) as picture:
             if picture.size != (256, 256) or picture.format not in ("PNG", "JPEG"):
                 raise ValueError("Only 256 x 256 PNG/JPEG MBTiles are supported without changing imagery.")
@@ -168,7 +203,7 @@ def _build(source, destination):
                              json.dumps(root, separators=(",", ":")).encode())
             package.writestr(zip_entry("thumbnail.png", now, ntfs_extra), thumbnail.getvalue())
 
-            for z, row_group, col_group in groups:
+            for number, (z, row_group, col_group) in enumerate(groups, 1):
                 row0, col0 = row_group * 128, col_group * 128
                 tms_low = (1 << z) - 1 - (row0 + 127)
                 tms_high = (1 << z) - 1 - row0
@@ -184,6 +219,9 @@ def _build(source, destination):
                     """, (z, col0, col0 + 127, tms_low, tms_high))
                     for column, tms_row, image in rows:
                         row = (1 << z) - 1 - tms_row
+                        if not image:
+                            raise ValueError(f"Tile z{z} ({column}, {tms_row}) is empty - the MBTiles is damaged. "
+                                             "Make it again in QGIS.")
                         if not (0 <= column < (1 << z) and 0 <= row < (1 << z)):
                             raise ValueError(f"Invalid tile coordinate at z{z}: ({column}, {tms_row})")
                         if not (image.startswith(b"\x89PNG\r\n\x1a\n") or
@@ -217,7 +255,7 @@ def _build(source, destination):
                     entry.file_size = bundle_length
                     with package.open(entry, "w") as member:
                         shutil.copyfileobj(bundle, member, length=1024 * 1024)
-                print(f"z{z} {filename} complete", flush=True)
+                print(f"bundle {number:,} of {len(groups):,} ({number * 100 // len(groups)}%) - z{z} {filename}", flush=True)
         if written != tile_count:
             raise ValueError(f"Tile count mismatch: source={tile_count}, written={written}")
     return written, len(groups)
@@ -229,11 +267,20 @@ def main():
     source = pathlib.Path(sys.argv[1])
     output = pathlib.Path(sys.argv[2]) if len(sys.argv) == 3 else source.with_suffix(".tpkx")
     print(f"mb2tpkx {VERSION}", flush=True)
+    replace = False
+    if output.exists() and source.is_file() and source.resolve() != output.resolve():
+        try:
+            answer = input(f"{output.name} already exists in\n  {output.resolve().parent}\nReplace it? [y/N]: ")
+        except (EOFError, KeyboardInterrupt):
+            answer = ""
+        if answer.strip().lower() not in ("y", "yes"):
+            sys.exit("Not converted - the existing TPKX was kept.")
+        replace = True
     try:
-        convert(source, output)
+        convert(source, output, replace)
     except KeyboardInterrupt:
         sys.exit("CANCELLED: no output file was kept.")
-    except (FileNotFoundError, FileExistsError, ValueError) as error:
+    except (FileNotFoundError, FileExistsError, PermissionError, ValueError) as error:
         sys.exit(f"ERROR: {error}")
     except UnidentifiedImageError:
         sys.exit("ERROR: A tile is not a readable PNG/JPEG image. No output file was kept.")

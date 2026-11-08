@@ -6,8 +6,8 @@ To run a tool, download its zip from its project page - the zip has the one-clic
 
 | Tool | Version | Script | SHA-256 (first 16) | From release zip |
 |---|---|---|---|---|
-| MBTiles to TPKX converter (mb2tpkx) | 2.0 | [mb2tpkx.py](MBTiles%20to%20TPKX%20converter%20v2.0/mb2tpkx.py) | `d38157740e671642...` | [mb2tpkx.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip) |
-| Master 4 Grid Maker | 2.0 | [Master4_Grid_Maker.py](Master%204%20Grid%20Maker%20v2.0/Master4_Grid_Maker.py) | `1c131b86144e98cf...` | [Master4_Grid_Maker.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip) |
+| MBTiles to TPKX converter (mb2tpkx) | 2.1 | [mb2tpkx.py](MBTiles%20to%20TPKX%20converter%20v2.1/mb2tpkx.py) | `ca6d11791a457a68...` | [mb2tpkx.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip) |
+| Master 4 Grid Maker | 2.1 | [Master4_Grid_Maker.py](Master%204%20Grid%20Maker%20v2.1/Master4_Grid_Maker.py) | `2b719c30842c9809...` | [Master4_Grid_Maker.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip) |
 | PRAVE ME Tracker | 2.0 | [PRAVE_ME_Tracker.py](PRAVE%20ME%20Tracker%20v2.0/PRAVE_ME_Tracker.py) | `5184c60ca552a79a...` | [PRAVE_ME_Tracker_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip) |
 | PRAVE RMC Field Decoder Tester Gold | 1_0_Gold | [PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.py](PRAVE%20RMC%20Field%20Decoder%20Tester%20Gold%20v1_0_Gold/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.py) | `64f8ae1a73f794b7...` | [PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip) |
 | TPKX Batch Factory | 2.0 | *(no Python - C# / PowerShell add-in)* | | [TPKX_Batch_Factory_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/TPKX_Batch_Factory_v1.zip) |

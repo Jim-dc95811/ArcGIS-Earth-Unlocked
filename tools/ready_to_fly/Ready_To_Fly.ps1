@@ -1,5 +1,5 @@
 <#
-  Ready to Fly v1.0 - the shared "get this PC ready" step for ArcGIS Earth Unlocked tools.
+  Ready to Fly v1.0.1 - the shared "get this PC ready" step for ArcGIS Earth Unlocked tools.
   Called by a tool's one-click .bat. Windows PowerShell 5.1 compatible (no PS7-only syntax).
 
   Checks, in order, and fixes what it can, in plain words:
@@ -26,13 +26,14 @@ param(
     [switch]$NeedEarth,
     [switch]$NeedApi,
     [switch]$NeedTk,
-    [int]$ApiWaitS = 90,             # how long to wait for ArcGIS Earth to answer at start
+    [int]$ApiWaitS = 90,
+    [int]$WingetMinutes = 20,        # give winget this long, then use the python.org installer             # how long to wait for ArcGIS Earth to answer at start
     [switch]$EarthOnly,              # only find ArcGIS Earth and save its path (taskbar shortcut maker)
     [switch]$Unattended              # no questions (answers 'no' to installs); for scheduled/test runs
 )
 
 $ErrorActionPreference = "Continue"
-$VERSION = "1.0"
+$VERSION = "1.0.1"
 $MIN_PY = [version]"3.9"
 $PY_FALLBACK = "3.14.0"   # used only if winget is missing; any published 3.x installer works
 $ESRI_PAGE = "https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads"
@@ -66,9 +67,11 @@ function Test-Internet {
     Log ("NCSI profile verdict: " + $verdict)
     # Confirm with the NCSI probe itself (also catches hotel/airport sign-in pages).
     try {
-        $wc = New-Object System.Net.WebClient
-        $wc.Proxy = [System.Net.WebRequest]::GetSystemWebProxy()
-        $txt = $wc.DownloadString("http://www.msftconnecttest.com/connecttest.txt")
+        $r = [System.Net.WebRequest]::Create("http://www.msftconnecttest.com/connecttest.txt")
+        $r.Timeout = 4000; $r.ReadWriteTimeout = 4000
+        $resp = $r.GetResponse()
+        $sr = New-Object System.IO.StreamReader($resp.GetResponseStream())
+        $txt = $sr.ReadToEnd(); $sr.Close(); $resp.Close()
         if ($txt -eq "Microsoft Connect Test") { $script:Online = "yes"; return "yes" }
         $script:Online = "portal"; return "portal"
     } catch { Log ("NCSI probe failed: " + $_.Exception.Message) }
@@ -126,12 +129,27 @@ function Install-Python {
     }
     $winget = Get-Command winget -ErrorAction SilentlyContinue
     if ($winget) {
-        Say "Installing Python with Windows' own installer (winget). This takes a minute or two..." "Cyan"
+        Say "Installing Python with Windows' own installer (winget). This can take several minutes - the window may look stuck; let it run..." "Cyan"
+        Say "  (Windows Defender checks every new file, so the PC may run slow and look frozen for a few minutes. That's normal - don't close this window.)" "Yellow"
         $ids = @("Python.Python.3.14", "Python.Python.3.13")
         foreach ($id in $ids) {
-            & $winget.Source install -e --id $id --scope user --silent --accept-package-agreements --accept-source-agreements --disable-interactivity 2>&1 | ForEach-Object { Log ("winget: " + $_) }
-            Log ("winget " + $id + " exit " + $LASTEXITCODE)
+            $out = Join-Path $env:TEMP "ready_to_fly_winget.txt"
+            $wargs = "install -e --id $id --scope user --silent --accept-package-agreements --accept-source-agreements"
+            $p = Start-Process -FilePath $winget.Source -ArgumentList $wargs -NoNewWindow -PassThru -RedirectStandardOutput $out
+            $limit = (Get-Date).AddMinutes($WingetMinutes); $tick = 0
+            while (-not $p.HasExited -and (Get-Date) -lt $limit) {
+                Start-Sleep -Seconds 5; $tick++
+                if ($tick % 12 -eq 0) { Say ("  ...still installing (" + [int]($tick * 5 / 60) + " min). Don't close this window.") }
+            }
+            $timedOut = -not $p.HasExited
+            if ($timedOut) {
+                Log ("winget still running after " + $WingetMinutes + " min - stopping it")
+                try { $p.Kill() } catch {}
+                Start-Sleep -Seconds 3
+            } else { Log ("winget " + $id + " exit " + $p.ExitCode) }
+            if (Test-Path $out) { Get-Content $out -ErrorAction SilentlyContinue | Where-Object { $_ -match '\w' } | Select-Object -Last 15 | ForEach-Object { Log ("winget: " + $_) }; Remove-Item $out -ErrorAction SilentlyContinue }
             if (Find-Python) { return $true }
+            if ($timedOut) { break }
         }
         Warn "winget did not finish the job - trying the installer from python.org instead."
     }
@@ -140,9 +158,10 @@ function Install-Python {
     Say ("Downloading Python " + $PY_FALLBACK + " from python.org (about 30 MB)...") "Cyan"
     try {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        $wc = New-Object System.Net.WebClient
-        $wc.Proxy = [System.Net.WebRequest]::GetSystemWebProxy()
-        $wc.DownloadFile($url, $dst)
+        $r = [System.Net.WebRequest]::Create($url)
+        $r.Timeout = 30000; $r.ReadWriteTimeout = 60000
+        $resp = $r.GetResponse(); $in = $resp.GetResponseStream(); $fs = [System.IO.File]::Create($dst)
+        try { $in.CopyTo($fs) } finally { $fs.Close(); $in.Close(); $resp.Close() }
     } catch { Bad ("The download failed: " + $_.Exception.Message); return $false }
     $sig = Get-AuthenticodeSignature $dst
     if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'Python Software Foundation') {
@@ -152,7 +171,10 @@ function Install-Python {
         return $false
     }
     Say "Installing Python for this user (no admin needed)..." "Cyan"
-    $p = Start-Process -FilePath $dst -ArgumentList "/quiet InstallAllUsers=0 InstallLauncherAllUsers=0 PrependPath=1 Include_launcher=1 Include_pip=1 Include_tcltk=1" -Wait -PassThru
+    Say "  (This can take several minutes, and Windows Defender may slow the PC while it checks the new files. That's normal - don't close this window.)" "Yellow"
+    $p = Start-Process -FilePath $dst -ArgumentList "/quiet InstallAllUsers=0 InstallLauncherAllUsers=0 PrependPath=1 Include_launcher=1 Include_pip=1 Include_tcltk=1" -PassThru
+    $tick = 0
+    while (-not $p.HasExited) { Start-Sleep -Seconds 5; $tick++; if ($tick % 12 -eq 0) { Say ("  ...still installing (" + [int]($tick * 5 / 60) + " min). Don't close this window.") } }
     Log ("python installer exit " + $p.ExitCode)
     Remove-Item $dst -ErrorAction SilentlyContinue
     return [bool](Find-Python)
@@ -183,7 +205,7 @@ function Find-Earth {
             }
         }
     }
-    Say "Looking for ArcGIS Earth - first time only, this can take a minute..."
+    Say "Looking for ArcGIS Earth - first time only, this can take a few minutes on an older PC..."
     foreach ($root in @("$env:ProgramFiles\ArcGIS", "$env:ProgramFiles", "$env:LOCALAPPDATA\Programs", "${env:ProgramFiles(x86)}")) {
         if ($root -and (Test-Path $root)) {
             $hit = Get-ChildItem -Path $root -Filter "ArcGISEarth.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -218,6 +240,16 @@ if ($EarthOnly) {
     exit 0
 }
 
+# only one Ready to Fly at a time (an extra double-click on a slow PC must not start a second Python install)
+$script:OneAtATime = New-Object System.Threading.Mutex($false, "Local\ReadyToFly_single_instance")
+$got = $false
+try { $got = $script:OneAtATime.WaitOne(0) } catch [System.Threading.AbandonedMutexException] { $got = $true }
+if (-not $got) {
+    Bad "Ready to Fly is already running in another window - let that one finish (it may be installing Python)."
+    Say "  You can close this window." "Yellow"
+    exit 1
+}
+
 # 0. internet heads-up (non-blocking)
 $net = Test-Internet
 if ($net -eq "yes") { Ok "Internet: connected." }
@@ -228,7 +260,7 @@ else { Warn "No internet right now: ArcGIS Earth's online basemaps and imagery w
 $py = Find-Python
 if (-not $py) {
     Bad ("Python " + $MIN_PY + " or newer is not installed. " + $Tool + " is a Python program and needs it.")
-    if (Ask "Install Python now? It's free, from python.org, installs just for you (no admin), about 2 minutes.") {
+    if (Ask "Install Python now? It's free, from python.org, installs just for you (no admin). Takes several minutes.") {
         if (-not (Install-Python)) {
             Bad "Python could not be installed automatically."
             Say ("  If this is a work computer, ask IT to install Python 3 from " + $PY_PAGE) "Yellow"

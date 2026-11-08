@@ -22,7 +22,7 @@ RELEASES = [
     ("TPKX Batch Factory", "ArcGIS-Earth-Offline-Maps-Chartplotting", "downloads/TPKX_Batch_Factory_v1.zip"),
     ("EarthStick", "EarthStick", "releases/EarthStick_v2.0.zip"),
     ("World Gate Maker", "EarthStick", "releases/World_Gate_Maker_v2.0.zip"),
-    ("Object Factory", "ArcGIS-Earth-Object-Factory", "releases/ArcGIS_Earth_Object_Factory_v2.0.zip"),
+    ("Object Factory", "ArcGIS-Earth-Object-Factory", "releases/ArcGIS_Earth_Object_Factory_v2.1.zip"),
     ("PointLayer", "Point-Maps", "releases/PointLayer_v2.0.zip"),
     ("Parcel100", "Parcel100", "downloads/Parcel100_v2.0.zip"),
     ("Picture World Maker", "Picture-World-Maker", "releases/Picture_World_Maker_v2.0.zip"),

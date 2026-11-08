@@ -126,7 +126,7 @@ SHEETS = {
              "Saved to your <b>Desktop</b> unless you pick another place. <b>Drag them onto ArcGIS Earth</b> to see them.", "out"),
         ],
         tips=[("folder", "<b>Keep them together.</b> Moving the .bat away from System Files stops it working."),
-              ("new", "<b>Want a Batch example?</b> The Batch tab opens the example list from System Files by itself - copy it and change the names and coordinates."),
+              ("new", "<b>Want a Batch example?</b> The Batch tab opens the example list from System Files by itself - copy it and change the names and coordinates. A list saved from <b>Excel as CSV</b> works too."),
               WARN]),
     "pointlayer": dict(
         repo="Point-Maps", title="What's in the PointLayer folder?",
@@ -312,7 +312,7 @@ svg path[fill="#cfd9e6"] { stroke: #6f8db0; }
 # 2026-11-08 (Jim): the PDF user manual sits beside the .bat in every zip; page 1 = how to install.
 MANUALS = {
     "world_gate_maker": "World_Gate_Maker_User_Manual.pdf",
-    "object_factory": "ArcGIS_Earth_Object_Factory_v2.0_User_Manual.pdf",
+    "object_factory": "ArcGIS_Earth_Object_Factory_v2.1_User_Manual.pdf",
     "pointlayer": "PointLayer_User_Guide.pdf",
     "parcel100": "Parcel100_User_Manual.pdf",
     "picture_world_maker": "Picture_World_Maker_User_Manual.pdf",

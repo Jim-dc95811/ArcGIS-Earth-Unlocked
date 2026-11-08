@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
-"""ArcGIS Earth Object Factory 2.0 (= v1.3; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
+"""ArcGIS Earth Object Factory 2.1
+
+v2.1 (2026-11-08) re-hardening - objects made from good input are byte-identical to 2.0:
+  - batch lists saved by Excel as plain "CSV" (Windows-1252) or "Unicode Text" (UTF-16)
+    are read; accented names no longer stop the list
+  - in | lists a quote mark is just a character (a description starting with " used to
+    swallow the rows after it without a word); comma lists keep normal CSV quoting
+  - empty rows (only commas or | from Excel) are skipped
+  - every number box says in plain words which box is wrong; nan, a scale of 0 or less
+    and a Sky Compass radius of 0 or less are refused
+  - default output folder = the Desktop Windows really shows (OneDrive-moved Desktops)
+  - the window fits small laptop screens; a tab that does not fit gets a scroll bar
+  - From Clipboard with no text on the clipboard says so in plain words
+
+2.0 (= v1.3; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
 
 v1.3 (2026-11-06): one obvious file - the package shows Run_Object_Factory.bat and System Files
   (this program, its icons and the samples). Nothing else changed.
@@ -48,7 +62,7 @@ from tkinter import filedialog, messagebox, ttk
 from xml.sax.saxutils import escape as xml_escape
 
 APP = "ArcGIS Earth Object Factory"
-VERSION = "2.0"   # program = v1.3, only this text changed
+VERSION = "2.1"
 EARTH_R = 6371008.8
 MAX_ICON_DIM = 256
 
@@ -123,6 +137,72 @@ def app_dir() -> Path:
 
 def icon_dir() -> Path:
     return app_dir() / "icons"
+
+
+def desktop_dir() -> Path:
+    """The Desktop folder Windows really shows (it may have been moved into OneDrive).
+    Falls back to <home>/Desktop."""
+    if os.name == "nt":
+        try:
+            import ctypes
+            from ctypes import wintypes
+
+            class _GUID(ctypes.Structure):
+                _fields_ = [("Data1", wintypes.DWORD), ("Data2", wintypes.WORD),
+                            ("Data3", wintypes.WORD), ("Data4", ctypes.c_ubyte * 8)]
+            # FOLDERID_Desktop {B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
+            fid = _GUID(0xB4BFCC3A, 0xDB2C, 0x424C,
+                        (ctypes.c_ubyte * 8)(0xB0, 0x29, 0x7F, 0xE9, 0x9A, 0x87, 0xC6, 0x41))
+            buf = ctypes.c_wchar_p()
+            shell32 = ctypes.windll.shell32
+            if shell32.SHGetKnownFolderPath(ctypes.byref(fid), 0, None, ctypes.byref(buf)) == 0:
+                path = buf.value
+                ctypes.windll.ole32.CoTaskMemFree(buf)
+                if path and Path(path).is_dir():
+                    return Path(path)
+        except Exception:
+            pass
+    return Path.home() / "Desktop"
+
+
+def read_list_text(path: Path) -> str:
+    """Text of a batch list: UTF-8 (with or without BOM), UTF-16 (Excel 'Unicode Text'),
+    else Windows-1252 (Excel's plain 'CSV' save), which can decode any byte."""
+    data = Path(path).read_bytes()
+    if data.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return data.decode("utf-16")
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return data.decode("cp1252", errors="replace")
+
+
+def gui_number(text: str, box: str, positive: bool = False, commas: bool = True) -> float:
+    """A number typed in a window box, with a plain message naming the box.
+    commas=True lets thousands separators through (1,500 ft); latitude/longitude use False."""
+    s = str(text).strip()
+    if commas:
+        s = s.replace(",", "")
+    try:
+        n = float(s)
+    except ValueError:
+        shown = str(text).strip()
+        raise ValueError(f"{box}: {shown!r} is not a number." if shown else f"{box} is empty - type a number.") from None
+    if not math.isfinite(n):
+        raise ValueError(f"{box}: {str(text).strip()!r} is not a usable number.")
+    if positive and n <= 0:
+        raise ValueError(f"{box} must be greater than zero.")
+    return n
+
+
+def _check_positive(value: float, what: str) -> None:
+    if not math.isfinite(value) or value <= 0:
+        raise ValueError(f"{what} must be greater than zero.")
+
+
+def _check_finite(value: float, what: str) -> None:
+    if not math.isfinite(value):
+        raise ValueError(f"{what} must be a usable number.")
 
 
 def boolish(value, default=False) -> bool:
@@ -409,6 +489,8 @@ def create_single_object_kmz(output_path: Path, icon_path: Path, name: str, lat:
                              altitude_m: float, scale: float, altitude_mode: str, description: str,
                              url: str, link_text: str, tether: bool, show_label: bool, popup_mode: str,
                              master=None, hide_above_ft: float | None = None) -> Path:
+    _check_finite(altitude_m, "Altitude")
+    _check_positive(scale, "Icon scale")
     output_path = Path(output_path)
     if output_path.suffix.lower() != ".kmz":
         output_path = output_path.with_suffix(".kmz")
@@ -452,6 +534,8 @@ def _check_row(r: dict, where: str) -> None:
         validate_lat_lon(r["lat"], r["lon"])
     except ValueError as e:
         raise ValueError(f"{where}: {e}") from None
+    if r["scale"] <= 0:
+        raise ValueError(f"{where}: scale must be greater than zero (found {r['scale']:g}).")
     if r["altitude_mode"] not in ALTITUDE_MODES:
         raise ValueError(f"{where}: altitude_mode must be relativeToGround, absolute or clampToGround "
                          f"(found {r['altitude_mode']!r}).")
@@ -466,8 +550,9 @@ def _is_header(line: str) -> bool:
 
 def parse_batch_rows(path: Path) -> list[dict]:
     path = Path(path)
-    numbered = [(n, ln) for n, ln in enumerate(path.read_text(encoding="utf-8-sig").splitlines(), start=1)
-                if ln.strip() and not ln.lstrip().startswith("#")]
+    # v2.1: Excel encodings; rows of only commas/| (Excel's emptied rows) are blank.
+    numbered = [(n, ln) for n, ln in enumerate(read_list_text(path).splitlines(), start=1)
+                if ln.strip(" \t,|;") and not ln.lstrip().startswith("#")]
     if not numbered:
         return []
     lines = [ln for _, ln in numbered]
@@ -475,9 +560,19 @@ def parse_batch_rows(path: Path) -> list[dict]:
     rows = []
     if has_header:
         delim = "|" if "|" in lines[0] else ","
-        reader = csv.DictReader(lines, delimiter=delim)
+        # v2.1: in | lists a quote mark is just a character (a leading " used to swallow the
+        # following rows); comma lists keep CSV quoting, which Excel uses for commas in a cell.
+        quoting = csv.QUOTE_NONE if delim == "|" else csv.QUOTE_MINIMAL
+        reader = csv.DictReader(lines, delimiter=delim, quoting=quoting)
+        prev_num = 1
         for row in reader:
             # reader.line_num counts list items read, so it maps back to the real file line.
+            if reader.line_num - prev_num > 1:
+                first = numbered[prev_num][0]
+                raise ValueError(f"Line {first}: a quote mark (\") opens a cell that does not close on "
+                                 "that line, so the lines after it would be lost. Remove the quote mark "
+                                 "or close it on the same line.")
+            prev_num = reader.line_num
             line_no = numbered[min(reader.line_num, len(numbered)) - 1][0]
             clean = {str(k).strip().lower(): (v.strip() if v else "") for k, v in row.items() if k}
             typ = clean.get("type", "object") or "object"
@@ -604,6 +699,9 @@ def destination(lat_deg: float, lon_deg: float, bearing_deg: float, distance_m: 
 def create_sky_compass_kmz(output_path: Path, center_lat: float, center_lon: float, radius_km: float,
                            altitude_m: float, icon_scale: float) -> Path:
     validate_lat_lon(center_lat, center_lon)
+    _check_positive(radius_km, "Radius (km)")
+    _check_finite(altitude_m, "Altitude AGL (m)")
+    _check_positive(icon_scale, "Icon scale")
     output_path = Path(output_path)
     if output_path.suffix.lower() != ".kmz":
         output_path = output_path.with_suffix(".kmz")
@@ -693,7 +791,11 @@ def open_path(path: Path):
 class CoordinateMixin:
     def clipboard_coords(self, lat_var, lon_var, status_var, order="Auto"):
         try:
-            text = self.clipboard_get()
+            try:
+                text = self.clipboard_get()
+            except tk.TclError:
+                raise ValueError("The clipboard has no text. Copy a latitude, longitude pair first "
+                                 "(Google Maps: right-click the spot and click the numbers).") from None
             lat, lon, msg = parse_clipboard_coordinates(text, order)
             lat_var.set(f"{lat:.12f}".rstrip("0").rstrip("."))
             lon_var.set(f"{lon:.12f}".rstrip("0").rstrip("."))
@@ -713,8 +815,14 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
     def __init__(self, smoke_test=False):
         super().__init__()
         self.title(f"{APP} {VERSION}")
-        self.geometry("980x790")
-        self.minsize(900, 700)
+        # v2.1: fit small laptop screens (taskbar + title bar ~110 px); tabs scroll if needed.
+        sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
+        w, h = min(980, sw - 40), min(790, sh - 110)
+        if h < 790:
+            self.geometry(f"{w}x{h}+{max(0, (sw - w) // 2)}+0")
+        else:
+            self.geometry(f"{w}x{h}")
+        self.minsize(min(900, w), min(480, h))
         self.status = tk.StringVar(value=f"Factory ready. Object Factory v{VERSION} for ArcGIS Earth.")
         self.preview_image = None
         self._build_ui()
@@ -735,20 +843,54 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
         style.map("Factory.TNotebook.Tab", foreground=[("selected", "#003B73"), ("active", "#004F8C")])
         self.nb = ttk.Notebook(root, style="Factory.TNotebook")
         self.nb.pack(fill="both", expand=True)
-        self.object_tab = ttk.Frame(self.nb, padding=(10, 6))
-        self.batch_tab = ttk.Frame(self.nb, padding=10)
-        self.compass_tab = ttk.Frame(self.nb, padding=10)
-        self.beacon_tab = ttk.Frame(self.nb, padding=10)
-        self.nb.add(self.object_tab, text="Objects")
-        self.nb.add(self.batch_tab, text="Batch")
-        self.nb.add(self.compass_tab, text="Sky Compass")
-        self.nb.add(self.beacon_tab, text="Beacon")
+        self.object_tab = self._scroll_tab("Objects", (10, 6))
+        self.batch_tab = self._scroll_tab("Batch", 10)
+        self.compass_tab = self._scroll_tab("Sky Compass", 10)
+        self.beacon_tab = self._scroll_tab("Beacon", 10)
         self._build_object_tab()
         self._build_batch_tab()
         self._build_compass_tab()
         self._build_beacon_tab()
         ttk.Separator(root).pack(fill="x", pady=(4,3))
         ttk.Label(root, textvariable=self.status, wraplength=930).pack(anchor="w")
+
+    def _scroll_tab(self, title, padding):
+        """v2.1: a notebook tab whose content scrolls when the window is too short for it.
+        On a screen tall enough the tab looks exactly as before (no scroll bar)."""
+        outer = ttk.Frame(self.nb)
+        self.nb.add(outer, text=title)
+        bg = ttk.Style(self).lookup("TFrame", "background") or self.cget("background")
+        canvas = tk.Canvas(outer, highlightthickness=0, borderwidth=0, background=bg)
+        bar = ttk.Scrollbar(outer, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=bar.set)
+        canvas.pack(side="left", fill="both", expand=True)
+        inner = ttk.Frame(canvas, padding=padding)
+        win = canvas.create_window(0, 0, window=inner, anchor="nw")
+        state = {"bar": False}
+
+        def refit(_evt=None):
+            need = inner.winfo_reqheight()
+            have = canvas.winfo_height()
+            canvas.itemconfigure(win, width=canvas.winfo_width(), height=max(need, have))
+            canvas.configure(scrollregion=(0, 0, canvas.winfo_width(), max(need, have)))
+            show = need > have > 1
+            if show != state["bar"]:
+                state["bar"] = show
+                if show:
+                    bar.pack(side="right", fill="y", before=canvas)
+                else:
+                    bar.pack_forget()
+                    canvas.yview_moveto(0)
+
+        def wheel(evt):
+            if state["bar"]:
+                canvas.yview_scroll(int(-evt.delta / 120) or (-1 if evt.delta > 0 else 1), "units")
+
+        canvas.bind("<Configure>", refit)
+        inner.bind("<Configure>", refit)
+        canvas.bind("<Enter>", lambda _e: canvas.bind_all("<MouseWheel>", wheel))
+        canvas.bind("<Leave>", lambda _e: canvas.unbind_all("<MouseWheel>"))
+        return inner
 
     def _coord_buttons(self, parent, row, latv, lonv, statusv):
         f = ttk.Frame(parent)
@@ -765,7 +907,7 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
             "mode": tk.StringVar(value="relativeToGround"), "icon": tk.StringVar(value=str(preset_icon("object"))),
             "popup": tk.StringVar(value="Info"), "link_text": tk.StringVar(value="OPEN LINK"), "url": tk.StringVar(),
             "tether": tk.BooleanVar(value=False), "label": tk.BooleanVar(value=False), "hide": tk.StringVar(value=""),
-            "out": tk.StringVar(value=str(Path.home()/"Desktop"/"ArcGIS_Earth_Object.kmz")),
+            "out": tk.StringVar(value=str(desktop_dir()/"ArcGIS_Earth_Object.kmz")),
             "png_info": tk.StringVar(value="Select a PNG. Packaged copy will be <=256 px; original remains untouched."),
             "coord_status": tk.StringVar(value="Enter coordinates manually or use From Clipboard."),
         }
@@ -826,14 +968,14 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
         try:
             if not self._ok_to_write(self.ov["out"].get(), ".kmz"):
                 self.status.set("Not created - existing file kept."); return
-            p=create_single_object_kmz(Path(self.ov["out"].get()),Path(self.ov["icon"].get()),self.ov["name"].get(),float(self.ov["lat"].get()),float(self.ov["lon"].get()),float(self.ov["alt"].get())*0.3048,float(self.ov["scale"].get()),self.ov["mode"].get(),self.object_desc.get("1.0","end").strip(),self.ov["url"].get(),self.ov["link_text"].get(),self.ov["tether"].get(),self.ov["label"].get(),self.ov["popup"].get(),master=self,hide_above_ft=parse_hide_above(self.ov["hide"].get()))
+            p=create_single_object_kmz(Path(self.ov["out"].get()),Path(self.ov["icon"].get()),self.ov["name"].get(),gui_number(self.ov["lat"].get(),"Latitude",commas=False),gui_number(self.ov["lon"].get(),"Longitude",commas=False),gui_number(self.ov["alt"].get(),"Altitude (ft)")*0.3048,gui_number(self.ov["scale"].get(),"Icon scale",positive=True),self.ov["mode"].get(),self.object_desc.get("1.0","end").strip(),self.ov["url"].get(),self.ov["link_text"].get(),self.ov["tether"].get(),self.ov["label"].get(),self.ov["popup"].get(),master=self,hide_above_ft=parse_hide_above(self.ov["hide"].get()))
             self.status.set(f"Created object: {p}")
             messagebox.showinfo(APP,f"Created:\n{p}\n\nOriginal PNG was not modified.")
         except Exception as e:messagebox.showerror(APP,str(e))
 
     def _build_batch_tab(self):
         t=self.batch_tab;t.columnconfigure(1,weight=1)
-        here=app_dir();self.bv={"list":tk.StringVar(value=str(here/"sample_objects.txt")),"out":tk.StringVar(value=str(Path.home()/"Desktop"/"Object_Set.kmz")),"summary":tk.StringVar(value="Load a header-based list or simple shorthand list.")}
+        here=app_dir();self.bv={"list":tk.StringVar(value=str(here/"sample_objects.txt")),"out":tk.StringVar(value=str(desktop_dir()/"Object_Set.kmz")),"summary":tk.StringVar(value="Load a header-based list or simple shorthand list.")}
         ttk.Label(t,text="Batch Object Set",font=("Segoe UI",15,"bold")).grid(row=0,column=0,columnspan=3,sticky="w",pady=(0,8))
         ttk.Label(t,text="Simple shorthand: type,lat,lon[,alt_m][,name]   —   Full list supports icon, description, hyperlink, scale, tether, popup, and labels.",wraplength=850).grid(row=1,column=0,columnspan=3,sticky="w",pady=(0,12))
         ttk.Label(t,text="Object list").grid(row=2,column=0,sticky="w",padx=(0,8),pady=5);ttk.Entry(t,textvariable=self.bv["list"]).grid(row=2,column=1,sticky="ew",pady=5);ttk.Button(t,text="Browse",command=self.pick_batch_list).grid(row=2,column=2,padx=(8,0),pady=5)
@@ -865,7 +1007,7 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
 
     def _build_compass_tab(self):
         t=self.compass_tab;t.columnconfigure(1,weight=1)
-        self.cv={"lat":tk.StringVar(value="30.385524823620624"),"lon":tk.StringVar(value="-81.93080672778036"),"radius":tk.StringVar(value="100"),"alt":tk.StringVar(value="20000"),"scale":tk.StringVar(value="6"),"out":tk.StringVar(value=str(Path.home()/"Desktop"/"Sky_Compass.kmz")),"coord_status":tk.StringVar(value="Center coordinates for N/E/S/W generation.")}
+        self.cv={"lat":tk.StringVar(value="30.385524823620624"),"lon":tk.StringVar(value="-81.93080672778036"),"radius":tk.StringVar(value="100"),"alt":tk.StringVar(value="20000"),"scale":tk.StringVar(value="6"),"out":tk.StringVar(value=str(desktop_dir()/"Sky_Compass.kmz")),"coord_status":tk.StringVar(value="Center coordinates for N/E/S/W generation.")}
         ttk.Label(t,text="Sky Compass",font=("Segoe UI",15,"bold")).grid(row=0,column=0,columnspan=3,sticky="w",pady=(0,8));ttk.Label(t,text="Creates giant N/E/S/W PNG markers around a center point using the live-proven POF3 geometry.",wraplength=800).grid(row=1,column=0,columnspan=3,sticky="w",pady=(0,12))
         r=2
         for k,l in [("lat","Center latitude"),("lon","Center longitude")]:ttk.Label(t,text=l).grid(row=r,column=0,sticky="w",pady=5);ttk.Entry(t,textvariable=self.cv[k]).grid(row=r,column=1,columnspan=2,sticky="ew",pady=5);r+=1
@@ -880,13 +1022,13 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
         try:
             if not self._ok_to_write(self.cv["out"].get(), ".kmz"):
                 self.status.set("Not created - existing file kept."); return
-            p=create_sky_compass_kmz(Path(self.cv["out"].get()),float(self.cv["lat"].get()),float(self.cv["lon"].get()),float(self.cv["radius"].get()),float(self.cv["alt"].get()),float(self.cv["scale"].get()));self.status.set(f"Created Sky Compass: {p}")
+            p=create_sky_compass_kmz(Path(self.cv["out"].get()),gui_number(self.cv["lat"].get(),"Center latitude",commas=False),gui_number(self.cv["lon"].get(),"Center longitude",commas=False),gui_number(self.cv["radius"].get(),"Radius (km)",positive=True),gui_number(self.cv["alt"].get(),"Altitude AGL (m)"),gui_number(self.cv["scale"].get(),"Icon scale",positive=True));self.status.set(f"Created Sky Compass: {p}")
             messagebox.showinfo(APP,f"Created:\n{p}")
         except Exception as e:messagebox.showerror(APP,str(e))
 
     def _build_beacon_tab(self):
         t=self.beacon_tab;t.columnconfigure(1,weight=1)
-        self.ev={"name":tk.StringVar(value="EarthStick Beacon"),"lat":tk.StringVar(value="30.385524823620624"),"lon":tk.StringVar(value="-81.93080672778036"),"height":tk.StringVar(value="100"),"width":tk.StringVar(value="6"),"color":tk.StringVar(value="Red"),"out":tk.StringVar(value=str(Path.home()/"Desktop"/"EarthStick_Beacon.kml")),"coord_status":tk.StringVar(value="Accepted Beacon Maker behavior integrated here.")}
+        self.ev={"name":tk.StringVar(value="EarthStick Beacon"),"lat":tk.StringVar(value="30.385524823620624"),"lon":tk.StringVar(value="-81.93080672778036"),"height":tk.StringVar(value="100"),"width":tk.StringVar(value="6"),"color":tk.StringVar(value="Red"),"out":tk.StringVar(value=str(desktop_dir()/"EarthStick_Beacon.kml")),"coord_status":tk.StringVar(value="Accepted Beacon Maker behavior integrated here.")}
         ttk.Label(t,text="Earth Beacon",font=("Segoe UI",15,"bold")).grid(row=0,column=0,columnspan=3,sticky="w",pady=(0,8));ttk.Label(t,text="Accepted Earth Beacon geometry preserved: a long-range vertical KML destination marker.").grid(row=1,column=0,columnspan=3,sticky="w",pady=(0,12))
         r=2
         ttk.Label(t,text="Beacon name").grid(row=r,column=0,sticky="w",pady=5);ttk.Entry(t,textvariable=self.ev["name"]).grid(row=r,column=1,columnspan=2,sticky="ew",pady=5);r+=1
@@ -904,7 +1046,7 @@ class ObjectFactory(tk.Tk, CoordinateMixin):
         try:
             if not self._ok_to_write(self.ev["out"].get(), ".kml"):
                 self.status.set("Not created - existing file kept."); return
-            p=create_beacon_kml(Path(self.ev["out"].get()),self.ev["name"].get(),float(self.ev["lat"].get()),float(self.ev["lon"].get()),float(self.ev["height"].get()),float(self.ev["width"].get()),self.ev["color"].get());self.status.set(f"Created Beacon: {p}")
+            p=create_beacon_kml(Path(self.ev["out"].get()),self.ev["name"].get(),gui_number(self.ev["lat"].get(),"Latitude",commas=False),gui_number(self.ev["lon"].get(),"Longitude",commas=False),gui_number(self.ev["height"].get(),"Height (km)",positive=True),gui_number(self.ev["width"].get(),"Line width",positive=True),self.ev["color"].get());self.status.set(f"Created Beacon: {p}")
             messagebox.showinfo(APP,f"Created:\n{p}")
         except Exception as e:messagebox.showerror(APP,str(e))
 
@@ -960,6 +1102,13 @@ def selftest():
         lst.write_text("type|name|lat|lon|hide_above_ft\ncamera|A|30.6|-81.6|high\n",encoding="utf-8")
         try: parse_batch_rows(lst); raise AssertionError("bad hide_above_ft accepted")
         except ValueError as e: assert str(e).startswith("Line 2")
+        # 5f. v2.1: Excel Windows-1252 list with accents + blank rows; quote marks in | lists; number boxes.
+        ex=td/"excel.csv";ex.write_bytes("type,name,lat,lon\r\nwater,Café,30.4,-81.9\r\n,,,\r\nfuel,\"Pump, north\",30.41,-81.91\r\n".encode("cp1252"))
+        assert [r["name"] for r in parse_batch_rows(ex)]==["Café","Pump, north"]
+        qt=td/"quote.txt";qt.write_text('type|name|lat|lon|description\nwater|A|30.4|-81.9|"12 in" main\nwater|B|30.5|-81.9|ok\n',encoding="utf-8")
+        assert [r["description"] for r in parse_batch_rows(qt)]==['"12 in" main',"ok"]
+        try: gui_number("thirty","Altitude (ft)"); raise AssertionError("word accepted as a number")
+        except ValueError as e: assert str(e)=="Altitude (ft): 'thirty' is not a number."
         # 6. Sky compass.
         comp=td/"comp.kmz";create_sky_compass_kmz(comp,30.3855,-81.9308,100,20000,6)
         with zipfile.ZipFile(comp) as z:

@@ -8,7 +8,7 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 10 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
 
-Every tool, version 2.0, in one zip (about 0.4 MB): Extract All and you get one folder per tool, each with its one `.bat` to double-click. Each `.bat` gets the PC ready first - it installs Python for you if it is missing (answer **Y**, no admin needed). The ArcGIS Pro Batch Factory add-in is not in it (it needs ArcGIS Pro) - get it from its own link under Download the tools.
+Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and you get one folder per tool, each with its one `.bat` to double-click. Each `.bat` gets the PC ready first - it installs Python for you if it is missing (answer **Y**, no admin needed). The ArcGIS Pro Batch Factory add-in is not in it (it needs ArcGIS Pro) - get it from its own link under Download the tools.
 
 ## The 7 project pages
 
@@ -157,7 +157,7 @@ Make your own World Gates: pick any two places and it builds the pair of golden 
 
 *Jacksonville to Seattle and back with World Gate Maker 1.1: the "jax" gate home, seen from the side in Seattle - the legs show the way in at a glance. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
-### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v2.0](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v2.0.zip)**
+### **⬇️ [DOWNLOAD ARCGIS EARTH OBJECT FACTORY v2.1](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v2.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/assets/object_factory_whats_in_the_zip_full.png)**
 

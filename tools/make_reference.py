@@ -6,6 +6,9 @@ Run from the Unlocked repo root with all repos side by side (same as make_py_vau
 For every release zip in RELEASES (make_py_vault.py) plus the TPKX Batch Factory it lists the zip's SHA-256 and the
 SHA-256 of every file inside it, so anyone can check that a copy is exactly the reference version.
 Re-run after the Parcel100 GitHub workflow has rebuilt its zip (its zip SHA changes each rebuild; the files inside do not).
+
+FROZEN 2026-11-08: REFERENCE_2.0.md is a snapshot - do NOT re-run this after a later release (RELEASES then points to the
+new zips). Its links were pinned to the reference commits by hand when Object Factory 2.1 was released.
 """
 import hashlib
 import subprocess

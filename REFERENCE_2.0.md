@@ -4,23 +4,23 @@
 
 On 8 November 2026 Jim Gaddy moved every tool in the family to **2.0** at once, so that this day's working set is one known-good reference point. Every tool below was run by Jim on Windows with ArcGIS Earth before it was published. The table **Reference commits** below names the exact commit of each repository that holds this state - later commits may follow, and that commit stays the reference.
 
-**What changed for 2.0:** EarthStick 2.0 and World Gate Maker 2.0 bring new features (gates picked up while you fly, the + ADD GATES button, dropped gates that face each other - see the [EarthStick 2.0 change document](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/EARTHSTICK_V2.0_CHANGES.md)). Every other tool is the same program as before with only its version text changed (checked line by line). The PRAVE / RMC Field Decoder Tester stays *Version 1.0 Gold* - Jim's own program, published unchanged. Older zips are kept in each repository's `archive/` folder.
+**What changed for 2.0:** EarthStick 2.0 and World Gate Maker 2.0 bring new features (gates picked up while you fly, the + ADD GATES button, dropped gates that face each other - see the [EarthStick 2.0 change document](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/EARTHSTICK_V2.0_CHANGES.md)). Every other tool is the same program as before with only its version text changed (checked line by line). The PRAVE / RMC Field Decoder Tester stays *Version 1.0 Gold* - Jim's own program, published unchanged. Older zips are kept in each repository's `archive/` folder. The download links on this page are pinned to the reference commits, so they keep giving exactly the 2.0 files after later releases (for example Object Factory 2.1).
 
 **How to check a copy:** on Windows, open PowerShell in the folder with the zip and type `Get-FileHash <zip name>` - the SHA-256 must match the zip line below. For a file you already extracted, `Get-FileHash "System Files\<file>"` must match its line.
 
 | Tool | Download | Folder inside |
 |---|---|---|
-| MBTiles to TPKX converter (mb2tpkx) | [mb2tpkx.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip) | `mb2tpkx_v2.0` |
-| Master 4 Grid Maker | [Master4_Grid_Maker.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip) | `Master4_Grid_Maker_v2.0` |
-| PRAVE ME Tracker | [PRAVE_ME_Tracker_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip) | `PRAVE_ME_Tracker_v2.0` |
-| PRAVE RMC Field Decoder Tester Gold | [PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip) | `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold` |
-| TPKX Batch Factory | [TPKX_Batch_Factory_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/TPKX_Batch_Factory_v1.zip) | `TPKX_Batch_Factory_v2.0` |
-| EarthStick | [EarthStick_v2.0.zip](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v2.0.zip) | `EarthStick_v2.0` |
-| World Gate Maker | [World_Gate_Maker_v2.0.zip](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v2.0.zip) | `World_Gate_Maker_v2.0` |
-| Object Factory | [ArcGIS_Earth_Object_Factory_v2.0.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v2.0.zip) | `Object_Factory_v2.0` |
-| PointLayer | [PointLayer_v2.0.zip](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.0.zip) | `PointLayer_v2.0` |
-| Parcel100 | [Parcel100_v2.0.zip](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.0.zip) | `Parcel100_v2.0` |
-| Picture World Maker | [Picture_World_Maker_v2.0.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.0.zip) | `Picture_World_Maker_v2.0` |
+| MBTiles to TPKX converter (mb2tpkx) | [mb2tpkx.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/f923f62eff78a639f19872db711fb472775330df/mb2tpkx.zip) | `mb2tpkx_v2.0` |
+| Master 4 Grid Maker | [Master4_Grid_Maker.zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/f923f62eff78a639f19872db711fb472775330df/Master4_Grid_Maker.zip) | `Master4_Grid_Maker_v2.0` |
+| PRAVE ME Tracker | [PRAVE_ME_Tracker_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/PRAVE_ME_Tracker_v1.zip) | `PRAVE_ME_Tracker_v2.0` |
+| PRAVE RMC Field Decoder Tester Gold | [PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip) | `PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold` |
+| TPKX Batch Factory | [TPKX_Batch_Factory_v1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/TPKX_Batch_Factory_v1.zip) | `TPKX_Batch_Factory_v2.0` |
+| EarthStick | [EarthStick_v2.0.zip](https://github.com/Jim-dc95811/EarthStick/raw/d54e3a132f1e2699e627f027562def0a789b196b/releases/EarthStick_v2.0.zip) | `EarthStick_v2.0` |
+| World Gate Maker | [World_Gate_Maker_v2.0.zip](https://github.com/Jim-dc95811/EarthStick/raw/d54e3a132f1e2699e627f027562def0a789b196b/releases/World_Gate_Maker_v2.0.zip) | `World_Gate_Maker_v2.0` |
+| Object Factory | [ArcGIS_Earth_Object_Factory_v2.0.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/2b86893f368c0ed4babbc59acc3c216a327fc9b3/releases/ArcGIS_Earth_Object_Factory_v2.0.zip) | `Object_Factory_v2.0` |
+| PointLayer | [PointLayer_v2.0.zip](https://github.com/Jim-dc95811/Point-Maps/raw/80a9c0a5d3eaebdbd9bf57209888a71e26074a69/releases/PointLayer_v2.0.zip) | `PointLayer_v2.0` |
+| Parcel100 | [Parcel100_v2.0.zip](https://github.com/Jim-dc95811/Parcel100/raw/2428eef41fa36018ec7a5a8289eed254d05ed50c/downloads/Parcel100_v2.0.zip) | `Parcel100_v2.0` |
+| Picture World Maker | [Picture_World_Maker_v2.0.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/b164827bc8b77c7464977d7ef0e7c4a9b7ab802d/releases/Picture_World_Maker_v2.0.zip) | `Picture_World_Maker_v2.0` |
 
 ## Reference commits
 
@@ -37,7 +37,7 @@ On 8 November 2026 Jim Gaddy moved every tool in the family to **2.0** at once, 
 
 ## MBTiles to TPKX converter (mb2tpkx)
 
-Zip [`mb2tpkx.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip) (repository [QGIS-Mbtile-to-ArcGIS-Earth-TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)):
+Zip [`mb2tpkx.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/f923f62eff78a639f19872db711fb472775330df/mb2tpkx.zip) (repository [QGIS-Mbtile-to-ArcGIS-Earth-TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)):
 
 `4e66e612b00b751aafa4fb8b0169c78946866840ce0395a0097661b177d33c1e`
 
@@ -50,7 +50,7 @@ Zip [`mb2tpkx.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-T
 
 ## Master 4 Grid Maker
 
-Zip [`Master4_Grid_Maker.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip) (repository [QGIS-Mbtile-to-ArcGIS-Earth-TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)):
+Zip [`Master4_Grid_Maker.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/f923f62eff78a639f19872db711fb472775330df/Master4_Grid_Maker.zip) (repository [QGIS-Mbtile-to-ArcGIS-Earth-TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)):
 
 `1ed0d60d02263a95600d42e64c9419f483b2b00bddf9b3435a80481adfc4d590`
 
@@ -63,7 +63,7 @@ Zip [`Master4_Grid_Maker.zip`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-Arc
 
 ## PRAVE ME Tracker
 
-Zip [`downloads/PRAVE_ME_Tracker_v1.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
+Zip [`downloads/PRAVE_ME_Tracker_v1.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/PRAVE_ME_Tracker_v1.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
 
 `90da6f2de2dcbedc2aa645244026597a45dbc2cd55de85e3d23071a2bd71f4cd`
 
@@ -76,7 +76,7 @@ Zip [`downloads/PRAVE_ME_Tracker_v1.zip`](https://github.com/Jim-dc95811/ArcGIS-
 
 ## PRAVE RMC Field Decoder Tester Gold
 
-Zip [`downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
+Zip [`downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
 
 `5bd882c79dd8fd5a94beb4e5c6a27e6d3a9aaeb7ac65b02f61a0257536e58fb9`
 
@@ -90,7 +90,7 @@ Zip [`downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip`](https://github.co
 
 ## TPKX Batch Factory
 
-Zip [`downloads/TPKX_Batch_Factory_v1.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/TPKX_Batch_Factory_v1.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
+Zip [`downloads/TPKX_Batch_Factory_v1.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/c2b329a11863ef2cf20759685ab1be0aac27d6f8/downloads/TPKX_Batch_Factory_v1.zip) (repository [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)):
 
 `48850b3a511f02da248167a72917d7c1042ad9ed0b8e94056907ebea29bb03aa`
 
@@ -113,7 +113,7 @@ Zip [`downloads/TPKX_Batch_Factory_v1.zip`](https://github.com/Jim-dc95811/ArcGI
 
 ## EarthStick
 
-Zip [`releases/EarthStick_v2.0.zip`](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v2.0.zip) (repository [EarthStick](https://github.com/Jim-dc95811/EarthStick)):
+Zip [`releases/EarthStick_v2.0.zip`](https://github.com/Jim-dc95811/EarthStick/raw/d54e3a132f1e2699e627f027562def0a789b196b/releases/EarthStick_v2.0.zip) (repository [EarthStick](https://github.com/Jim-dc95811/EarthStick)):
 
 `e6f9dab82e87867e256eb3aba6db489ad3ba0971807481a4a2c04f2759a724da`
 
@@ -139,7 +139,7 @@ Zip [`releases/EarthStick_v2.0.zip`](https://github.com/Jim-dc95811/EarthStick/r
 
 ## World Gate Maker
 
-Zip [`releases/World_Gate_Maker_v2.0.zip`](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v2.0.zip) (repository [EarthStick](https://github.com/Jim-dc95811/EarthStick)):
+Zip [`releases/World_Gate_Maker_v2.0.zip`](https://github.com/Jim-dc95811/EarthStick/raw/d54e3a132f1e2699e627f027562def0a789b196b/releases/World_Gate_Maker_v2.0.zip) (repository [EarthStick](https://github.com/Jim-dc95811/EarthStick)):
 
 `50dff90f7c74bf38896f6fea1be574878472da4a80bd5e5fdf16a12f6a81285a`
 
@@ -152,7 +152,7 @@ Zip [`releases/World_Gate_Maker_v2.0.zip`](https://github.com/Jim-dc95811/EarthS
 
 ## Object Factory
 
-Zip [`releases/ArcGIS_Earth_Object_Factory_v2.0.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v2.0.zip) (repository [ArcGIS-Earth-Object-Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)):
+Zip [`releases/ArcGIS_Earth_Object_Factory_v2.0.zip`](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/2b86893f368c0ed4babbc59acc3c216a327fc9b3/releases/ArcGIS_Earth_Object_Factory_v2.0.zip) (repository [ArcGIS-Earth-Object-Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)):
 
 `607e34a1bb8928b707e15ef4ac9821493ae45b9f93c6c70e14161b79f71a5659`
 
@@ -186,7 +186,7 @@ Zip [`releases/ArcGIS_Earth_Object_Factory_v2.0.zip`](https://github.com/Jim-dc9
 
 ## PointLayer
 
-Zip [`releases/PointLayer_v2.0.zip`](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.0.zip) (repository [Point-Maps](https://github.com/Jim-dc95811/Point-Maps)):
+Zip [`releases/PointLayer_v2.0.zip`](https://github.com/Jim-dc95811/Point-Maps/raw/80a9c0a5d3eaebdbd9bf57209888a71e26074a69/releases/PointLayer_v2.0.zip) (repository [Point-Maps](https://github.com/Jim-dc95811/Point-Maps)):
 
 `ebe0562755f32231b2a98064fb3e537011fc591869db230819847894c125a2d5`
 
@@ -199,7 +199,7 @@ Zip [`releases/PointLayer_v2.0.zip`](https://github.com/Jim-dc95811/Point-Maps/r
 
 ## Parcel100
 
-Zip [`downloads/Parcel100_v2.0.zip`](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.0.zip) (repository [Parcel100](https://github.com/Jim-dc95811/Parcel100)):
+Zip [`downloads/Parcel100_v2.0.zip`](https://github.com/Jim-dc95811/Parcel100/raw/2428eef41fa36018ec7a5a8289eed254d05ed50c/downloads/Parcel100_v2.0.zip) (repository [Parcel100](https://github.com/Jim-dc95811/Parcel100)):
 
 `9f6066bd03306f03d9faa7d3a3afbc94055e6845c2a5cc25d3a64d31d0b6ee59`  *(rebuilt by the repository's GitHub workflow - check the files inside)*
 
@@ -212,7 +212,7 @@ Zip [`downloads/Parcel100_v2.0.zip`](https://github.com/Jim-dc95811/Parcel100/ra
 
 ## Picture World Maker
 
-Zip [`releases/Picture_World_Maker_v2.0.zip`](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.0.zip) (repository [Picture-World-Maker](https://github.com/Jim-dc95811/Picture-World-Maker)):
+Zip [`releases/Picture_World_Maker_v2.0.zip`](https://github.com/Jim-dc95811/Picture-World-Maker/raw/b164827bc8b77c7464977d7ef0e7c4a9b7ab802d/releases/Picture_World_Maker_v2.0.zip) (repository [Picture-World-Maker](https://github.com/Jim-dc95811/Picture-World-Maker)):
 
 `ee0d2229ee130bf0069c8da2efb791312bd00a22e92a3892c967ba79022ebbf9`
 

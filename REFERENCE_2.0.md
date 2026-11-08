@@ -2,7 +2,7 @@
 
 > 🤖 **Using AI assistance?** Have the agent read the [CLAUDE.md](CLAUDE.md) file first.
 
-On 8 November 2026 Jim Gaddy moved every tool in the family to **2.0** at once, so that this day's working set is one known-good reference point. Every tool below was run by Jim on Windows with ArcGIS Earth before it was published. Each repository carries the git tag **`v2.0-reference`** marking this exact state.
+On 8 November 2026 Jim Gaddy moved every tool in the family to **2.0** at once, so that this day's working set is one known-good reference point. Every tool below was run by Jim on Windows with ArcGIS Earth before it was published. The table **Reference commits** below names the exact commit of each repository that holds this state - later commits may follow, and that commit stays the reference.
 
 **What changed for 2.0:** EarthStick 2.0 and World Gate Maker 2.0 bring new features (gates picked up while you fly, the + ADD GATES button, dropped gates that face each other - see the [EarthStick 2.0 change document](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/EARTHSTICK_V2.0_CHANGES.md)). Every other tool is the same program as before with only its version text changed (checked line by line). The PRAVE / RMC Field Decoder Tester stays *Version 1.0 Gold* - Jim's own program, published unchanged. Older zips are kept in each repository's `archive/` folder.
 
@@ -21,6 +21,19 @@ On 8 November 2026 Jim Gaddy moved every tool in the family to **2.0** at once, 
 | PointLayer | [PointLayer_v2.0.zip](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.0.zip) | `PointLayer_v2.0` |
 | Parcel100 | [Parcel100_v2.0.zip](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.0.zip) | `Parcel100_v2.0` |
 | Picture World Maker | [Picture_World_Maker_v2.0.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.0.zip) | `Picture_World_Maker_v2.0` |
+
+## Reference commits
+
+| Repository | Commit |
+|---|---|
+| [ArcGIS-Earth-Object-Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory) | [`2b86893`](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/tree/2b86893f368c0ed4babbc59acc3c216a327fc9b3) |
+| [ArcGIS-Earth-Offline-Maps-Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) | [`c2b329a`](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/tree/c2b329a11863ef2cf20759685ab1be0aac27d6f8) |
+| [ArcGIS-Earth-Unlocked](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked) | [`f76c044`](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/tree/f76c04468731ae1f5bdf7491a2d59253de8a962c) |
+| [EarthStick](https://github.com/Jim-dc95811/EarthStick) | [`d54e3a1`](https://github.com/Jim-dc95811/EarthStick/tree/d54e3a132f1e2699e627f027562def0a789b196b) |
+| [Parcel100](https://github.com/Jim-dc95811/Parcel100) | [`2428eef`](https://github.com/Jim-dc95811/Parcel100/tree/2428eef41fa36018ec7a5a8289eed254d05ed50c) |
+| [Picture-World-Maker](https://github.com/Jim-dc95811/Picture-World-Maker) | [`b164827`](https://github.com/Jim-dc95811/Picture-World-Maker/tree/b164827bc8b77c7464977d7ef0e7c4a9b7ab802d) |
+| [Point-Maps](https://github.com/Jim-dc95811/Point-Maps) | [`80a9c0a`](https://github.com/Jim-dc95811/Point-Maps/tree/80a9c0a5d3eaebdbd9bf57209888a71e26074a69) |
+| [QGIS-Mbtile-to-ArcGIS-Earth-TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) | [`f923f62`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/tree/f923f62eff78a639f19872db711fb472775330df) |
 
 ## MBTiles to TPKX converter (mb2tpkx)
 

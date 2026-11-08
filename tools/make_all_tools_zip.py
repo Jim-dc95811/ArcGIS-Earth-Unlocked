@@ -8,8 +8,8 @@ disagree; Batch Factory is left out: it is an ArcGIS Pro add-in, not a click-and
 folder, exactly as released, into one folder:
 
     ArcGIS_Earth_Unlocked_All_Tools/
-        EarthStick_v1.3.9/            (Fly_ArcGIS_Earth.bat + ...)
-        World_Gate_Maker_v1.2.1/      (World_Gate_Maker.bat + System Files)
+        EarthStick_v2.0/              (Fly_ArcGIS_Earth.bat + ...)
+        World_Gate_Maker_v2.0/        (World_Gate_Maker.bat + System Files)
         ...                           one folder per tool, one .bat in each
 
 -> downloads/ArcGIS_Earth_Unlocked_All_Tools.zip (the file every page links to; same name every time).

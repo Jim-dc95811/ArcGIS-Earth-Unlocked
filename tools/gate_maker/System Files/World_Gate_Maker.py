@@ -1,4 +1,27 @@
-"""World Gate Maker 1.2 - make your own pair of World Gates for EarthStick (1.3 or later).
+"""World Gate Maker 2.0 - make your own pair of World Gates for EarthStick (1.3 or later).
+
+2.0 Reference (Jim, 2026-11-08): the whole family moved to 2.0. World Gate Maker 2.0 = 1.2.2 TEST2 (live-tested
+15:51: "running now" line, gates armed by EarthStick 2.0 with no restart) - gate files identical to 1.2.1.
+
+1.2.2 TEST2 (Jim, 2026-11-08: 'if i have multiple versions of earthstick saved all over how do you know which
+one I launched from?' + 'what if I have earthstick running now. dont I have to quit?') - gate files unchanged:
+  a. saves into the EarthStick you actually fly: EarthStick 1.3.11+ leaves a note at startup
+     (%LOCALAPPDATA%\\ArcGIS Earth Unlocked\\last_earthstick.txt) and World Gate Maker uses that Gates folder
+     first; then the one used last time, then the newest EarthStick folder it can find nearby
+  b. the line under 'Save into' says which EarthStick that is - running now, flown last, or found nearby -
+     and turns RED with what to do when no EarthStick Gates folder is found
+  c. Choose... only takes an EarthStick Gates folder: picking the EarthStick folder or its System Files folder
+     is corrected to its Gates folder; any other folder is refused (no more 'save here anyway')
+  d. with EarthStick 1.3.11+ running, the gates are armed and shown on the map within seconds - no restart;
+     the 'Saved' message says so (older EarthStick: start or restart it, as before)
+
+1.2.2 hardening (Jim approved 1-4, 2026-11-08) - the gate files it writes are unchanged:
+  1. with several EarthStick folders side by side (EarthStick_v1.3.9 and EarthStick_v1.3.10 in Downloads) it now
+     picks the NEWEST version for its Gates folder (1.2.1 sorted the names alphabetically and picked 1.3.9)
+  2. a remembered Gates folder that no longer exists is not used (1.2.1 kept saving there and quietly re-created
+     the deleted folder); it looks again and says so
+  3. the Ground elev box also takes the status bar text as pasted, e.g. "elev 85 ft"
+  4. sharp text on high-resolution / scaled screens (the window tells Windows it handles scaling)
 
 Jim's idea (2026-11-04): two places (GPS coordinates + name), one height above ground,
 and you get a pair of golden rings: the ring at place 1 takes you to place 2 and the
@@ -11,8 +34,8 @@ the ring with the eye alt to fly at underneath (names only show when you are nea
 which way it points show at a glance. The square fits inside the trigger circle (half-side =
 radius / sqrt 2); legs are 1.42 x the radius (320 m on Large, like v21). Gate data unchanged.
 
-The KMZ is saved into EarthStick's Gates folder. Drag the same file onto ArcGIS Earth to
-see the rings, then restart EarthStick (it reads the Gates folder when it starts).
+The KMZ is saved into EarthStick's Gates folder. EarthStick 1.3.11+ picks it up while it runs (armed and shown
+on the map); older EarthSticks read the Gates folder when they start, so restart them.
 
 Standard library only. Self-test: py -3 World_Gate_Maker.py --selftest
 """
@@ -28,7 +51,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 APP = "World Gate Maker"
-VERSION = "1.2"
+VERSION = "2.0"
 FT = 0.3048
 R = 6371008.8
 GOLD = "ff00d7ff"          # KML aabbggrr for #FFD700
@@ -157,6 +180,7 @@ def parse_coordinates(text):
 
 def parse_number(text, what):
     t = (text or "").strip().replace(",", "")
+    t = re.sub(r"^\s*elev(?:ation)?\s*[:=]?\s*", "", t, flags=re.I)          # 1.2.2: "elev 85 ft" as pasted
     t = re.sub(r"\s*(ft|feet|')\s*$", "", t, flags=re.I)
     if not t:
         raise ValueError(f"{what} is empty.")
@@ -372,6 +396,110 @@ def save_settings(data):
         pass
 
 
+def _es_version_key(gates):
+    """1.2.2: EarthStick_v1.3.10/Gates sorts after EarthStick_v1.3.9/Gates (numbers, not letters); folder date breaks ties."""
+    m = re.search(r"(\d+(?:\.\d+)*)", gates.parent.name)
+    nums = tuple(int(x) for x in m.group(1).split(".")) if m else ()
+    try:
+        when = gates.parent.stat().st_mtime
+    except OSError:
+        when = 0.0
+    return (nums, when)
+
+
+def remembered_or_guess(settings):
+    """1.2.2: the remembered Gates folder only if it still exists, else a fresh guess. Returns (folder_text, note)."""
+    remembered = settings.get("gates_folder") or ""
+    if remembered and Path(remembered).is_dir():
+        return remembered, ""
+    guess = guess_gates_folder()
+    note = (f"The Gates folder used last time is gone ({remembered}). " if remembered else "")
+    return (str(guess) if guess else ""), note
+
+
+LAST_FLOWN_NOTE = ("ArcGIS Earth Unlocked", "last_earthstick.txt")   # TEST2: written by EarthStick 1.3.11+
+
+
+def read_last_flown():
+    """TEST2: EarthStick's note (dict: gates, version, started, picks_up_new_gates) or {} if none / unreadable."""
+    base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+    try:
+        text = Path(base).joinpath(*LAST_FLOWN_NOTE).read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return {}
+    note = {}
+    for line in text.splitlines():
+        k, sep, v = line.partition("=")
+        if sep:
+            note[k.strip()] = v.strip()
+    return note if note.get("gates") else {}
+
+
+def earthstick_running():
+    """TEST2: True/False on Windows (EarthStick 1.3.9+ holds a named mutex while it runs), None elsewhere."""
+    try:
+        import ctypes
+        k32 = ctypes.windll.kernel32
+    except Exception:
+        return None
+    try:
+        h = k32.OpenMutexW(0x00100000, False, "Local\\EarthStick_single_instance")   # SYNCHRONIZE
+        if h:
+            k32.CloseHandle(h)
+            return True
+        return False
+    except Exception:
+        return None
+
+
+def is_gates_folder(p):
+    return p.name.lower() == "gates" and p.is_dir()
+
+
+def gates_folder_from_pick(picked):
+    """TEST2 (Choose...): the EarthStick Gates folder for what was picked, or None. Picking the Gates folder,
+    the EarthStick folder (has Gates inside) or its System Files folder (Gates beside it) all count."""
+    p = Path(picked)
+    if is_gates_folder(p):
+        return p
+    if (p / "Gates").is_dir():
+        return p / "Gates"
+    if p.name.lower() == "system files" and (p.parent / "Gates").is_dir():
+        return p.parent / "Gates"
+    return None
+
+
+def start_folder(settings, note=None, running=None):
+    """TEST2: where to save, and the line that says why. Returns (folder_text, line, ok)."""
+    note = read_last_flown() if note is None else note
+    flown = Path(note["gates"]) if note.get("gates") else None
+    if flown is not None and is_gates_folder(flown):
+        if running is None:
+            running = earthstick_running()
+        when = "running now" if running else f"flown last ({note.get('started', '').split(' ')[0] or 'earlier'})"
+        return str(flown), f"EarthStick {note.get('version', '')} {when} - its Gates folder.".replace("  ", " "), True
+    remembered = settings.get("gates_folder") or ""
+    if remembered and is_gates_folder(Path(remembered)):
+        return remembered, "The Gates folder you used last time.", True
+    guess = guess_gates_folder()
+    if guess is not None:
+        return str(guess), f"Newest EarthStick found nearby ({guess.parent.name}). Start EarthStick once and this line names the one you fly.", True
+    return "", ("EarthStick not found. Start EarthStick (Fly_ArcGIS_Earth.bat) once, then reopen World Gate Maker - "
+                "or press Choose... and pick the Gates folder inside your EarthStick folder."), False
+
+
+def make_dpi_aware():
+    """1.2.2: sharp text on scaled (high-resolution) Windows screens. Harmless anywhere else."""
+    try:
+        import ctypes
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except Exception:
+            ctypes.windll.user32.SetProcessDPIAware()
+    except Exception:
+        pass
+
+
 def guess_gates_folder():
     """EarthStick's Gates folder if this tool sits in or next to the EarthStick folder."""
     here = Path(__file__).resolve().parent
@@ -379,8 +507,9 @@ def guess_gates_folder():
     # (Downloads\EarthStick_v1.3.5\Gates next to Downloads\World_Gate_Maker_v1.2).
     top = here.parent if here.name == "System Files" else here
     cands = [here / "Gates", top / "Gates", top.parent / "Gates"]
-    # newest EarthStick folder first (Downloads often holds several versions)
-    cands += sorted(top.parent.glob("EarthStick*/Gates"), reverse=True) + sorted(top.parent.parent.glob("EarthStick*/Gates"), reverse=True)
+    # newest EarthStick folder first (Downloads often holds several versions) - 1.2.2: by version NUMBER, then date
+    cands += sorted(top.parent.glob("EarthStick*/Gates"), key=_es_version_key, reverse=True)
+    cands += sorted(top.parent.parent.glob("EarthStick*/Gates"), key=_es_version_key, reverse=True)
     for cand in cands:
         if cand.is_dir():
             return cand
@@ -392,11 +521,15 @@ def run_gui():
     import tkinter as tk
     from tkinter import ttk, messagebox, filedialog
 
+    make_dpi_aware()
     root = tk.Tk()
     root.title(f"{APP} {VERSION}")
-    root.minsize(860, 560)
+    k = max(1.0, root.winfo_fpixels("1i") / 96.0)          # 1.2.2: screen scaling (2.0 at 200 %)
+    root.minsize(int(860 * k), int(560 * k))
     settings = load_settings()
-    gates_dir = tk.StringVar(value=settings.get("gates_folder") or str(guess_gates_folder() or ""))
+    start_dir, where_text, where_ok = start_folder(settings)
+    gates_dir = tk.StringVar(value=start_dir)
+    where = tk.StringVar(value=where_text)
     status = tk.StringVar(value="Fill in both places, then press MAKE GATES.")
 
     outer = ttk.Frame(root, padding=12)
@@ -428,11 +561,11 @@ def run_gui():
             v["readback"].set(_readback(lat, lon))
 
         ttk.Button(f, text="From Clipboard", command=from_clip).grid(row=3, column=1, sticky="w", pady=(2, 0))
-        ttk.Label(f, textvariable=v["readback"], foreground="#555", wraplength=330).grid(row=4, column=0, columnspan=2, sticky="w")
+        ttk.Label(f, textvariable=v["readback"], foreground="#555", wraplength=int(330 * k)).grid(row=4, column=0, columnspan=2, sticky="w")
         ttk.Label(f, text="Ground elev (ft)").grid(row=5, column=0, sticky="w", pady=(8, 0))
         ttk.Entry(f, textvariable=v["elev"], width=12).grid(row=5, column=1, sticky="w", pady=(8, 0))
         ttk.Label(f, text="In ArcGIS Earth, put the mouse pointer on the spot and read 'elev' in the status bar.",
-                  foreground="#555", wraplength=330).grid(row=6, column=0, columnspan=2, sticky="w")
+                  foreground="#555", wraplength=int(330 * k)).grid(row=6, column=0, columnspan=2, sticky="w")
         f.columnconfigure(1, weight=1)
         places.append(v)
     outer.columnconfigure(0, weight=1)
@@ -449,15 +582,29 @@ def run_gui():
         ttk.Radiobutton(opts, text=s, value=s, variable=size).grid(row=0, column=3 + i, sticky="w", padx=4)
 
     ttk.Label(opts, text="Save into (EarthStick Gates folder)").grid(row=1, column=0, sticky="w", pady=(10, 0))
-    ttk.Label(opts, textvariable=gates_dir, foreground="#1a4fa0", wraplength=480).grid(row=1, column=1, columnspan=4, sticky="w", pady=(10, 0), padx=6)
+    ttk.Label(opts, textvariable=gates_dir, foreground="#1a4fa0", wraplength=int(480 * k)).grid(row=1, column=1, columnspan=4, sticky="w", pady=(10, 0), padx=6)
+    where_label = ttk.Label(opts, textvariable=where, foreground="#2a6b2a" if where_ok else "#c00000",
+                            wraplength=int(640 * k), font=("Segoe UI", 9, "normal" if where_ok else "bold"))
+    where_label.grid(row=2, column=1, columnspan=5, sticky="w", padx=6)
+
+    def set_where(text, ok):
+        where.set(text)
+        where_label.configure(foreground="#2a6b2a" if ok else "#c00000", font=("Segoe UI", 9, "normal" if ok else "bold"))
 
     def choose_folder():
         d = filedialog.askdirectory(title="Choose the Gates folder inside your EarthStick folder",
                                     initialdir=gates_dir.get() or str(Path.home()))
-        if d:
-            gates_dir.set(d)
-            settings["gates_folder"] = d
-            save_settings(settings)
+        if not d:
+            return
+        g = gates_folder_from_pick(d)
+        if g is None:
+            messagebox.showerror(APP, f"{d}\nis not an EarthStick Gates folder.\n\nOpen your EarthStick folder (the one with "
+                                      "Fly_ArcGIS_Earth.bat) and pick the Gates folder inside it.")
+            return
+        gates_dir.set(str(g))
+        set_where("The Gates folder you chose.", True)
+        settings["gates_folder"] = str(g)
+        save_settings(settings)
 
     ttk.Button(opts, text="Choose...", command=choose_folder).grid(row=1, column=5, sticky="w", pady=(10, 0))
 
@@ -478,9 +625,14 @@ def run_gui():
             if not gates_dir.get():
                 return
         folder = Path(gates_dir.get())
-        if folder.name.lower() != "gates" and not messagebox.askyesno(
-                APP, f"{folder}\nis not named 'Gates'. EarthStick only reads the Gates folder in the EarthStick folder.\n\nSave here anyway?"):
-            return
+        if not folder.is_dir():                                     # 1.2.2: never re-create a deleted folder
+            messagebox.showerror(APP, f"This Gates folder no longer exists:\n{folder}\n\nChoose the Gates folder inside your EarthStick folder.")
+            gates_dir.set("")
+            set_where("EarthStick not found - press Choose... and pick the Gates folder inside your EarthStick folder.", False)
+            choose_folder()
+            if not gates_dir.get():
+                return
+            folder = Path(gates_dir.get())
         n1, n2 = vals[0][0].strip(), vals[1][0].strip()
         out = folder / gate_file_name(n1, n2)
         if out.exists() and not messagebox.askyesno(APP, f"{out.name} already exists in\n{folder}\n\nReplace it?",
@@ -494,12 +646,18 @@ def run_gui():
         save_settings(settings)
         g1, g2 = gates
         status.set(f"Saved {out.name} ({'; '.join(notes)}).")
+        note = read_last_flown()
+        live = (earthstick_running() and note.get("picks_up_new_gates") == "yes"
+                and Path(note.get("gates", "")).resolve() == folder.resolve())
+        steps = ("EarthStick is running: within a few seconds it arms these gates and puts them on the map\n"
+                 "(no restart, no dragging). Fly through the gold side.\n\n" if live else
+                 "1. Start EarthStick (if it is already open, close its window and start it again).\n"
+                 "   EarthStick 1.3.11 or later picks new gates up by itself and shows them on the map.\n"
+                 "2. Fly through the gold side.\n\n")
         messagebox.showinfo(APP, f"Saved {out.name} in\n{folder}\n\n"
                             f"At {n1}: gate '{g1['name']}' - fly through at eye alt {round(g1['alt_m'] / FT / 10) * 10:,} ft.\n"
                             f"At {n2}: gate '{g2['name']}' - fly through at eye alt {round(g2['alt_m'] / FT / 10) * 10:,} ft.\n\n"
-                            "1. Drag the file onto ArcGIS Earth to see the gates.\n"
-                            "2. Restart EarthStick (it reads the Gates folder when it starts).\n"
-                            "3. Fly through the gold side.\n\n" + "\n".join(notes))
+                            + steps + "\n".join(notes))
 
     ttk.Button(outer, text="MAKE GATES", command=make).grid(row=3, column=0, columnspan=2, sticky="we", pady=(14, 4), ipady=6)
     ttk.Label(outer, textvariable=status, foreground="#333").grid(row=4, column=0, columnspan=2, sticky="w")
@@ -556,6 +714,51 @@ def selftest():
         check("legs 1.42 x radius, on the exit side", abs(d_leg - 125.0 * LEG_PER_RADIUS) < 1.0
               and distance_m(float(leg[1][1]), float(leg[1][0]), g2["lat"], g2["lon"])
               < distance_m(float(leg[0][1]), float(leg[0][0]), g2["lat"], g2["lon"]))
+    # 1.2.2 checks
+    check("elev as pasted from the status bar", parse_number("elev 85 ft", "x") == 85.0 and parse_number("Elevation: 1,234'", "x") == 1234.0)
+    with tempfile.TemporaryDirectory() as d:
+        dl = Path(d) / "Downloads"
+        sf = dl / "World_Gate_Maker_v1.2.2" / "System Files"; sf.mkdir(parents=True)
+        for name in ("EarthStick_v1.3.6", "EarthStick_v1.3.9", "EarthStick_v1.3.10", "EarthStick_v1.3.8_TEST (1)"):
+            (dl / name / "Gates").mkdir(parents=True)
+        newest = max((dl.glob("EarthStick*/Gates")), key=_es_version_key)
+        check("newest EarthStick by number (1.3.10, not 1.3.9)", newest.parent.name == "EarthStick_v1.3.10")
+        gone = str(dl / "EarthStick_v1.3.4" / "Gates")
+        folder, note = remembered_or_guess({"gates_folder": gone})
+        check("a deleted remembered folder is not used", folder != gone and "gone" in note and not Path(gone).exists())
+        here = str(dl / "EarthStick_v1.3.9" / "Gates")
+        check("an existing remembered folder is kept", remembered_or_guess({"gates_folder": here}) == (here, ""))
+    # TEST2 checks
+    with tempfile.TemporaryDirectory() as d:
+        dl = Path(d) / "Downloads"
+        for name in ("EarthStick_v1.3.10", "EarthStick_v1.3.11_TEST"):
+            (dl / name / "Gates").mkdir(parents=True); (dl / name / "System Files").mkdir()
+        flown = dl / "EarthStick_v1.3.10" / "Gates"
+        note = {"gates": str(flown), "version": "1.3.11 TEST", "started": "2026-11-08 15:00:00", "picks_up_new_gates": "yes"}
+        folder, line, good = start_folder({}, note, running=True)
+        check("the EarthStick you fly wins over the newest one", folder == str(flown) and good and "running now" in line)
+        folder, line, good = start_folder({}, note, running=False)
+        check("flown last (not running) says so", "flown last (2026-11-08)" in line)
+        gone = dict(note, gates=str(dl / "EarthStick_v1.3.4" / "Gates"))
+        folder, line, good = start_folder({"gates_folder": str(dl / "EarthStick_v1.3.11_TEST" / "Gates")}, gone, running=False)
+        check("a note pointing at a deleted EarthStick is skipped", folder.endswith(str(Path("EarthStick_v1.3.11_TEST") / "Gates")))
+        check("Choose: the Gates folder itself", gates_folder_from_pick(flown) == flown)
+        check("Choose: the EarthStick folder -> its Gates", gates_folder_from_pick(flown.parent) == flown)
+        check("Choose: System Files -> the Gates beside it", gates_folder_from_pick(flown.parent / "System Files") == flown)
+        check("Choose: any other folder is refused", gates_folder_from_pick(dl) is None)
+        saved = os.environ.get("LOCALAPPDATA")
+        os.environ["LOCALAPPDATA"] = d
+        try:
+            p = Path(d) / "ArcGIS Earth Unlocked" / "last_earthstick.txt"
+            check("no note = empty", read_last_flown() == {})
+            p.parent.mkdir()
+            p.write_text("program=EarthStick\nversion=1.3.11 TEST\ngates=" + str(flown) + "\npicks_up_new_gates=yes\nstarted=2026-11-08 15:00:00\n", encoding="utf-8")
+            check("reads EarthStick's note", read_last_flown().get("gates") == str(flown))
+        finally:
+            if saved is None:
+                os.environ.pop("LOCALAPPDATA", None)
+            else:
+                os.environ["LOCALAPPDATA"] = saved
     print("\nAll checks passed." if ok else "\nSOME CHECKS FAILED.")
     return 0 if ok else 1
 

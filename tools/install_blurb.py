@@ -14,9 +14,9 @@ EARTH = "**ArcGIS Earth** (free from Esri: https://www.esri.com/en-us/arcgis/pro
 API = "Settings > Advanced application settings > tick **Enable Automation API**"
 TOOLS = {
  "EarthStick/docs/USER_GUIDE.md": ("EarthStick", "Fly_ArcGIS_Earth.bat", "",
-   [f"Install {EARTH}. The .bat starts it for you and checks its Automation API is on ({API}).", "Plug the joystick in by USB - no driver needed."]),
+   [f"Install {EARTH}. The .bat starts it for you and checks its Automation API is on ({API}).", "Plug the joystick in by USB - no driver needed.", "Gate files work only from the **Gates** folder: add them with the **+ ADD GATES** button (or World Gate Maker). ArcGIS Earth's own Add Data only draws them."]),
  "EarthStick/docs/WORLD_GATE_MAKER.md": ("World Gate Maker", "World_Gate_Maker.bat", "",
-   ["Extract it next to your EarthStick folder (both in Downloads, say) and it finds EarthStick's **Gates** folder by itself.", f"To fly through the gates you need EarthStick; to see them, {EARTH}."]),
+   ["**Needs EarthStick:** start EarthStick 2.0 at least once first - it tells World Gate Maker where its **Gates** folder is. With EarthStick running, new gates appear in it within seconds (no restart).", f"To see the gates you need {EARTH}."]),
  "ArcGIS-Earth-Object-Factory/docs/OBJECT_FACTORY_USER_MANUAL.md": ("Object Factory", "Run_Object_Factory.bat", "",
    [f"To see your objects you need {EARTH}: drag the KMZ it makes onto the map."]),
  "Point-Maps/docs/USER_GUIDE.md": ("PointLayer", "PointLayer.bat", "",
@@ -37,9 +37,12 @@ def block(tool, bat, libs, extras):
     return f"{MARK_START}\n> ### Installing {tool} - read this first\n>\n" + COMMON.format(bat=bat, libs=libs, extra=ex) + f"\n{MARK_END}\n"
 for path, (tool, bat, libs, extras) in TOOLS.items():
     s = open(path, encoding="utf-8").read()
-    s = re.sub(re.escape(MARK_START) + r".*?" + re.escape(MARK_END) + r"\n\n?", "", s, flags=re.S)
-    lines = s.split("\n")
-    h = next(i for i, l in enumerate(lines) if l.startswith("# "))
-    lines[h+1:h+1] = ["", block(tool, bat, libs, extras)]
-    open(path, "w", encoding="utf-8").write("\n".join(lines))
+    if MARK_START in s:                       # 2.0: replace in place (idempotent - earlier runs added a blank line each time)
+        s = re.sub(re.escape(MARK_START) + r".*?" + re.escape(MARK_END) + r"\n", lambda m: block(tool, bat, libs, extras), s, count=1, flags=re.S)
+    else:
+        lines = s.split("\n")
+        h = next(i for i, l in enumerate(lines) if l.startswith("# "))
+        lines[h+1:h+1] = ["", block(tool, bat, libs, extras)]
+        s = "\n".join(lines)
+    open(path, "w", encoding="utf-8").write(s)
     print("ok", path)

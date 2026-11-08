@@ -1,10 +1,21 @@
 @echo off
+setlocal
 cd /d "%~dp0"
-title World Gate Maker 1.2
-where py >nul 2>&1
-if %errorlevel%==0 (
-    py -3 "System Files\World_Gate_Maker.py"
-) else (
-    python "System Files\World_Gate_Maker.py"
-)
+title World Gate Maker 2.0
+echo Starting Ready to Fly - on an older PC this first step can take a few minutes, please wait...
+echo (Windows Defender may check the files first and slow the PC. That is normal - do not close this window.)
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0System Files\Ready_To_Fly.ps1" -Folder "%~dp0System Files" -Tool "World Gate Maker" -NeedTk
+if errorlevel 1 goto rtf_stopped
+set "PYEXE="
+set /p PYEXE=<"%~dp0System Files\python_path.txt"
+if not defined PYEXE goto rtf_stopped
+"%PYEXE%" "System Files\World_Gate_Maker.py"
 pause
+exit /b 0
+
+:rtf_stopped
+echo.
+echo World Gate Maker did not start - read the message above.
+echo A log is in System Files\Ready_To_Fly_log.txt
+pause
+exit /b 1

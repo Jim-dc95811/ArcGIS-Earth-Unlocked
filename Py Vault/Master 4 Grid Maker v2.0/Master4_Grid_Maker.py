@@ -1,4 +1,4 @@
-"""Master 4 Grid Maker v3.1
+"""Master 4 Grid Maker 2.0 (= v3.1; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
 
 v3.1 hardening (grid geometry, cell numbering, georeferencing, filenames and
 demo tiles unchanged from v3):
@@ -33,7 +33,7 @@ except ImportError:
         "Pillow is required. Install it with: py -3 -m pip install Pillow"
     )
 
-VERSION = "3.1"
+VERSION = "2.0"   # program = v3.1, only this text changed
 EPSG = 3857
 EARTH_RADIUS = 6378137.0
 OUTPUT_DIR = Path(r"C:\downloads")

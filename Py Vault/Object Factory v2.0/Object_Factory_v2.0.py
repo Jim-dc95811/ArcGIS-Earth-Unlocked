@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ArcGIS Earth Object Factory v1.3
+"""ArcGIS Earth Object Factory 2.0 (= v1.3; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
 
 v1.3 (2026-11-06): one obvious file - the package shows Run_Object_Factory.bat and System Files
   (this program, its icons and the samples). Nothing else changed.
@@ -48,7 +48,7 @@ from tkinter import filedialog, messagebox, ttk
 from xml.sax.saxutils import escape as xml_escape
 
 APP = "ArcGIS Earth Object Factory"
-VERSION = "1.3"
+VERSION = "2.0"   # program = v1.3, only this text changed
 EARTH_R = 6371008.8
 MAX_ICON_DIM = 256
 

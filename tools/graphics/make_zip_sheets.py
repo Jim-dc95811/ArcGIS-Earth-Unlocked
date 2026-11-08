@@ -108,10 +108,10 @@ SHEETS = {
             ("folder_parts", "LEAVE IT ALONE", ["System Files"], "The engine room",
              "The program itself (and the little file that remembers your Gates folder). The .bat runs it for you - you <b>never need to open it</b>. Keep it next to the .bat."),
             ("gates", "MADE FOR YOU", ["Gate_Home_Central_Park.kmz"], "Your new pair of gates",
-             "Saved into EarthStick's <b>Gates</b> folder (found by itself when both folders sit side by side, otherwise it asks once). <b>Drag it onto the map</b> to see the square gates, then <b>restart EarthStick</b> to fly them.", "out"),
+             "Saved into the <b>Gates</b> folder of the EarthStick you fly. With <b>EarthStick 2.0 running</b> the square gates are armed and on the map <b>within seconds</b> - no restart, no dragging.", "out"),
         ],
-        tips=[("folder", "<b>Tip:</b> extract it next to your EarthStick folder (both in Downloads, say) and it finds the <b>Gates</b> folder by itself."),
-              ("earth", "<b>Needs EarthStick 1.3 or later</b> to fly through the gates. The gates can be seen in ArcGIS Earth by anyone."),
+        tips=[("folder", "<b>Needs EarthStick:</b> start <b>EarthStick 2.0 once</b> first - it tells World Gate Maker where its <b>Gates</b> folder is. The line under <i>Save into</i> says which EarthStick it found."),
+              ("earth", "<b>Fly them with EarthStick</b> (any version since 1.3; 2.0 picks them up without a restart). The gates can be seen in ArcGIS Earth by anyone."),
               WARN]),
 
     "object_factory": dict(
@@ -312,7 +312,7 @@ svg path[fill="#cfd9e6"] { stroke: #6f8db0; }
 # 2026-11-08 (Jim): the PDF user manual sits beside the .bat in every zip; page 1 = how to install.
 MANUALS = {
     "world_gate_maker": "World_Gate_Maker_User_Manual.pdf",
-    "object_factory": "ArcGIS_Earth_Object_Factory_v1.3_User_Manual.pdf",
+    "object_factory": "ArcGIS_Earth_Object_Factory_v2.0_User_Manual.pdf",
     "pointlayer": "PointLayer_User_Guide.pdf",
     "parcel100": "Parcel100_User_Manual.pdf",
     "picture_world_maker": "Picture_World_Maker_User_Manual.pdf",

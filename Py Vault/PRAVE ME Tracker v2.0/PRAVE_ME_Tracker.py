@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 r"""
-ArcGIS Earth PRAVE / ME Tracker - v1.2
+ArcGIS Earth PRAVE / ME Tracker - 2.0 (= v1.2; 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point)
 
 v1.2: the local ArcGIS Earth Automation API connection never goes through a
       system or agency proxy (Windows proxy settings could otherwise block
@@ -132,7 +132,7 @@ except ImportError:
     msvcrt = None
 
 
-VERSION = "1.2"
+VERSION = "2.0"   # program = v1.2, only this text changed
 
 me_tracking_enabled = ME_TRACKING_ENABLED_AT_START
 

@@ -36,7 +36,7 @@ try:
 except ImportError:
     sys.exit("ERROR: Pillow is not installed. Install it with: py -3 -m pip install Pillow")
 
-VERSION = "1.1"
+VERSION = "2.0"   # 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point - program = 1.1, only this text changed
 
 # Metadata and bundle-header bytes extracted from the Bryce TPKX accepted by
 # both ArcGIS Earth and ArcGIS Pro. Only content-dependent values change.

@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
-"""EarthStick 1.3.10
+"""EarthStick 2.0
+
+2.0 Reference (Jim, 2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point.
+  EarthStick 2.0 = 1.3.11 TEST3 (live-accepted 15:48) + the notice line above the readout made wider, so a long
+  message such as 'NEW GATES ARMED · Gate_bry_jax' is no longer cut off at the left (Jim's screenshot 15:51).
+  Flying is identical to 1.3.10. Everything new since 1.3.10 is described below (1.3.11 TEST-TEST3).
+
+1.3.11 TEST3
+
+1.3.11 TEST3 (Jim, 2026-11-08 15:41): the Gate Dropper uses World Gate Maker's proven kernel - each dropped gate faces
+  the other one; through one you land 300 m past the other, facing away; turn round once to go back
+  (gate_dropper.py). TEST2's guess (second gate turned round) is gone - it looped when you looked back at mark 2.
+
+1.3.11 TEST
+1.3.11 TEST (Jim, 2026-11-08: 'no longshots, other pc's could be different, build a test') - flying unchanged:
+  1. no restart for new gates: while EarthStick runs it looks in its Gates folder every 2 seconds. A new or
+     changed gate file is armed and put on the map ("NEW GATES ARMED"); a removed one is disarmed and taken
+     off the map ("GATES DISARMED"). A file still being written is left alone until it stops changing.
+  2. + ADD GATES button above the readout: pick gate files from anywhere (Downloads, a USB stick, an e-mail
+     attachment). EarthStick checks each one really holds gates, copies it into its Gates folder (never over
+     a different file of the same name) and item 1 arms it and shows it. ArcGIS Earth's own Add Data only
+     DRAWS a file - its Automation API cannot tell EarthStick what is on the map, so gates opened that way
+     stay dead. Open gates with + ADD GATES (or save them into the Gates folder) and they work.
+  3. a "last flown" note: at startup EarthStick writes where its Gates folder is to
+     %LOCALAPPDATA%\\ArcGIS Earth Unlocked\\last_earthstick.txt, so World Gate Maker saves into the EarthStick
+     you actually fly, however many copies are in Downloads.
+
 
 1.3.10: buttons swapped (Jim, 2026-11-07, two-handed flying: the mouse does the clicking, so the trigger drops
   gates) - Button 1 (trigger) = Gate Dropper (press at two places; hold 2 s = undo), Button 2 = click the object
@@ -132,7 +158,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
 
-VERSION = "1.3.10"
+VERSION = "2.0"
 BASE_URL = "http://localhost:8000"
 CAMERA_URL = BASE_URL + "/arcgisearth/camera"
 TARGET_NAME = "T.A320 Pilot"
@@ -199,6 +225,11 @@ GATES_FOLDER = "Gates"        # 1.3.5: in the EarthStick folder (one level above
 GATE_EXIT_M = 300.0           # arrive this far past the partner gate
 GATE_COOLDOWN_S = 2.0         # no second jump within this time
 GATE_MAX_RANGE_M = 50000.0    # gates farther away than this are not checked
+GATES_RESCAN_S = 2.0          # 1.3.11: look in the Gates folder this often while flying
+GATES_PICKUP_TO_MAP = True    # 1.3.11: put newly found gate files on the map (Automation API add layer)
+ADD_GATES_BUTTON = True       # 1.3.11: the + ADD GATES button above the readout
+ADD_GATES_TEXT = "+ ADD GATES"
+LAST_FLOWN_NOTE = ("ArcGIS Earth Unlocked", "last_earthstick.txt")   # 1.3.11: in %LOCALAPPDATA%
 
 
 class EarthAPIError(RuntimeError):
@@ -635,6 +666,9 @@ class TriggerClick:
         self.ready = threading.Event()
         self.error = None
         self.gate = TriggerGate()
+        self.show_requests = queue.Queue()      # 1.3.11: gate files (+ ADD GATES) the flying loop should put on the map
+        self.add_button = None
+        self.gates_folder = None
         self.thread = threading.Thread(target=self._thread_main, name="TriggerClick", daemon=True)
 
     @classmethod
@@ -693,7 +727,7 @@ class TriggerClick:
                     ro.attributes("-topmost", True)
                     ro.configure(bg=key)
                     ro.attributes("-transparentcolor", key)
-                    self.ro_w, self.ro_h = 1000, 320   # room for the full text at any screen scaling (1.3.4: plus the ring light line)
+                    self.ro_w, self.ro_h = 1600, 320   # room for the full text at any screen scaling (1.3.4: plus the ring light line; 2.0: 1000 -> 1600 so long notices fit)
                     rc = tk.Canvas(ro, width=self.ro_w, height=self.ro_h, bg=key, highlightthickness=0)
                     rc.pack()
                     self.ro_items = [rc.create_text(self.ro_w - 4 + dx, self.ro_h - 4 + dy, text="", anchor="se", justify="right",
@@ -714,6 +748,22 @@ class TriggerClick:
                     self.root.after(250, self._refresh_readout)
                 except Exception:
                     self.ro = None
+            if ADD_GATES_BUTTON and self.ro is not None:     # 1.3.11
+                try:
+                    import tkinter.font as tkfont
+                    self.linespace = tkfont.Font(font=READOUT_FONT).metrics("linespace")
+                    ab = tk.Toplevel(self.root)
+                    ab.overrideredirect(True)
+                    ab.attributes("-topmost", True)
+                    tk.Button(ab, text=ADD_GATES_TEXT, font=("Segoe UI", 12, "bold"), fg=NOTICE_COLOR, bg="#1d242c",
+                              activeforeground="#ffffff", activebackground="#33404d", relief="flat", bd=0,
+                              padx=12, pady=4, cursor="hand2", command=self._add_gates).pack()
+                    ab.update_idletasks()
+                    self._no_activate(ab)
+                    ab.withdraw()
+                    self.add_button = ab
+                except Exception:
+                    self.add_button = None
             self.ready.set()
             self.root.after(100, self._track)
             self.root.after(50, self._serve)
@@ -740,6 +790,45 @@ class TriggerClick:
         style = self.user32.GetWindowLongW(hwnd, -20)                       # GWL_EXSTYLE
         style |= 0x00080000 | 0x00000020 | 0x00000080 | 0x08000000           # layered, transparent, toolwindow, noactivate
         self.user32.SetWindowLongW(hwnd, -20, style)
+
+    def _no_activate(self, tk_window):
+        """1.3.11: clickable, but clicking it does not take the keyboard away from ArcGIS Earth."""
+        hwnd = self.user32.GetParent(tk_window.winfo_id()) or tk_window.winfo_id()
+        style = self.user32.GetWindowLongW(hwnd, -20)
+        self.user32.SetWindowLongW(hwnd, -20, style | 0x00000080 | 0x08000000)    # toolwindow, noactivate
+
+    def _add_gates(self):
+        """1.3.11: + ADD GATES - pick gate files, copy them into the Gates folder; the flying loop arms them."""
+        folder = self.gates_folder
+        if folder is None:
+            return
+        try:
+            from tkinter import filedialog
+            start = Path.home() / "Downloads"
+            names = filedialog.askopenfilenames(
+                parent=self.add_button, title="Add gates - pick one or more gate files",
+                initialdir=str(start if start.is_dir() else Path.home()),
+                filetypes=[("Gate files", "*.kmz *.kml"), ("All files", "*.*")])
+        except Exception:
+            return
+        if not names:
+            return
+        results = add_gate_files(names, folder)
+        for src, result, kept in results:
+            if result == "added":
+                print(f"\n+ ADD GATES: {src} copied into the Gates folder" + (f" as {kept}" if kept != src else "")
+                      + " - arming it in a few seconds.")
+            elif result == "already there":
+                print(f"\n+ ADD GATES: {src} is already in the Gates folder (armed) - showing it on the map.")
+                self.show_requests.put(kept)
+            else:
+                print(f"\n+ ADD GATES: {src} skipped - {result}.")
+        added = [r for r in results if r[1] == "added"]
+        there = [r for r in results if r[1] == "already there"]
+        pick = added or there or results
+        stem = Path(pick[0][2] or pick[0][0]).stem if len(pick) == 1 else f"{len(pick)} files"
+        text = (f"ADDING \u00b7 {stem}" if added else f"ALREADY ARMED \u00b7 {stem}" if there else f"NO GATES IN \u00b7 {stem}")
+        self.notice = (text, time.perf_counter() + NOTICE_S)
 
     def _exe_of(self, hwnd):
         pid = wintypes.DWORD()
@@ -795,6 +884,8 @@ class TriggerClick:
             try:
                 if self.ro is not None:
                     self.ro.withdraw()
+                if self.add_button is not None:
+                    self.add_button.withdraw()
             except Exception:
                 pass
         self.root.after(400, self._track)
@@ -814,6 +905,16 @@ class TriggerClick:
             if self.readout:
                 self.ro.deiconify()
                 self.ro.attributes("-topmost", True)
+            if self.add_button is not None:          # 1.3.11: + ADD GATES, one line above the notice line
+                bb = self.ro_canvas.bbox(self.ro_items[-1])
+                text_top = y + (bb[1] if bb else self.ro_h) - 2
+                bw, bh = self.add_button.winfo_reqwidth(), self.add_button.winfo_reqheight()
+                bx = right - READOUT_RIGHT_PX - 4 - bw
+                by = text_top - self.linespace - 12 - bh
+                self.add_button.geometry(f"+{bx}+{by}")
+                if self.readout and self.gates_folder is not None:
+                    self.add_button.deiconify()
+                    self.add_button.attributes("-topmost", True)
         except Exception:
             pass
 
@@ -1017,6 +1118,33 @@ def _gate_from_placemark(pm):
     return gate
 
 
+def gates_in_file(f):
+    """1.3.11 (moved out of load_gates, same reading): the gates in one .kmz / .kml file. Returns (gates, problems)."""
+    f = Path(f)
+    gates, problems = [], []
+    try:
+        if f.suffix.lower() == ".kmz":
+            with zipfile.ZipFile(f) as z:
+                name = next((n for n in z.namelist() if n.lower().endswith(".kml")), None)
+                if name is None:
+                    raise ValueError("no KML inside")
+                root = ET.fromstring(z.read(name))
+        else:
+            root = ET.parse(f).getroot()
+        for pm in root.iter(_KML_NS + "Placemark"):
+            try:
+                g = _gate_from_placemark(pm)
+            except (KeyError, ValueError) as exc:
+                problems.append(f"{f.name}: {exc}")
+                continue
+            if g is not None:
+                g["file"] = f.name
+                gates.append(g)
+    except Exception as exc:
+        problems.append(f"{f.name}: {exc}")
+    return gates, problems
+
+
 def load_gates(folder):
     """Read every gate in *.kmz / *.kml in folder. Returns (gates, problems)."""
     gates, problems = [], []
@@ -1026,26 +1154,9 @@ def load_gates(folder):
     for f in sorted(folder.iterdir()):
         if f.suffix.lower() not in (".kmz", ".kml"):
             continue
-        try:
-            if f.suffix.lower() == ".kmz":
-                with zipfile.ZipFile(f) as z:
-                    name = next((n for n in z.namelist() if n.lower().endswith(".kml")), None)
-                    if name is None:
-                        raise ValueError("no KML inside")
-                    root = ET.fromstring(z.read(name))
-            else:
-                root = ET.parse(f).getroot()
-            for pm in root.iter(_KML_NS + "Placemark"):
-                try:
-                    g = _gate_from_placemark(pm)
-                except (KeyError, ValueError) as exc:
-                    problems.append(f"{f.name}: {exc}")
-                    continue
-                if g is not None:
-                    g["file"] = f.name
-                    gates.append(g)
-        except Exception as exc:
-            problems.append(f"{f.name}: {exc}")
+        g_f, p_f = gates_in_file(f)
+        gates += g_f
+        problems += p_f
     kept = []
     for g in gates:
         if g["to"]:
@@ -1061,6 +1172,104 @@ def load_gates(folder):
                 continue
         kept.append(g)
     return kept, problems
+
+
+class GateWatcher:
+    """1.3.11: notices gate files added to, changed in or removed from the Gates folder while EarthStick runs.
+    A file is acted on only when it looks the same on two looks in a row (so a half-written file is never read)."""
+
+    def __init__(self, folder, rescan_s=GATES_RESCAN_S):
+        self.folder = Path(folder)
+        self.rescan_s = rescan_s
+        self.known = self.scan()
+        self.pending = None
+        self.next_look = 0.0
+
+    def scan(self):
+        found = {}
+        try:
+            for e in os.scandir(self.folder):
+                if e.is_file() and os.path.splitext(e.name)[1].lower() in (".kmz", ".kml"):
+                    st = e.stat()
+                    found[e.name] = (st.st_size, st.st_mtime_ns)
+        except OSError:
+            pass
+        return found
+
+    def sync(self):
+        """EarthStick changed the folder itself (Gate Dropper, undo): take it as known."""
+        self.known, self.pending = self.scan(), None
+
+    def poll(self, now):
+        """None, or (added_or_changed_names, removed_names) once the folder has settled."""
+        if now < self.next_look:
+            return None
+        self.next_look = now + self.rescan_s
+        current = self.scan()
+        if current == self.known:
+            self.pending = None
+            return None
+        if current != self.pending:
+            self.pending = current               # changed since the last look: wait one more look
+            return None
+        added = sorted(n for n in current if self.known.get(n) != current[n])
+        removed = sorted(n for n in self.known if n not in current)
+        self.known, self.pending = current, None
+        return added, removed
+
+
+def last_flown_path():
+    base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+    return Path(base).joinpath(*LAST_FLOWN_NOTE)
+
+
+def write_last_flown(gates_folder):
+    """1.3.11: tell World Gate Maker which EarthStick is flying. Never stops EarthStick if it cannot."""
+    try:
+        p = last_flown_path()
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text("program=EarthStick\n"
+                     f"version={VERSION}\n"
+                     f"gates={Path(gates_folder).resolve()}\n"
+                     "picks_up_new_gates=yes\n"
+                     f"started={time.strftime('%Y-%m-%d %H:%M:%S')}\n", encoding="utf-8")
+        return p
+    except Exception:
+        return None
+
+
+def add_gate_files(paths, gates_folder):
+    """1.3.11 (+ ADD GATES): copy chosen gate files into the Gates folder. Never overwrites a different file
+    (a name clash becomes name_2.kmz); a file with no gates is not copied. Returns a list of
+    (source_name, result, kept_name_or_None); result is 'added', 'already there' or a reason it was skipped."""
+    import filecmp
+    folder = Path(gates_folder)
+    out = []
+    for src in paths:
+        src = Path(src)
+        if src.suffix.lower() not in (".kmz", ".kml") or not src.is_file():
+            out.append((src.name, "not a .kmz or .kml file", None)); continue
+        gates, problems = gates_in_file(src)
+        if not gates:
+            out.append((src.name, "no gates in it" + (f" ({problems[0].split(': ', 1)[-1]})" if problems else ""), None)); continue
+        try:
+            folder.mkdir(exist_ok=True)
+            if src.resolve().parent == folder.resolve():
+                out.append((src.name, "already there", src.name)); continue
+            dst, n = folder / src.name, 2
+            while dst.exists():
+                if filecmp.cmp(src, dst, shallow=False):
+                    break
+                dst, n = folder / f"{src.stem}_{n}{src.suffix}", n + 1
+            if dst.exists():
+                out.append((src.name, "already there", dst.name)); continue
+            tmp = folder / (dst.name + ".copying")      # not .kmz, so a half-copied file is never read
+            shutil.copyfile(src, tmp)
+            os.replace(tmp, dst)
+            out.append((src.name, "added", dst.name))
+        except OSError as exc:
+            out.append((src.name, f"could not copy ({exc.strerror or exc})", None))
+    return out
 
 
 def _local_xyz(lat0, lon0, lat, lon, alt):
@@ -1099,6 +1308,55 @@ def gate_label(gate):
     return gate["name"]
 
 
+def pickup_changes(changes, gates_folder, layers):
+    """1.3.11: show/hide map layers for gate files that appeared, changed or went. layers = file name ->
+    ArcGIS Earth layer id (shared with the Gate Dropper). Returns (notice, console text)."""
+    added, removed = changes
+    folder = Path(gates_folder)
+    armed, empty, gone = [], [], []
+    for name in removed:
+        gone.append(name)
+        layer = layers.pop(name, None)
+        if layer:
+            try:
+                http_json("DELETE", BASE_URL + f"/arcgisearth/layer/{layer}")
+            except EarthAPIError:
+                pass
+    for name in added:
+        old = layers.pop(name, None)
+        if old:                                        # changed file: take the old drawing off first
+            try:
+                http_json("DELETE", BASE_URL + f"/arcgisearth/layer/{old}")
+            except EarthAPIError:
+                pass
+        found, _problems = gates_in_file(folder / name)
+        if not found:
+            empty.append(name)
+            continue
+        armed.append(name)
+        if GATES_PICKUP_TO_MAP:
+            layer = add_layer_to_map(folder / name)
+            if layer:
+                layers[name] = layer
+    parts = []
+    if armed:
+        parts.append("armed " + ", ".join(armed))
+    if gone:
+        parts.append("disarmed " + ", ".join(gone))
+    if empty:
+        parts.append("no gates in " + ", ".join(empty))
+    stem = lambda names: Path(names[0]).stem if len(names) == 1 else f"{len(names)} files"
+    if armed:
+        notice = f"NEW GATES ARMED \u00b7 {stem(armed)}"
+    elif gone:
+        notice = f"GATES DISARMED \u00b7 {stem(gone)}"
+    elif empty:
+        notice = f"NO GATES IN \u00b7 {stem(empty)}"
+    else:
+        notice = ""
+    return notice, "; ".join(parts) or "no change"
+
+
 _INSTANCE = None
 
 
@@ -1135,6 +1393,9 @@ def run():
         print("EarthStick is already running in another window - use that one.")
         print("(Only one EarthStick can fly the camera at a time. You can close this window.)")
         return
+    _here = Path(__file__).resolve().parent
+    _top = _here.parent if _here.name == "System Files" else _here
+    write_last_flown(_top / GATES_FOLDER)            # 1.3.11: World Gate Maker reads this
 
     # Same retry used after a mid-flight unplug, so EarthStick can be started
     # before the joystick is plugged in.
@@ -1174,6 +1435,13 @@ def run():
         print(f"Wormholes: none (put gate files in the {GATES_FOLDER} folder in the EarthStick folder)")
     last_jump = -1e9
     dropper = GateDropper(top / GATES_FOLDER)
+    watcher = GateWatcher(top / GATES_FOLDER)        # 1.3.11: new gate files are picked up while flying
+    print("New gates: save or copy gate files into the Gates folder while EarthStick runs - they are armed")
+    print("  and shown within a few seconds (no restart).")
+    if clicker is not None and getattr(clicker, "add_button", None) is not None:
+        clicker.gates_folder = top / GATES_FOLDER
+        print(f"  Or click {ADD_GATES_TEXT} (above the readout) to open gate files from anywhere.")
+    print("  (ArcGIS Earth's Add Data only draws a file - EarthStick cannot see it, so those gates stay dead.)")
     print("Close this window or press Ctrl+C to stop EarthStick.\n")
 
     dt_target = 1.0 / POLL_HZ
@@ -1240,6 +1508,13 @@ def run():
 
         if clicker is not None:
             clicker.on_buttons(state["buttons"])
+            show_q = getattr(clicker, "show_requests", None)
+            while show_q is not None and not show_q.empty():   # 1.3.11: + ADD GATES on a file already in Gates
+                name = show_q.get_nowait()
+                if name not in dropper.layers:
+                    layer = add_layer_to_map(top / GATES_FOLDER / name)
+                    if layer:
+                        dropper.layers[name] = layer
 
         # 1.3.6: Gate Dropper (DROP_BUTTON: Button 1 since 1.3.10)
         drop_action = dropper.update(bool(state["buttons"] & (1 << (DROP_BUTTON - 1))), loop_start)
@@ -1248,6 +1523,7 @@ def run():
                 msg, removed = dropper.undo()
                 if removed is not None:
                     gates, gate_problems = load_gates(top / GATES_FOLDER)
+                    watcher.sync()
                     sys.stdout.write(f"\nGate Dropper: {removed} deleted and disarmed ({len(gates)} gates armed).\n")
                 else:
                     sys.stdout.write(f"\nGate Dropper: {msg}\n")
@@ -1266,6 +1542,7 @@ def run():
                 msg, written = dropper.press(here_cam)
                 if written is not None:
                     gates, gate_problems = load_gates(top / GATES_FOLDER)
+                    watcher.sync()
                     for p_msg in gate_problems:
                         sys.stdout.write(f"\nWormholes: skipped - {p_msg}")
                     last_jump = loop_start                 # never jump through the gate you are sitting in
@@ -1283,6 +1560,24 @@ def run():
                 sys.stdout.write(f"\nGate Dropper: could not write the gates ({exc}).\n")
             sys.stdout.flush()
             if clicker is not None:
+                clicker.notice = (msg, time.perf_counter() + NOTICE_S)
+
+        # 1.3.11: gate files added / changed / removed while flying
+        changes = watcher.poll(loop_start)
+        if changes:
+            try:
+                msg = pickup_changes(changes, top / GATES_FOLDER, dropper.layers)
+                gates, gate_problems = load_gates(top / GATES_FOLDER)
+                last_jump = loop_start                     # never jump the moment a gate appears
+                for p_msg in gate_problems:
+                    sys.stdout.write(f"\nWormholes: skipped - {p_msg}")
+                sys.stdout.write(f"\nGates folder: {msg[1]} ({len(gates)} gates armed).\n")
+                msg = msg[0]
+            except Exception as exc:
+                msg = "GATES FOLDER CHECK FAILED"
+                sys.stdout.write(f"\nGates folder: could not read the changes ({exc}).\n")
+            sys.stdout.flush()
+            if clicker is not None and msg:
                 clicker.notice = (msg, time.perf_counter() + NOTICE_S)
 
         # Button 4 (red trigger) = zoom in.
@@ -1567,12 +1862,21 @@ def selftest():
     gd = gate_dropper_module()
     alat, alon = gd.dest(30.0, -80.0, 0.0, gd.DROP_AHEAD_M)                                   # TEST3: 500 m in front of mark 1
     assert abs(ga["lat"] - alat) < 1e-6 and abs(ga["lon"] - alon) < 1e-6 and abs(ga["alt_m"] - 152.4) < 0.01
-    assert abs(ga["facing"] - 0.0) < 1e-6                                                     # TEST2: faces the way you looked (north)
-    assert not gate_crossed(ga, (-80.0, 29.999, 152.4), (-80.0, 30.001, 152.4))               # not where you pressed...
-    assert gate_crossed(ga, (-80.0, 30.001, 152.4), (-80.0, 30.010, 152.4))                   # ...but 500 m ahead: push forward
+    gb = next(g for g in dropped if g["name"] == "Drop 01 A")                                 # the gate at mark 2
+    blat, blon = gd.dest(30.0, -79.0, 0.0, gd.DROP_AHEAD_M)
+    assert abs(ga["facing"] - gd.bearing(alat, alon, blat, blon)) < 1e-6                      # 1.3.11 TEST3: faces the other gate
+    assert abs(gb["facing"] - gd.bearing(blat, blon, alat, alon)) < 1e-6                      # ...both ways (World Gate Maker kernel)
+    p_in = move_lonlat(ga["lon"], ga["lat"], ga["facing"], -100.0, 0.0) + (152.4,)
+    p_out = move_lonlat(ga["lon"], ga["lat"], ga["facing"], 100.0, 0.0) + (152.4,)
+    assert gate_crossed(ga, p_in, p_out) and not gate_crossed(ga, p_out, p_in)                # forward only
     lon, lat, alt, hd = gate_arrival(ga, dropped)
-    blat, blon = gd.dest(30.0, -79.0, 0.0, gd.DROP_AHEAD_M + 300.0)
-    assert abs(lon - blon) < 1e-5 and abs(lat - blat) < 1e-5 and abs(alt - 300.0) < 0.01 and hd == 0.0   # 300 m past gate B, looking north
+    away = (gb["facing"] + 180.0) % 360
+    want_lon, want_lat = move_lonlat(gb["lon"], gb["lat"], away, 300.0, 0.0)
+    assert abs(lon - want_lon) < 1e-5 and abs(lat - want_lat) < 1e-5 and abs(alt - 300.0) < 0.01 and abs(hd - away) < 1e-6   # 300 m past the other gate, facing away
+    lon, lat, alt, hd = gate_arrival(gb, dropped)
+    away = (ga["facing"] + 180.0) % 360
+    want_lon, want_lat = move_lonlat(ga["lon"], ga["lat"], away, 300.0, 0.0)
+    assert abs(lon - want_lon) < 1e-5 and abs(lat - want_lat) < 1e-5 and abs(alt - 152.4) < 0.01 and abs(hd - away) < 1e-6
     d.press(cam_at(30.0, -79.0, 300.0)); assert d.press(cam_at(30.0, -78.0, 300.0))[1].name == "Dropped_Gate_02.kmz"
     # TEST5: dropped gates carry their own wide grab zone (3 km, +-2,000 ft); other gates keep 1.5 km / 1 radius
     assert abs(ga["lock_capture_m"] - 609.6) < 0.01 and ga["lock_range_m"] == 3000.0 and ga["radius_m"] == 300.0
@@ -1601,6 +1905,48 @@ def selftest():
     assert order[-1].name == "Dropped_Gate_100.kmz"
     if os.name != "nt":
         assert single_instance()                      # not Windows: the check stays out of the way
+
+    # 1.3.11: Gates folder pickup, + ADD GATES copying, last-flown note
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        gd_dir = Path(d) / "Gates"; gd_dir.mkdir()
+        w = GateWatcher(gd_dir, rescan_s=1.0)
+        assert w.poll(0.0) is None
+        src_dir = Path(d) / "Downloads"; src_dir.mkdir()
+        mod = gate_dropper_module()
+        made = mod.drop_pair(src_dir, (30.0, -81.0, 300.0, 90.0), (30.0, -80.9, 300.0, 270.0))
+        assert add_gate_files([made], gd_dir) == [(made.name, "added", made.name)]
+        assert w.poll(1.0) is None                                    # first look: changed, wait
+        assert w.poll(2.0) == ([made.name], [])                       # second look, same: act
+        assert w.poll(3.0) is None
+        assert add_gate_files([made], gd_dir)[0][1] == "already there"          # same bytes: no copy
+        other = src_dir / "other"; other.mkdir()
+        made2 = mod.drop_pair(other, (31.0, -81.0, 300.0, 90.0), (31.0, -80.9, 300.0, 270.0))
+        clash = other / made.name
+        os.replace(made2, clash)
+        r = add_gate_files([clash], gd_dir)[0]
+        assert r[1] == "added" and r[2] == made.stem + "_2.kmz"                   # never over a different file
+        junk = src_dir / "not_gates.kmz"
+        with zipfile.ZipFile(junk, "w") as z:
+            z.writestr("doc.kml", '<kml xmlns="http://www.opengis.net/kml/2.2"><Placemark><name>x</name></Placemark></kml>')
+        assert add_gate_files([junk], gd_dir)[0][2] is None and not (gd_dir / junk.name).exists()
+        g_all, _ = load_gates(gd_dir)
+        assert len(g_all) == 4 and not list(gd_dir.glob("*.copying"))
+        (gd_dir / made.name).unlink()
+        w.poll(4.0)
+        assert w.poll(5.0) == ([r[2]], [made.name])
+        saved = os.environ.get("LOCALAPPDATA")
+        os.environ["LOCALAPPDATA"] = d
+        try:
+            note = write_last_flown(gd_dir)
+            text = note.read_text(encoding="utf-8")
+            assert note == Path(d) / "ArcGIS Earth Unlocked" / "last_earthstick.txt"
+            assert f"gates={gd_dir.resolve()}" in text and "picks_up_new_gates=yes" in text
+        finally:
+            if saved is None:
+                os.environ.pop("LOCALAPPDATA", None)
+            else:
+                os.environ["LOCALAPPDATA"] = saved
 
     print("EarthStick self-test PASS")
 

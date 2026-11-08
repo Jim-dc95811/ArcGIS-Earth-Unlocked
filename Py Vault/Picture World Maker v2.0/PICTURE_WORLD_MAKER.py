@@ -15,7 +15,7 @@ from PWM_PIPELINE import (
 )
 
 APP = "PICTURE WORLD MAKER"
-VERSION = "v0.2.4"
+VERSION = "2.0"   # 2.0 Reference (2026-11-08): the whole ArcGIS Earth Unlocked family moved to 2.0 as one reference point - program = v0.2.4, only this text changed
 HERE = Path(__file__).resolve().parent
 BG = "#f3f5f7"
 TEXT = "#17233a"

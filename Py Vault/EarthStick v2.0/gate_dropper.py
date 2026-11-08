@@ -1,4 +1,11 @@
-"""Gate Dropper for EarthStick 1.3.6 (TEST2: gates face the way you were looking; TEST3: 500 m in front of you;
+"""Gate Dropper for EarthStick 1.3.11 TEST3 (Jim, 2026-11-08 15:41: 'lets put the kernel in and get out of this
+quagmire'): the pair now follows World Gate Maker's proven kernel (Bryceville <-> Central Park): each gate faces the
+OTHER gate, and going through one lands you 300 m past the other, facing away from it - turn round once and you are
+lined up to go back. Where you were looking no longer matters (TEST2 guessed and could loop). Each gate still appears
+500 m in front of where you pressed, at your height; black look, wide grab zone and hold-to-undo unchanged.
+Over a picture world the gate faces the other gate, so you may need to turn after a hop (Jim: fine).
+
+Gate Dropper for EarthStick 1.3.6 (TEST2: gates face the way you were looking; TEST3: 500 m in front of you;
 TEST5: thin black, bigger opening, wide grab zone) (Jim, 2026-11-06: 'manually entering that info is a huge pain ...
 I would love to automate that procedure').
 
@@ -223,8 +230,12 @@ def drop_pair(folder, mark1, mark2, radius_m=DROP_RADIUS_M):
                     lock_capture_m=DROP_LOCK_CAPTURE_M, lock_range_m=DROP_LOCK_RANGE_M,
                     dest_lat=dlat, dest_lon=dlon, dest_alt_m=to_alt, dest_heading=to_heading % 360,
                     description=f"<b>Gate to {escape(name)}</b><br/>Fly through the gold side at eye alt {ft:,} ft.")
-    gates = [gate(b, lat1, lon1, alt1, hd1, lat2, lon2, alt2, hd2),
-             gate(a, lat2, lon2, alt2, hd2, lat1, lon1, alt1, hd1)]
+    # 1.3.11 TEST3 - World Gate Maker's kernel: each gate faces the other one (f1, f2); through a gate you land
+    # 300 m past the other gate, facing away from it (= the way you were going). Same as EarthStick's 'to' pairs.
+    f1 = bearing(lat1, lon1, lat2, lon2)
+    f2 = bearing(lat2, lon2, lat1, lon1)
+    gates = [gate(b, lat1, lon1, alt1, f1, lat2, lon2, alt2, (f2 + 180.0) % 360),
+             gate(a, lat2, lon2, alt2, f2, lat1, lon1, alt1, (f1 + 180.0) % 360)]
     path = folder / f"{DROP_FILE_PREFIX}{n:02d}.kmz"
     partial = path.with_name(path.name + ".partial")
     kml = build_kml(f"Dropped Gate {n:02d} - {a} <-> {b}", gates)

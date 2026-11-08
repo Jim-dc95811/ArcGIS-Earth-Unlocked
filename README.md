@@ -10,21 +10,21 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and you get one folder per tool, each with its one `.bat` to double-click. Each `.bat` gets the PC ready first - it installs Python for you if it is missing (answer **Y**, no admin needed). The ArcGIS Pro Batch Factory add-in is not in it (it needs ArcGIS Pro) - get it from its own link under Download the tools.
 
-## The 7 project pages
+[![The 10 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 PRAVE / RMC Tester - bench test without a radio; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
+
+*The 10 tools in action - all 10 are in the zip above. Each one's own download, manual and video are on its project page.*
+
+## The project pages
 
 Each page has its own downloads, user manuals, pictures and videos:
 
-1. **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
-2. **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory and PRAVE / ME Tracker
-3. **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
-4. **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
-5. **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
-6. **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
-7. **[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** - turn giant pictures into maps you can fly into
-
-[![The 7 programs in action: 1 MBTiles to TPKX - QGIS maps offline in ArcGIS Earth; 2 Offline Maps and Tracking - radio units live on the map; 3 EarthStick - fly the world with a joystick; 4 Object Factory - beacons and objects in the sky; 5 PointLayer - hydrants and public points offline; 6 Parcel100 - click a parcel for owner and address; 7 Picture World Maker - fly into giant photographs](images/seven_projects_montage.jpg)](images/seven_projects_montage.jpg)
-
-*The 7 programs in action - the numbers match the list above.*
+- **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
+- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory, PRAVE / ME Tracker and PRAVE / RMC Tester
+- **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
+- **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
+- **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
+- **[Parcel100](https://github.com/Jim-dc95811/Parcel100)** - clickable property parcels
+- **[Picture World Maker](https://github.com/Jim-dc95811/Picture-World-Maker)** - turn giant pictures into maps you can fly into
 
 **Offline worlds, direct navigation, operational GIS, and programmable geographic objects - all inside ArcGIS Earth.**
 

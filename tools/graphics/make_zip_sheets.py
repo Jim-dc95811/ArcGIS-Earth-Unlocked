@@ -22,6 +22,7 @@ def globe(x, y, r):
 
 
 ICONS = {
+    "manual": '<path d="M28 8 h52 l20 20 v92 h-72 z" fill="#ffffff" stroke="#6f8db0" stroke-width="3"/><path d="M80 8 v20 h20" fill="#dfe8f2" stroke="#6f8db0" stroke-width="3"/><g stroke="#9fb8d4" stroke-width="4" stroke-linecap="round"><path d="M40 38 h44"/><path d="M40 50 h44"/><path d="M40 106 h44"/></g><rect x="16" y="62" width="64" height="30" rx="5" fill="#d93025"/><text x="48" y="84" text-anchor="middle" font-family="Poppins, Arial" font-size="20" font-weight="700" fill="#ffffff">PDF</text>',
     # START HERE launcher: page with a gold play button
     "go": FILE + '<circle cx="64" cy="76" r="30" fill="#ffd400" stroke="#0b1d33" stroke-width="3"/><path d="M55 60 L80 76 L55 92 Z" fill="#0b1d33"/>',
     # the program: page with lines and a "hands off" sign
@@ -124,7 +125,7 @@ SHEETS = {
             ("kmz", "MADE FOR YOU", ["ArcGIS_Earth_Object.kmz", "Object_Set.kmz"], "Your objects",
              "Saved to your <b>Desktop</b> unless you pick another place. <b>Drag them onto ArcGIS Earth</b> to see them.", "out"),
         ],
-        tips=[("folder", "<b>Keep the two together.</b> Moving the .bat away from System Files stops it working."),
+        tips=[("folder", "<b>Keep them together.</b> Moving the .bat away from System Files stops it working."),
               ("new", "<b>Want a Batch example?</b> The Batch tab opens the example list from System Files by itself - copy it and change the names and coordinates."),
               WARN]),
     "pointlayer": dict(
@@ -139,7 +140,7 @@ SHEETS = {
              "Saved in the folder and name you choose. <b>Drag it onto ArcGIS Earth</b> - it works with no internet from then on.", "out"),
         ],
         tips=[("net", "<b>Internet is needed only while it builds</b> - it downloads the points. The file it makes works offline."),
-              ("folder", "<b>Keep the two together.</b> Moving the .bat away from System Files stops it working."),
+              ("folder", "<b>Keep them together.</b> Moving the .bat away from System Files stops it working."),
               WARN]),
 
     "parcel100": dict(
@@ -231,7 +232,7 @@ SHEETS = {
              "Holds <b>PRAVE_ME_Tracker.py</b> and, once it has run, the <b>Logs</b> folder. Radio not on <b>COM12</b>? Open the .py in Notepad and change <b>INPUT_PORT</b> near the top - stop at <b>HERE BE DRAGONS</b>."),
         ],
         tips=[("earth", "<b>Open ArcGIS Earth first</b> with the <b>Automation API</b> turned on (Settings > Advanced)."),
-              ("folder", "<b>Keep the two together.</b> Moving the .bat away from System Files stops it working."),
+              ("folder", "<b>Keep them together.</b> Moving the .bat away from System Files stops it working."),
               WARN]),
 
     "prave_tester": dict(
@@ -244,7 +245,7 @@ SHEETS = {
              "Holds the tester program (its <b>COM port</b> and speed are at the top - open it in Notepad to change them; it starts on <b>COM12</b>) and Jim's original <b>instructions PDF</b>."),
         ],
         tips=[("plug", "<b>Tester and tracker need opposite ends</b> of a COM port pair - they can't both use COM12."),
-              ("folder", "<b>Keep the two together.</b> Moving the .bat away from System Files stops it working."),
+              ("folder", "<b>Keep them together.</b> Moving the .bat away from System Files stops it working."),
               WARN]),
 }
 
@@ -306,6 +307,25 @@ m { color: #0b2a4a; }
 svg path[fill="#f4f7fb"] { fill: #ffffff; stroke: #6f8db0; }
 svg path[fill="#cfd9e6"] { stroke: #6f8db0; }
 """
+
+
+# 2026-11-08 (Jim): the PDF user manual sits beside the .bat in every zip; page 1 = how to install.
+MANUALS = {
+    "world_gate_maker": "World_Gate_Maker_User_Manual.pdf",
+    "object_factory": "ArcGIS_Earth_Object_Factory_v1.3_User_Manual.pdf",
+    "pointlayer": "PointLayer_User_Guide.pdf",
+    "parcel100": "Parcel100_User_Manual.pdf",
+    "picture_world_maker": "Picture_World_Maker_User_Manual.pdf",
+    "mb2tpkx": "mb2tpkx_User_Manual.pdf",
+    "master4": "Master4_Grid_Maker_User_Manual.pdf",
+    "batch_factory": "TPKX_Batch_Factory_User_Guide.pdf",
+    "prave_tracker": "PRAVE_ME_Tracker_User_Guide.pdf",
+    "prave_tester": "PRAVE_RMC_Field_Decoder_Tester_User_Manual.pdf",
+}
+for _key, _pdf in MANUALS.items():
+    SHEETS[_key]["cards"].insert(1, ("manual", "READ THIS FIRST", [_pdf], "The user manual",
+        "<b>Page 1 = how to install and start.</b> Then everything the tool does. Opens in any PDF viewer or web browser."))
+    SHEETS[_key]["sub"] = SHEETS[_key]["sub"].replace("just two things", "just three things")
 
 
 def fname_size(names, cols):

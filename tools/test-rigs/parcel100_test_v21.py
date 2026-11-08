@@ -90,10 +90,11 @@ _, b21, _ = run(NEW, BASE + "/1", FL, W / "c21")
 f20, f21 = files(W / "c20"), files(W / "c21")
 check("clean layer: same file names (cells 039 + 040)", list(f20) == list(f21) and len(f21) == 2, list(f21))
 check("clean layer: files byte-identical 2.0 / 2.1", f20 == f21)
+check("2.1 message: 100 cells = 2 written + 0 already there + 98 empty; 5 parcels", b21 and "100 cells:\n   2 written\n   0 already there (skipped)\n   98 empty" in b21[-1][1] and "5 parcels written into the 2 new files" in b21[-1][1], b21)
 check("clean layer: no extra notes in 2.1's message", b21 and "no shape" not in b21[-1][1] and "Replaced" not in b21[-1][1])
 # 1b. true resume: same layer + fields -> no question, all skipped
 _, b, _ = run(NEW, BASE + "/1", FL, W / "c21")
-check("resume (same layer, same fields): no question, 2 skipped", not any(k == "ask" for k, _ in b) and "2 existing files skipped" in b[-1][1], b)
+check("resume (same layer, same fields): no question, 2 skipped", not any(k == "ask" for k, _ in b) and "0 written" in b[-1][1] and "2 already there" in b[-1][1] and "98 empty" in b[-1][1], b)
 
 # 2. empty shape {}: 2.0 stops, 2.1 writes it without a shape and counts it
 _, b, _ = run(OLD, BASE + "/0", FL, W / "o20")

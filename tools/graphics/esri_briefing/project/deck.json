@@ -1,18 +1,51 @@
 {
   "v": 4,
-  "createdOnFiles": {"v": 1, "at": "2026-11-06T21:25:00Z"},
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-06T21:25:00Z"
+  },
   "lists": "css",
   "title": "ArcGIS Earth Unlocked - Briefing for Esri",
   "cover": "cover",
-  "order": ["cover", "gap", "origin", "family", "offline", "flight", "gates", "objects", "data", "pictures", "learned", "opportunities", "close"],
+  "order": [
+    "cover",
+    "gap",
+    "origin",
+    "family",
+    "offline",
+    "flight",
+    "gates",
+    "objects",
+    "data",
+    "pictures",
+    "proof",
+    "learned",
+    "opportunities",
+    "close"
+  ],
   "sections": {
-    "s1": {"description": "The five things ArcGIS Earth is missing, and who built the answers.", "start": "cover"},
-    "s2": {"description": "The seven projects, one capability at a time, with field results.", "start": "family"},
-    "s3": {"description": "What building on ArcGIS Earth taught us, and what Esri could add natively.", "start": "learned"}
+    "s1": {
+      "description": "The five things ArcGIS Earth is missing, and who built the answers.",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "The ten tools, one capability at a time, with field results and how they are built.",
+      "start": "family"
+    },
+    "s3": {
+      "description": "What building on ArcGIS Earth taught us, and what Esri could add natively.",
+      "start": "learned"
+    }
   },
   "faces": {
-    "poppins": {"family": "Poppins", "href": "https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap"},
-    "inter": {"family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"}
+    "poppins": {
+      "family": "Poppins",
+      "href": "https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap"
+    },
+    "inter": {
+      "family": "Inter",
+      "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    }
   },
   "designSystems": []
 }

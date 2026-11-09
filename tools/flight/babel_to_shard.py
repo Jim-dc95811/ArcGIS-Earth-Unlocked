@@ -67,20 +67,22 @@ OVERVIEW = (30.0, -79.5)                                     # both worlds on th
 PLAN = [   # take 3: twice as long as take 2 (Jim)
     (0.0,  *OVERVIEW, 140000, 0,  0, "start"),     # both pictures floating on the ocean
     (12.0,  *BABEL,     26000, 0,  0, "log"),       # zoom into Babel
-    (26.0, *CRANE,       550, 0, 20, "log"),       # down onto Bruegel's crane (men walking inside the wheel)
-    (34.0, *CRANE,       470, 0, 20, "ease"),      # hold, slow push in
+    (26.0, *CRANE,      1700, 0, 22, "log"),       # down to Bruegel's crane on its ledge (take 4: wider - Jim)
+    (34.0, *CRANE,      1400, 0, 22, "ease"),      # hold, slow push in
     (64.0, *SHARD,      4500, 0, 10, "hop"),       # climb out, 60 miles east over the ocean, dive: the whole Shard
     (74.0, *SHARD,      3300, 0, 15, "log"),       # settle on the Shard
-    (88.0, *CRANES,     1100, 0, 22, "log"),       # down to its red tower cranes
-    (96.0, *CRANES,      950, 0, 22, "ease"),      # hold
+    (88.0, *CRANES,     1550, 0, 22, "log"),       # down to its red tower cranes (take 4: same width as the Babel crane)
+    (96.0, *CRANES,     1350, 0, 22, "ease"),      # hold
 ]
 
 
 def at(t):
     for (t0, la0, lo0, z0, h0, ti0, _), (t1, la1, lo1, z1, h1, ti1, how) in zip(PLAN, PLAN[1:]):
         if t <= t1:
-            f = ease((t - t0) / (t1 - t0))
-            la, lo = la0 + (la1 - la0) * f, lo0 + (lo1 - lo0) * f
+            u = (t - t0) / (t1 - t0)
+            f = ease(u)
+            g = ease((u - 0.25) / 0.5) if how == "hop" else f   # hop: climb first, cross, then descend
+            la, lo = la0 + (la1 - la0) * g, lo0 + (lo1 - lo0) * g
             if how == "ease":
                 z = z0 + (z1 - z0) * f
             elif how == "log":

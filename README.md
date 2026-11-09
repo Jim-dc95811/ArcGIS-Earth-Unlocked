@@ -56,6 +56,10 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 **⬇️ [Download Picture World Maker v2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
+[![Babel to the Shard: Bruegel's treadwheel crane in the Tower of Babel (1563) beside the red tower cranes at the Shard - play the Short](images/babel_to_shard_short_thumb.jpg)](https://www.youtube.com/shorts/lxvZLMLe-IY)
+
+*Two picture worlds, 60 miles apart on the Atlantic: Claude flies from Bruegel's wooden crane in the Tower of Babel to the red cranes beside the Shard. ▶️ [Watch the Short: ArcGIS Earth Babel to the Shard](https://www.youtube.com/shorts/lxvZLMLe-IY) (YouTube).*
+
 ## 🆕 New: Real Sim City - a fictional night city on a real town's lot lines
 
 **Dark Jacksonville** keeps the real structure of 8 x 7 km of Jacksonville - every one of its 31,897 lot outlines from [Parcel100](https://github.com/Jim-dc95811/Parcel100) and the land use from an OpenStreetMap street map - and gives it an invented life: lit houses, cars, streetlights and towers, a night city with nobody's name or address in it. It sits at its real location, so ArcGIS Earth's layer order does the rest: the city claims every pixel it draws, and wherever it leaves a hole - a **window into reality** - the real Jacksonville shows through. Built on Jim's PC in 260 seconds (132 MB); flown by Claude itself through the ArcGIS Earth API on 2026-11-07.

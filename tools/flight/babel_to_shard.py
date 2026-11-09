@@ -5,7 +5,8 @@ painting, crosses 60 miles east over the ocean and dives onto the Shard and its 
 panorama (World spot 2). Clock-timed (the plan's seconds are the flown seconds), eased, 20 updates a second.
 Touch the mouse or the stick and Claude lets go at once.
 
-  py babel_to_shard.py            fly it (about 40 s)
+  py babel_to_shard.py            fly it (96 s)
+  py babel_to_shard.py home       park on the opening view (both worlds)
   py babel_to_shard.py read       print the camera only
 """
 import builtins, json, math, sys, time, urllib.request
@@ -61,15 +62,17 @@ def ease(f):
 
 
 # (seconds, look-at lat, lon, height m, heading, tilt, how to get there)
-PLAN = [
-    (0.0,  *CRANE,    700,   0, 20, "start"),
-    (5.0,  *CRANE,    500,   0, 20, "ease"),      # slow push in on the crane (men walking inside the wheel)
-    (11.0, *BABEL,  26000,   0,  0, "log"),       # pull up: the whole Tower of Babel
-    (14.0, *BABEL,  28000,   0,  0, "ease"),      # a breath on the whole painting
-    (28.0, *SHARD,   6500,   0, 10, "hop"),       # 60 miles east, up over both worlds and down: the whole Shard
-    (33.0, *SHARD,   4200,   0, 15, "log"),       # settle on the Shard
-    (40.0, *CRANES,  1100,   0, 22, "log"),       # down to its red tower cranes
-    (44.0, *CRANES,   950,   0, 22, "ease"),      # hold
+OVERVIEW = (30.0, -79.5)                                     # both worlds on the ocean
+
+PLAN = [   # take 3: twice as long as take 2 (Jim)
+    (0.0,  *OVERVIEW, 140000, 0,  0, "start"),     # both pictures floating on the ocean
+    (12.0,  *BABEL,     26000, 0,  0, "log"),       # zoom into Babel
+    (26.0, *CRANE,       550, 0, 20, "log"),       # down onto Bruegel's crane (men walking inside the wheel)
+    (34.0, *CRANE,       470, 0, 20, "ease"),      # hold, slow push in
+    (64.0, *SHARD,      4500, 0, 10, "hop"),       # climb out, 60 miles east over the ocean, dive: the whole Shard
+    (74.0, *SHARD,      3300, 0, 15, "log"),       # settle on the Shard
+    (88.0, *CRANES,     1100, 0, 22, "log"),       # down to its red tower cranes
+    (96.0, *CRANES,      950, 0, 22, "ease"),      # hold
 ]
 
 
@@ -101,9 +104,7 @@ def touched(now, sent):
 def fly(hz=20.0):
     total = PLAN[-1][0]
     print(f"Babel to the Shard - {total:.0f} s. Crane {CRANE[0]:.6f},{CRANE[1]:.6f}  Shard {SHARD[0]:.6f},{SHARD[1]:.6f}")
-    sent = at(0.0)
-    call("PUT", sent); time.sleep(1.5)                          # settle on the first frame
-    sent = at(0.0); call("PUT", sent); time.sleep(0.3)
+    sent = at(0.0); call("PUT", sent); time.sleep(0.3)          # already parked there by 'home' (no jump)
     t0 = time.monotonic()
     while True:
         t = time.monotonic() - t0
@@ -120,7 +121,9 @@ def fly(hz=20.0):
 
 
 if __name__ == "__main__":
-    if sys.argv[1:] == ["read"]:
+    if sys.argv[1:] == ["home"]:                                # park on the first frame before recording starts
+        call("PUT", at(0.0)); time.sleep(1.0); call("PUT", at(0.0)); print("Parked on the opening view.")
+    elif sys.argv[1:] == ["read"]:
         c = call("GET"); p = c["position"]
         print(f"Camera: {p['y']:.6f},{p['x']:.6f} {p['z'] * 3.28084:,.0f} ft heading {c.get('heading', 0):.1f} tilt {c.get('tilt', 0):.1f}")
     else:

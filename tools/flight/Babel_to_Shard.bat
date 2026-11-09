@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0System Files"
-title Claude flies: Babel to the Shard
+title Claude flies: Babel to the Shard (take 3)
 where py >nul 2>&1
 if %errorlevel%==0 (set PY=py -3) else (set PY=python)
 %PY% babel_to_shard.py read

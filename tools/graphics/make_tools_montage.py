@@ -2,10 +2,11 @@
 representing those 10, should be at the top. 7 reference has to go').
 
 The 10 = the folders in downloads/ArcGIS_Earth_Unlocked_All_Tools.zip (tools/make_all_tools_zip.py), in that order.
-Pictures are the front-page tool pictures in images/; the PRAVE/RMC tester has no screenshot, so its tile is drawn
-from the tester's own console output (its real banner and the real $GPRMC / $PRAVE sentences its functions make).
+Pictures are the front-page tool pictures in images/. (2026-11-11: the PRAVE/RMC tester left the 10; the P25 GPS
+Tracker took slot 4, with the live two-unit map shot `p25_gps_tracker.jpg`. The tester-console tile code is kept
+below only in case a future tile has no screenshot.)
 
-    python3 tools/graphics/make_tools_montage.py <tester .py>      (run from the Unlocked repo root)
+    python3 tools/graphics/make_tools_montage.py      (run from the Unlocked repo root)
 writes images/ten_tools_montage.jpg (2000 px wide) and site/images/ten_tools_montage.jpg.
 """
 import contextlib, datetime as dt, importlib.util, io, sys
@@ -22,7 +23,7 @@ TOOLS = [  # (name, one line, picture, focus (x, y) 0-1 for the crop)
     ("MBTILES CONVERTER", "QGIS maps, offline in ArcGIS Earth", "mbtiles_converter.jpg", (0.5, 0.5)),
     ("MASTER 4 GRID MAKER", "100 numbered map cells", "master4_grid.jpg", (0.5, 0.5)),
     ("PRAVE / ME TRACKER", "radio units live on the map", "prave_me_tracker.jpg", (0.5, 0.5)),
-    ("PRAVE / RMC TESTER", "bench test without a radio", None, (0.5, 0.0)),
+    ("P25 GPS TRACKER", "radio GPS live on the map", "p25_gps_tracker.jpg", (0.5, 0.5)),
     ("EARTHSTICK", "fly the world with a joystick", "earthstick.jpg", (0.5, 0.5)),
     ("WORLD GATE MAKER", "your own gates, city to city", "world_gate_maker_v1.1_seattle.jpg", (0.5, 0.5)),
     ("OBJECT FACTORY", "beacons and objects in the sky", "object_factory.jpg", (0.5, 0.5)),
@@ -79,7 +80,9 @@ def crop(img, w, h, focus):
 
 
 def main():
-    tester_lines = tester_console(sys.argv[1])
+    # The tester tile was retired 2026-11-11 (P25 GPS Tracker took slot 4); tester_console
+    # only runs if a tile still has no screenshot (pic is None) and a tester .py was passed.
+    tester_lines = tester_console(sys.argv[1]) if (any(t[2] is None for t in TOOLS) and len(sys.argv) > 1) else []
     out = Image.new("RGB", (W, H), NAVY)
     d = ImageDraw.Draw(out)
     for i, (name, line, pic, focus) in enumerate(TOOLS):

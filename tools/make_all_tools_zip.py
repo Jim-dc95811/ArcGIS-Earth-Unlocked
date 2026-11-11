@@ -22,7 +22,11 @@ from make_py_vault import RELEASES, REPOS, ROOT
 
 OUT = ROOT / "downloads" / "ArcGIS_Earth_Unlocked_All_Tools.zip"
 TOP = "ArcGIS_Earth_Unlocked_All_Tools"
-SKIP_TOOLS = {"TPKX Batch Factory", "PRAVE ME P25 Tracker (trifecta)"}  # trifecta held out until field-tested
+SKIP_TOOLS = {
+    "TPKX Batch Factory",                      # ArcGIS Pro add-in, not click-and-run
+    "PRAVE RMC Field Decoder Tester Gold",     # 2026-11-11: left the 10; P25 GPS Tracker took its slot
+    "PRAVE ME P25 Tracker (trifecta)",         # trifecta held out until field-tested (lives under PRAVE/ME)
+}
 NEVER = ("python_path.txt", "arcgis_earth_path.txt", "ready_to_fly_log.txt", ".log", "__pycache__", ".pyc")
 
 

@@ -19,7 +19,7 @@ Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and yo
 Each page has its own downloads, user manuals, pictures and videos:
 
 - **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
-- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - the new **P25 GPS Tracker**, TPKX Batch Factory, PRAVE / ME Tracker and PRAVE / RMC Tester
+- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - the new **P25 GPS Tracker**, TPKX Batch Factory and PRAVE / ME Tracker
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
@@ -38,7 +38,7 @@ The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25
 
 [![How a field radio's GPS reaches the map: BK portable, over the air, base M150 relay, your PC, then ArcGIS Earth, carrying a GNGGA position sentence and a PP25 unit-ID sentence](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
 
-**⬇️ [Download P25 GPS Tracker v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint). A trifecta build (ME + Raveon fleet + P25 on one map) is in testing.
+**⬇️ [Download P25 GPS Tracker v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
@@ -112,7 +112,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 ### **⬇️ [DOWNLOAD P25 GPS TRACKER v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/P25_GPS_TRACKER.md)**
 
-Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth maps. Reads the radio only - no cloud, no dongle. A trifecta build (ME + Raveon fleet + P25 on one map) is in testing.
+Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth maps. Reads the radio only - no cloud, no dongle.
 
 [![How a field radio's GPS reaches the map: field radio, base M150 relay, your PC, then ArcGIS Earth.](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
 
@@ -212,7 +212,7 @@ Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/PRAVE_ME_TRACKER.md)**
 **🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/images/prave_me_tracker_whats_in_the_zip_full.png)**
 
-Show your own position (ME) and other radio-tracked units live in ArcGIS Earth from a Raveon PRAVE/RMC radio.
+Show your own position (ME) and other radio-tracked units live in ArcGIS Earth from a Raveon PRAVE/RMC radio. A **trifecta build (v3.0)** folds the P25 feed in as a third source - ME, the Raveon fleet and P25 radios on one map, one API owner - [download](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/PRAVE_ME_Tracker_v3.0.zip) (new bench build; field test pending).
 
 [![ME and unit 1-173 drawn live in ArcGIS Earth.](images/prave_me_tracker.jpg)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
 

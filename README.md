@@ -18,8 +18,8 @@ Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and yo
 
 Each page has its own downloads, user manuals, pictures and videos:
 
-- **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
-- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - the new **P25 GPS Tracker**, TPKX Batch Factory and PRAVE / ME Tracker
+- **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter, Master 4 Grid Maker and the TPKX Batch Factory
+- **[ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - the new **P25 GPS Tracker** and PRAVE / ME Tracker
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
@@ -138,15 +138,15 @@ Split a 1-degree box into 100 numbered cells with exact extents and file names f
 
 *A Master 4 box over Jacksonville, Florida, split into 100 numbered cells. ▶️ [Watch the video](https://www.youtube.com/watch?v=zNt-I4KgAy8) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
-### **⬇️ [DOWNLOAD ARCGIS TPKX BATCH FACTORY v2.0](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/TPKX_Batch_Factory_v1.zip)**
-**📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/TPKX_BATCH_FACTORY.md)**
-**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/images/tpkx_batch_factory_whats_in_the_zip_full.png)**
+### **⬇️ [DOWNLOAD ARCGIS TPKX BATCH FACTORY v2.0](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/TPKX_Batch_Factory_v1.zip)**
+**📖 [User manual](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/TPKX_BATCH_FACTORY.md)**
+**🗂️ [What's in the zip - every file explained](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/images/tpkx_batch_factory_whats_in_the_zip_full.png)**
 
-ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages in one batch, up to Z20.
+ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages in one batch, up to Z20. It lives with the other map-production tools in the [MBTiles to TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) repo.
 
-[![The Batch Factory window inside ArcGIS Pro.](images/batch_factory.jpg)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
+[![The Batch Factory window inside ArcGIS Pro.](images/batch_factory.jpg)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)
 
-*The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
+*The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
 ### **⬇️ [DOWNLOAD PICTURE WORLD MAKER v2.1](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)**
@@ -222,8 +222,8 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 
 | I want to... | Start here |
 |---|---|
-| Make large offline zoomable ArcGIS Earth maps | [QGIS MBTiles -> ArcGIS Earth TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) |
-| Build TPKX packages in ArcGIS Pro, use offline maps on Android, or track PRAVE / ME units | [ArcGIS Earth Offline Maps & Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
+| Make large offline zoomable ArcGIS Earth maps, or build them in batches in ArcGIS Pro | [QGIS MBTiles -> ArcGIS Earth TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) |
+| Use offline maps on Android, or track PRAVE / ME units live on the map | [ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
 | Get GPS from my BK P25 radios onto ArcGIS Earth, by unit name | [P25 GPS Tracker](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
 | Fly and navigate ArcGIS Earth with a joystick | [EarthStick](https://github.com/Jim-dc95811/EarthStick) |
 | Fly through wormholes to cities around the world | [EarthStick - World Gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131) |

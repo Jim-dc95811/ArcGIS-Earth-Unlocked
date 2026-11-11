@@ -22,7 +22,7 @@ from make_py_vault import RELEASES, REPOS, ROOT
 
 OUT = ROOT / "downloads" / "ArcGIS_Earth_Unlocked_All_Tools.zip"
 TOP = "ArcGIS_Earth_Unlocked_All_Tools"
-SKIP_TOOLS = {"TPKX Batch Factory"}
+SKIP_TOOLS = {"TPKX Batch Factory", "PRAVE ME P25 Tracker (trifecta)"}  # trifecta held out until field-tested
 NEVER = ("python_path.txt", "arcgis_earth_path.txt", "ready_to_fly_log.txt", ".log", "__pycache__", ".pyc")
 
 

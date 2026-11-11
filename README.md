@@ -19,7 +19,7 @@ Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and yo
 Each page has its own downloads, user manuals, pictures and videos:
 
 - **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter and Master 4 Grid Maker
-- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - TPKX Batch Factory, PRAVE / ME Tracker and PRAVE / RMC Tester
+- **[Offline Maps & Field Tracking](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)** - the new **P25 GPS Tracker**, TPKX Batch Factory, PRAVE / ME Tracker and PRAVE / RMC Tester
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data
@@ -31,6 +31,14 @@ Each page has its own downloads, user manuals, pictures and videos:
 > **The world is already built. We add the maps, movement, data, and objects.**
 
 📊 **[Briefing for Esri (PDF)](site/ArcGIS_Earth_Unlocked_Briefing_for_Esri.pdf)** - the five gaps, how each tool fills one, and what building on ArcGIS Earth taught us.
+
+## 🛰️ New: P25 GPS Tracker - your radios' GPS, live on your offline map
+
+The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25 radios and plot each unit - **by name** - on your own offline ArcGIS Earth imagery. No cloud, no vendor subscription, no BK dongle. The tracker only ever **reads** the radio.
+
+[![How a field radio's GPS reaches the map: BK portable, over the air, base M150 relay, your PC, then ArcGIS Earth, carrying a GNGGA position sentence and a PP25 unit-ID sentence](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
+
+**⬇️ [Download P25 GPS Tracker v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint). A trifecta build (ME + Raveon fleet + P25 on one map) is in testing.
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
@@ -100,6 +108,15 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 > 1. **Extract the zip first:** right-click the downloaded zip > **Extract All**, then open the new folder. Double-clicking files while they are still inside the zip does not work.
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
+
+### **⬇️ [DOWNLOAD P25 GPS TRACKER v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)**
+**📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting/blob/main/docs/P25_GPS_TRACKER.md)**
+
+Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth maps. Reads the radio only - no cloud, no dongle. A trifecta build (ME + Raveon fleet + P25 on one map) is in testing.
+
+[![How a field radio's GPS reaches the map: field radio, base M150 relay, your PC, then ArcGIS Earth.](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting)
+
+*How a P25 radio's GPS reaches the map. [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting).*
 
 ### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v2.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
@@ -207,6 +224,7 @@ Show your own position (ME) and other radio-tracked units live in ArcGIS Earth f
 |---|---|
 | Make large offline zoomable ArcGIS Earth maps | [QGIS MBTiles -> ArcGIS Earth TPKX](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX) |
 | Build TPKX packages in ArcGIS Pro, use offline maps on Android, or track PRAVE / ME units | [ArcGIS Earth Offline Maps & Chartplotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
+| Get GPS from my BK P25 radios onto ArcGIS Earth, by unit name | [P25 GPS Tracker](https://github.com/Jim-dc95811/ArcGIS-Earth-Offline-Maps-Chartplotting) |
 | Fly and navigate ArcGIS Earth with a joystick | [EarthStick](https://github.com/Jim-dc95811/EarthStick) |
 | Fly through wormholes to cities around the world | [EarthStick - World Gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131) |
 | Make my own gates between two places | [World Gate Maker](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates) |

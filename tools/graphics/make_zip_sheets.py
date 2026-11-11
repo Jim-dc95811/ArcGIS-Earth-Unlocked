@@ -206,7 +206,7 @@ SHEETS = {
               WARN]),
 
     "batch_factory": dict(
-        repo="ArcGIS-Earth-Offline-Maps-Chartplotting", title="What's in the TPKX Batch Factory folder?",
+        repo="ArcGIS-Earth-Map-Plotting", title="What's in the TPKX Batch Factory folder?",
         sub="After you <y>Extract All</y> the zip, you get just two things. You install it once - then it lives inside ArcGIS Pro.",
         cards=[
             ("go", "START HERE · OPEN ARCGIS PRO FIRST", ["BUILD_INSTALL.bat"], "Builds and installs it",
@@ -223,7 +223,7 @@ SHEETS = {
               WARN]),
 
     "prave_tracker": dict(
-        repo="ArcGIS-Earth-Offline-Maps-Chartplotting", title="What's in the PRAVE / ME Tracker folder?",
+        repo="ArcGIS-Earth-Map-Plotting", title="What's in the PRAVE / ME Tracker folder?",
         sub="After you <y>Extract All</y> the zip, you get just two things. Here is what each one does.",
         cards=[
             ("radio", "START HERE · DOUBLE-CLICK", ["START_TRACKER.bat"], "Starts the tracker",
@@ -236,7 +236,7 @@ SHEETS = {
               WARN]),
 
     "prave_tester": dict(
-        repo="ArcGIS-Earth-Offline-Maps-Chartplotting", title="What's in the PRAVE / RMC Tester folder?",
+        repo="ArcGIS-Earth-Map-Plotting", title="What's in the PRAVE / RMC Tester folder?",
         sub="After you <y>Extract All</y> the zip, you get just two things. This is a bench tool: it pretends to be a radio so you can test without one.",
         cards=[
             ("signal", "START HERE · DOUBLE-CLICK", ["Run_PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.bat"], "Starts the tester",

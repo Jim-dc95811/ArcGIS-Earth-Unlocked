@@ -29,7 +29,7 @@ TOOLS = {
    ["An MBTiles map file to convert (for example one made in QGIS).", f"To open the TPKX it makes you need {EARTH}."]),
  "QGIS-Mbtile-to-ArcGIS-Earth-TPKX/MASTER4_GRID_MAKER.md": ("Master 4 Grid Maker", "Master4_Grid_Maker.bat", " - and the Pillow picture library too",
    ["Its files are saved in `C:\\downloads`."]),
- "ArcGIS-Earth-Offline-Maps-Chartplotting/docs/PRAVE_ME_TRACKER.md": ("the PRAVE / ME Tracker", "START_TRACKER.bat", " - and the pyserial library too",
+ "ArcGIS-Earth-Map-Plotting/docs/PRAVE_ME_TRACKER.md": ("the PRAVE / ME Tracker", "START_TRACKER.bat", " - and the pyserial library too",
    [f"Install {EARTH}. The .bat starts it for you and checks its Automation API is on ({API}).", "The serial port settings (`INPUT_PORT`, default COM12, and `INPUT_BAUD`) are at the top of `System Files\\PRAVE_ME_Tracker.py`."]),
 }
 def block(tool, bat, libs, extras):

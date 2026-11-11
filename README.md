@@ -38,9 +38,11 @@ Each page has its own downloads, user manuals, pictures and videos:
 
 The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25 radios and plot each unit - **by name** - on your own offline ArcGIS Earth imagery. No cloud, no vendor subscription, no BK dongle. The tracker only ever **reads** the radio.
 
-[![How a field radio's GPS reaches the map: BK portable, over the air, base M150 relay, your PC, then ArcGIS Earth, carrying a GNGGA position sentence and a PP25 unit-ID sentence](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)
+[![How a field radio's GPS reaches the map: BK portable, over the air, base M150 relay, your PC, then ArcGIS Earth, carrying a GNGGA position sentence and a PP25 unit-ID sentence](images/p25_gps_tracker_pictogram.png)](https://www.youtube.com/watch?v=AapMfnJY7z0)
 
-**⬇️ [Download P25 GPS Tracker v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
+*How a P25 radio's GPS reaches the map. ▶️ [Watch it work - BK Radio P25 GPS Map Plotter](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube).*
+
+**⬇️ [Download P25 GPS Tracker v0.4](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.4.zip)** · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
@@ -116,9 +118,9 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 
 Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth maps. Reads the radio only - no cloud, no dongle.
 
-[![How a field radio's GPS reaches the map: field radio, base M150 relay, your PC, then ArcGIS Earth.](images/p25_gps_tracker_pictogram.png)](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)
+[![How a field radio's GPS reaches the map: field radio, base M150 relay, your PC, then ArcGIS Earth.](images/p25_gps_tracker_pictogram.png)](https://www.youtube.com/watch?v=AapMfnJY7z0)
 
-*How a P25 radio's GPS reaches the map. [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting).*
+*How a P25 radio's GPS reaches the map. ▶️ [Watch the video](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting).*
 
 ### **⬇️ [DOWNLOAD MBTILES -> TPKX CONVERTER v2.1](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip)**
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**

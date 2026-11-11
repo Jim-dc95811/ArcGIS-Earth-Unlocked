@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root{
+    --ink:#0b2a3a; --muted:#5a738a; --line:#d7e3ee;
+    --gold:#f6b53a; --gold-d:#e1a01d; --gold-bg:#fff6e2;
+    --green:#2fa36b; --blue:#2f7fc4; --card:#ffffff; --slug:#8398ab;
+  }
+  body{
+    width:1600px;
+    font-family:'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    color:var(--ink);
+    background:linear-gradient(170deg,#e9f3fc 0%, #f4f9fd 42%, #ffffff 100%);
+    padding:52px 56px 40px;
+  }
+  .title{font-size:44px;font-weight:800;letter-spacing:-.5px}
+  .title .u{color:var(--gold-d)}
+  .sub{font-size:20px;color:var(--muted);margin-top:8px;font-weight:500}
+
+  /* umbrella */
+  .umbrella{
+    margin:34px auto 0;max-width:760px;background:var(--gold-bg);
+    border:2.5px solid var(--gold);border-radius:20px;
+    box-shadow:0 10px 26px rgba(225,160,29,.18);
+    display:flex;align-items:center;gap:22px;padding:22px 30px;
+  }
+  .umbrella .ico{font-size:52px;line-height:1}
+  .umbrella .nm{font-size:29px;font-weight:800}
+  .umbrella .one{font-size:18px;color:#7a5a12;font-weight:600;margin-top:2px}
+  .umbrella .slug{font-family:Consolas,monospace;font-size:15px;color:#9a7a2a;margin-top:5px}
+
+  .stem{width:3px;height:30px;background:var(--line);margin:6px auto 0}
+  .bus{height:3px;background:var(--line);margin:0 110px}
+
+  .band{margin-top:26px}
+  .band-h{display:flex;align-items:center;gap:12px;margin:0 0 14px 4px}
+  .pill{font-size:15px;font-weight:800;letter-spacing:.8px;color:#fff;
+    padding:6px 16px;border-radius:999px}
+  .pill.f{background:var(--blue)} .pill.o{background:var(--green)} .pill.i{background:#a259c4}
+  .band-h .cap{font-size:17px;color:var(--muted);font-weight:600}
+
+  .cards{display:flex;gap:20px}
+  .card{
+    flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+    padding:20px 20px 18px;box-shadow:0 6px 16px rgba(20,60,90,.07);
+    display:flex;flex-direction:column;gap:7px;min-height:150px;
+  }
+  .card .ico{font-size:38px;line-height:1}
+  .card .nm{font-size:21px;font-weight:800}
+  .card .one{font-size:16px;color:var(--muted);line-height:1.35;flex:1}
+  .card .slug{font-family:Consolas,monospace;font-size:13px;color:var(--slug);
+    border-top:1px dashed #e0e9f1;padding-top:8px;word-break:break-all}
+  .card.wide{min-height:128px}
+  .card.wide .inner{display:flex;align-items:center;gap:20px}
+  .card.wide .ico{font-size:46px}
+  .card.wide .txt .one{margin-top:3px}
+
+  .foot{
+    margin-top:30px;background:#0b2a3a;color:#eaf3fb;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;gap:28px;
+    padding:18px 24px;font-size:19px;font-weight:600;
+  }
+  .foot .b{color:var(--gold);font-weight:800}
+  .foot .dot{color:#3f5a6e}
+  .note{text-align:center;color:#92a6b7;font-size:14px;margin-top:14px}
+</style></head>
+<body>
+  <div class="title">The <span class="u">ArcGIS Earth Unlocked</span> family</div>
+  <div class="sub">Eight open-source repositories · one offline-first world · all free</div>
+
+  <div class="umbrella">
+    <div class="ico">🧭</div>
+    <div>
+      <div class="nm">ArcGIS Earth Unlocked</div>
+      <div class="one">The front door &amp; system map — where every tool lives, with the all-in-one download.</div>
+      <div class="slug">github.com/Jim-dc95811/ArcGIS-Earth-Unlocked</div>
+    </div>
+  </div>
+  <div class="stem"></div>
+  <div class="bus"></div>
+
+  <!-- FOUNDATION -->
+  <div class="band">
+    <div class="band-h"><span class="pill f">FOUNDATION</span><span class="cap">make the maps</span></div>
+    <div class="cards">
+      <div class="card wide"><div class="inner">
+        <div class="ico">🗺️</div>
+        <div class="txt">
+          <div class="nm">MBTiles → TPKX map production</div>
+          <div class="one">Build the offline imagery everything else plots on: the QGIS&nbsp;→&nbsp;TPKX converter, the Master&nbsp;4 grid planner, and the ArcGIS Pro TPKX Batch Factory.</div>
+          <div class="slug">github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- OPERATE -->
+  <div class="band">
+    <div class="band-h"><span class="pill o">OPERATE</span><span class="cap">move across the map, plot on it, mark it up</span></div>
+    <div class="cards">
+      <div class="card">
+        <div class="ico">🕹️</div>
+        <div class="nm">EarthStick</div>
+        <div class="one">Fly ArcGIS Earth with a joystick, and travel city-to-city through World Gates (+ World Gate Maker).</div>
+        <div class="slug">Jim-dc95811/EarthStick</div>
+      </div>
+      <div class="card">
+        <div class="ico">📡</div>
+        <div class="nm">ArcGIS Earth Map Plotting</div>
+        <div class="one">Plot live radio GPS on your maps: the P25 GPS Tracker, PRAVE / ME tracker, and bench tester.</div>
+        <div class="slug">Jim-dc95811/ArcGIS-Earth-Map-Plotting</div>
+      </div>
+      <div class="card">
+        <div class="ico">🏭</div>
+        <div class="nm">Object Factory</div>
+        <div class="one">Author beacons, a sky compass, and clickable objects you place in 3D space.</div>
+        <div class="slug">Jim-dc95811/ArcGIS-Earth-Object-Factory</div>
+      </div>
+      <div class="card">
+        <div class="ico">📌</div>
+        <div class="nm">PointLayer</div>
+        <div class="one">Turn a public ArcGIS point service — hydrants and the like — into an offline layer.</div>
+        <div class="slug">Jim-dc95811/Point-Maps</div>
+      </div>
+      <div class="card">
+        <div class="ico">🏠</div>
+        <div class="nm">Parcel100</div>
+        <div class="one">Pull property parcels into clickable map cells, keyed to the Master 4 grid.</div>
+        <div class="slug">Jim-dc95811/Parcel100</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGINE -->
+  <div class="band">
+    <div class="band-h"><span class="pill i">IMAGINE</span><span class="cap">build worlds of your own</span></div>
+    <div class="cards">
+      <div class="card wide"><div class="inner">
+        <div class="ico">🖼️</div>
+        <div class="txt">
+          <div class="nm">Picture World Maker</div>
+          <div class="one">Turn a giant picture — a painting, a panorama, a generated city — into a fly-through TPKX world on the open ocean.</div>
+          <div class="slug">github.com/Jim-dc95811/Picture-World-Maker</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>🌎 Everything opens in <span class="b">ArcGIS Earth</span> — offline first</span>
+    <span class="dot">●</span>
+    <span>📦 <span class="b">All ten tools</span> in one zip</span>
+  </div>
+  <div class="note">Google owns the ground, but we own the space above it.</div>
+</body></html>

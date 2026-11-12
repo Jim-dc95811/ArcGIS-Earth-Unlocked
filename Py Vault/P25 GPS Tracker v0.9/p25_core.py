@@ -1,7 +1,9 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.8).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.9).
 
-v0.8: no engine change - the overlay badge now finds ArcGIS Earth by window title only
-(v0.7's per-process scan tripped a Defender machine-learning false positive).
+v0.9: no engine change - the overlay badge anchors to the screen corner (v0.8's title match
+never matched: ArcGIS Earth titles its window after the open workspace, e.g. 'Legacy Workspace').
+v0.8: no engine change - overlay found ArcGIS Earth by window title (v0.7's per-process scan
+tripped a Defender machine-learning false positive).
 v0.7: no engine change - the package gains an on-screen overlay badge (overlay.py, GUI only).
 v0.6: the two status lights (radio / ArcGIS Earth) are larger and run even before Start
 tracking - radio_reachable() and earth_reachable() are read-only 'start ready' probes.

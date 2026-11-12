@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.8).
+"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.9).
 
 A single window that runs the live bridge (radio -> ArcGIS Earth), shows every unit
 the radio reports with a Live / Stale / Expired status, and lets you give each P25

@@ -1,14 +1,18 @@
-"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.8).
+"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.9).
 
-A small click-through badge pinned to the bottom-right of the ArcGIS Earth window
-(above the Esri logo). It is on screen the whole time the tracker is running, so if
-it disappears the operator knows the program stopped. While tracking, if the radio
-drops, a red "RADIO DISCONNECTED" alarm blinks just above the badge.
+A small click-through badge pinned to the bottom-right of the screen, above the Esri
+logo of a full-screen ArcGIS Earth. It is on screen the whole time the tracker is
+running, so if it disappears the operator knows the program stopped. While tracking,
+if the radio drops, a red "RADIO DISCONNECTED" alarm blinks just above the badge.
 
-It finds the ArcGIS Earth window by its visible TITLE only (GetWindowText). It does
-not open or inspect any other process - v0.7 read each window's program file, which a
-virus scanner's machine-learning flagged as "process discovery" (a false positive);
-reading only the caption text is the ordinary way a taskbar or alt-tab tool works.
+It anchors to the primary monitor's WORK AREA (screen minus taskbar) - it does not
+hunt for the ArcGIS Earth window. v0.8 matched the window title "ArcGIS Earth", but
+ArcGIS Earth titles its window after the open workspace (e.g. "Legacy Workspace"), so
+nothing matched and the badge never showed. v0.7 read every window's owning process to
+identify it, which a virus scanner's machine-learning flagged (a false positive).
+Anchoring to the screen corner needs neither: just SystemParametersInfo/GetSystemMetrics.
+Because these tools are used with ArcGIS Earth maximised, the screen corner is the
+ArcGIS Earth corner.
 
 A borderless, always-on-top, click-through Tk window (the same technique as
 EarthStick's readout). Windows only; needs ctypes and marker.png. ANY failure
@@ -20,9 +24,8 @@ from pathlib import Path
 
 import tkinter as tk
 
-EARTH_TITLE = "arcgis earth"    # matched (lower-cased) against each window's caption text
 KEY        = "#010203"          # transparent-colour key (nothing else uses this exact colour)
-RIGHT_GAP  = 28                 # px in from the right edge of the ArcGIS Earth window
+RIGHT_GAP  = 28                 # px in from the right edge of the screen work area
 BOTTOM_GAP = 90                 # px up from the bottom (clear of the scale bar / Esri logo)
 BADGE_W, BADGE_H = 360, 120
 
@@ -120,51 +123,29 @@ class StatusOverlay:
         style |= 0x00080000 | 0x00000020 | 0x00000080 | 0x08000000          # layered, transparent, toolwindow, noactivate
         self.user32.SetWindowLongW(hwnd, -20, style)
 
-    # ---- find the ArcGIS Earth window by its visible title (no process access) ----
-    def _title_of(self, hwnd):
-        n = self.user32.GetWindowTextLengthW(hwnd)
-        if not n:
-            return ""
-        buf = ctypes.create_unicode_buffer(n + 1)
-        self.user32.GetWindowTextW(hwnd, buf, n + 1)
-        return buf.value
-
-    def _earth_rect(self):
-        found = []
-        EnumProc = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HWND, wintypes.LPARAM)
-
-        def cb(hwnd, _):
-            try:
-                if self.user32.IsWindowVisible(hwnd) and not self.user32.IsIconic(hwnd) \
-                        and EARTH_TITLE in self._title_of(hwnd).lower():
-                    r = wintypes.RECT()
-                    if self.user32.GetWindowRect(hwnd, ctypes.byref(r)):
-                        w, h = r.right - r.left, r.bottom - r.top
-                        if w > 200 and h > 200:
-                            found.append((w * h, (r.left, r.top, r.right, r.bottom)))
-            except Exception:
-                pass
-            return True
-
-        self.user32.EnumWindows(EnumProc(cb), 0)
-        return max(found, key=lambda f: f[0])[1] if found else None
+    # ---- anchor to the primary monitor work area (no window/process lookup) ----
+    def _work_area(self):
+        try:
+            r = wintypes.RECT()
+            SPI_GETWORKAREA = 0x0030
+            if self.user32.SystemParametersInfoW(SPI_GETWORKAREA, 0, ctypes.byref(r), 0):
+                return (r.left, r.top, r.right, r.bottom)
+        except Exception:
+            pass
+        return (0, 0, self.user32.GetSystemMetrics(0), self.user32.GetSystemMetrics(1))
 
     def _track(self):
         if self.win is not None:
             try:
-                rect = self._earth_rect()
-                if rect is None:
-                    self.win.withdraw()                 # no ArcGIS Earth window -> nothing to pin to
-                else:
-                    _, _, right, bottom = rect
-                    x = right - RIGHT_GAP - BADGE_W
-                    y = bottom - BOTTOM_GAP - BADGE_H
-                    self.win.geometry(f"{BADGE_W}x{BADGE_H}+{x}+{y}")
-                    self.win.deiconify()
-                    self.win.attributes("-topmost", True)
+                _, _, right, bottom = self._work_area()
+                x = right - RIGHT_GAP - BADGE_W
+                y = bottom - BOTTOM_GAP - BADGE_H
+                self.win.geometry(f"{BADGE_W}x{BADGE_H}+{x}+{y}")
+                self.win.deiconify()
+                self.win.attributes("-topmost", True)
             except Exception:
                 pass
-        self.root.after(500, self._track)
+        self.root.after(1000, self._track)
 
     def _blinker(self):
         show = self.tracking and not self.radio_ok

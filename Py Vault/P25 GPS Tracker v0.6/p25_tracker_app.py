@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.5).
+"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.6).
 
 A single window that runs the live bridge (radio -> ArcGIS Earth), shows every unit
 the radio reports with a Live / Stale / Expired status, and lets you give each P25
@@ -76,6 +76,8 @@ class App:
         self.redraw_q = queue.Queue()
         self.stop_event = threading.Event()
         self.worker = None
+        self.idle_stop = threading.Event()      # the 'start ready' probe (runs while not tracking)
+        self.idle_thread = None
         self.rows = {}
 
         self.earth = core.EarthClient()
@@ -86,7 +88,25 @@ class App:
         for unit, alias in sorted(self.aliases.items()):
             self._ensure_row(unit); self._set_cell(unit, "alias", alias)
         self.root.after(150, self._poll)
+        self._start_idle()                      # light the lamps now, before Start tracking
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
+
+    # ---- 'start ready' probe: while NOT tracking, check radio + ArcGIS Earth every 2 s ----
+    def _idle_probe(self):
+        while not self.idle_stop.is_set():
+            self._emit("radio", core.radio_reachable())
+            self._emit("earth", core.earth_reachable(self.earth))
+            self.idle_stop.wait(2.0)
+
+    def _start_idle(self):
+        if self.idle_thread and self.idle_thread.is_alive():
+            return
+        self.idle_stop.clear()
+        self.idle_thread = threading.Thread(target=self._idle_probe, daemon=True)
+        self.idle_thread.start()
+
+    def _stop_idle(self):
+        self.idle_stop.set()
 
     def _load_aliases(self):
         try:
@@ -146,15 +166,22 @@ class App:
         self._save_settings()
         self._log(f"retirement time set to: {label}")
 
+    def _light(self, parent, text, padx=(6, 28)):
+        """A big round status light (red/green) with a bold label beside it."""
+        bg = self.root.cget("bg")
+        c = tk.Canvas(parent, width=26, height=26, highlightthickness=0, bd=0, bg=bg)
+        oval = c.create_oval(4, 4, 23, 23, fill="#c62828", outline="#7a1414", width=1)
+        c.pack(side="left")
+        tk.Label(parent, text=text, font=("Segoe UI", 12, "bold"), bg=bg).pack(side="left", padx=padx)
+        return (c, oval)
+
     def _build_ui(self):
-        # Status lights (top strip, above the controls/status)
-        ind = ttk.Frame(self.root, padding=(12, 6, 12, 0)); ind.pack(fill="x")
-        self.radio_dot = tk.Label(ind, text="●", font=("Segoe UI", 13), foreground="#c62828")
-        self.radio_dot.pack(side="left")
-        ttk.Label(ind, text="Radio connected").pack(side="left", padx=(4, 22))
-        self.earth_dot = tk.Label(ind, text="●", font=("Segoe UI", 13), foreground="#c62828")
-        self.earth_dot.pack(side="left")
-        ttk.Label(ind, text="ArcGIS Earth API ready").pack(side="left", padx=(4, 0))
+        # Status lights (top strip, above the controls/status). Red = not ready,
+        # green = ready. These run even before Start tracking so you can see at a
+        # glance whether the radio and ArcGIS Earth are both ready to go.
+        ind = ttk.Frame(self.root, padding=(12, 10, 12, 4)); ind.pack(fill="x")
+        self.radio_dot = self._light(ind, "Radio connected")
+        self.earth_dot = self._light(ind, "ArcGIS Earth API ready", padx=(6, 0))
 
         top = ttk.Frame(self.root, padding=(10, 8)); top.pack(fill="x")
         self.start_btn = ttk.Button(top, text="Start tracking", command=self._start)
@@ -255,6 +282,7 @@ class App:
     def _start(self):
         if self.worker and self.worker.is_alive():
             return
+        self._stop_idle()                       # the bridge drives the lights while tracking
         self.stop_event.clear()
         self.worker = threading.Thread(
             target=core.run_bridge,
@@ -280,8 +308,10 @@ class App:
             pass
         self.root.after(150, self._poll)
 
-    def _set_light(self, dot, ok):
-        dot.configure(foreground="#1a7f37" if ok else "#c62828")   # green / red
+    def _set_light(self, light, ok):
+        c, oval = light
+        c.itemconfigure(oval, fill="#1a7f37" if ok else "#c62828",      # green / red
+                        outline="#145c28" if ok else "#7a1414")
 
     def _handle(self, kind, args):
         if kind == "status":
@@ -289,8 +319,7 @@ class App:
             if args[0] == "stopped":
                 self.start_btn.configure(state="normal")
                 self.stop_btn.configure(state="disabled")
-                self._set_light(self.radio_dot, False)
-                self._set_light(self.earth_dot, False)
+                self._start_idle()              # resume the 'start ready' probe
         elif kind == "fix":
             unit, lat, lon, utc, how = args
             self._ensure_row(unit)
@@ -327,6 +356,7 @@ class App:
 
     def _on_close(self):
         self.stop_event.set()
+        self._stop_idle()
         self._save_aliases()
         self.root.after(250, self.root.destroy)
 

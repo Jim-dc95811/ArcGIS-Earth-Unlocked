@@ -1,5 +1,7 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-11, v0.5).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.6).
 
+v0.6: the two status lights (radio / ArcGIS Earth) are larger and run even before Start
+tracking - radio_reachable() and earth_reachable() are read-only 'start ready' probes.
 v0.5: markers are firetrucks (red live / amber aging); the view no longer snaps to the first
 unit; and the trucks shrink as you zoom out and hide above 200000 ft so wide views stay clean.
 v0.4: the retirement time (how long an idle unit stays on the map) is chosen in
@@ -335,6 +337,26 @@ def _socket_closed(sock):
         return False
     except OSError:
         return True
+
+
+def radio_reachable(timeout=1.5):
+    """Read-only 'start ready' check: can we open the base radio's TCP port?
+    Opens and immediately closes - never subscribes or reads. Used by the GUI's
+    Radio light while idle so you can see the link is up before Start tracking."""
+    try:
+        socket.create_connection((RADIO_IP, RADIO_PORT), timeout=timeout).close()
+        return True
+    except OSError:
+        return False
+
+
+def earth_reachable(client=None, timeout=1.5):
+    """Read-only 'start ready' check for the ArcGIS Earth Automation API."""
+    try:
+        (client or EarthClient()).ping()
+        return True
+    except Exception:
+        return False
 
 
 def run_bridge(tracker, stop_event, emit, redraw_q=None):

@@ -20,7 +20,7 @@ RELEASES = [
     ("PRAVE ME Tracker", "ArcGIS-Earth-Map-Plotting", "downloads/PRAVE_ME_Tracker_v1.zip"),
     ("PRAVE RMC Field Decoder Tester Gold", "ArcGIS-Earth-Map-Plotting", "downloads/PRAVE_RMC_Field_Decoder_Tester_v1_0_Gold.zip"),
     ("TPKX Batch Factory", "QGIS-Mbtile-to-ArcGIS-Earth-TPKX", "TPKX_Batch_Factory_v1.zip"),
-    ("P25 GPS Tracker", "ArcGIS-Earth-Map-Plotting", "downloads/P25_GPS_Tracker_v0.5.zip"),
+    ("P25 GPS Tracker", "ArcGIS-Earth-Map-Plotting", "downloads/P25_GPS_Tracker_v0.8.zip"),
     ("PRAVE ME P25 Tracker (trifecta)", "ArcGIS-Earth-Map-Plotting", "downloads/PRAVE_ME_Tracker_v3.0.zip"),
     ("EarthStick", "EarthStick", "releases/EarthStick_v2.0.zip"),
     ("World Gate Maker", "EarthStick", "releases/World_Gate_Maker_v2.0.zip"),

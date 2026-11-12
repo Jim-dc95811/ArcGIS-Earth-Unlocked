@@ -9,7 +9,7 @@ below only in case a future tile has no screenshot.)
     python3 tools/graphics/make_tools_montage.py      (run from the Unlocked repo root)
 writes images/ten_tools_montage.jpg (2000 px wide) and site/images/ten_tools_montage.jpg.
 """
-import contextlib, datetime as dt, importlib.util, io, sys
+import contextlib, datetime as dt, importlib.util, io, math, sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
@@ -30,13 +30,15 @@ TOOLS = [  # (name, one line, picture, focus (x, y) 0-1 for the crop)
     ("POINTLAYER", "hydrants and public points offline", "pointlayer.jpg", (0.5, 0.5)),
     ("PARCEL100", "click a parcel: owner and address", "parcel100.jpg", (0.5, 0.5)),
     ("PICTURE WORLD MAKER", "fly into giant pictures", "picture_world_maker.jpg", (0.5, 0.5)),
+    ("GARMIN USB GPS TRACKER", "your own GPS live on the map", "garmin_gps_tracker.jpg", (0.5, 0.42)),
 ]
 
-W, COLS, PAD, GAP = 2000, 5, 24, 16
+W, COLS, PAD, GAP = 2000, 4, 24, 16
 TW = (W - 2 * PAD - (COLS - 1) * GAP) // COLS          # tile width
 PH = round(TW * 9 / 16)                                 # picture height
 CH = 92                                                 # caption height
-H = 2 * PAD + 2 * (PH + CH) + GAP
+ROWS = math.ceil(len(TOOLS) / COLS)
+H = 2 * PAD + ROWS * (PH + CH) + (ROWS - 1) * GAP
 
 
 def tester_console(tester_py):

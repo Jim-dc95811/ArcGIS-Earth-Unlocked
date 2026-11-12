@@ -28,5 +28,7 @@ To run a tool, download its zip from its project page - the zip has the one-clic
 | Picture World Maker | 2.1 | [PWM_PIPELINE.py](Picture%20World%20Maker%20v2.1/PWM_PIPELINE.py) | `e3a576bba7c0b412...` | [Picture_World_Maker_v2.1.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) |
 | Picture World Maker | 2.1 | [PWM_SELF_TEST.py](Picture%20World%20Maker%20v2.1/PWM_SELF_TEST.py) | `c8f2a25e1b8bf59c...` | [Picture_World_Maker_v2.1.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) |
 | Picture World Maker | 2.1 | [START PICTURE WORLD MAKER.pyw](Picture%20World%20Maker%20v2.1/START%20PICTURE%20WORLD%20MAKER.pyw) | `d25a8c7654a8bab6...` | [Picture_World_Maker_v2.1.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) |
+| Garmin USB GPS Tracker | 0.1 | [garmin_core.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_core.py) | `91925d3da1c90618...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
+| Garmin USB GPS Tracker | 0.1 | [garmin_tracker_app.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_tracker_app.py) | `404087fa47c3044e...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
 
-21 scripts. Rebuilt by `tools/make_py_vault.py`.
+23 scripts. Rebuilt by `tools/make_py_vault.py`.

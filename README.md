@@ -6,13 +6,13 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 > 🤖 **Using AI assistance?** Have the agent read the [CLAUDE.md](CLAUDE.md) file first.
 
-## **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 10 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
+## **📦 [Download the Whole ArcGIS Earth Unlocked Series of Tools - all 11 in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)**
 
 Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and you get one folder per tool, each with its one `.bat` to double-click. Each `.bat` gets the PC ready first - it installs Python for you if it is missing (answer **Y**, no admin needed). The ArcGIS Pro Batch Factory add-in is not in it (it needs ArcGIS Pro) - get it from its own link under Download the tools.
 
-[![The 10 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 PRAVE / RMC Tester - bench test without a radio; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
+[![The 11 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 PRAVE / RMC Tester - bench test without a radio; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures; 11 Garmin USB GPS Tracker - your own GPS live on the map](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
 
-*The 10 tools in action - all 10 are in the zip above. Each one's own download, manual and video are on its project page.*
+*The 11 tools in action - all 11 are in the zip above. Each one's own download, manual and video are on its project page.*
 
 ## The project pages
 
@@ -98,7 +98,7 @@ Made with the Object Factory and EarthStick. Make your own with the tools below.
 
 ## Download the tools
 
-📦 **[All 10 tools in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)** - the same download as at the top of this page.
+📦 **[All 11 tools in one zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip)** - the same download as at the top of this page.
 
 📌 **[2.0 Reference](REFERENCE_2.0.md)** - on 8 Nov 2026 every tool moved to **2.0** together, as one known-good reference point. The page lists each 2.0 zip and the SHA-256 fingerprint of every file in it, so anyone can check that a copy is exactly the reference version.
 

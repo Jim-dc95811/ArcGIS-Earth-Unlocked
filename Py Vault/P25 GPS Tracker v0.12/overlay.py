@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.9).
+"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.12).
 
 A small click-through badge pinned to the bottom-right of the screen, above the Esri
 logo of a full-screen ArcGIS Earth. It is on screen the whole time the tracker is
@@ -12,7 +12,8 @@ nothing matched and the badge never showed. v0.7 read every window's owning proc
 identify it, which a virus scanner's machine-learning flagged (a false positive).
 Anchoring to the screen corner needs neither: just SystemParametersInfo/GetSystemMetrics.
 Because these tools are used with ArcGIS Earth maximised, the screen corner is the
-ArcGIS Earth corner.
+ArcGIS Earth corner. v0.10: it clears the Esri-owned corner (globe button + logo) using
+EarthStick's 60/480 clearance, converted for this window's display scale.
 
 A borderless, always-on-top, click-through Tk window (the same technique as
 EarthStick's readout). Windows only; needs ctypes and marker.png. ANY failure
@@ -25,9 +26,13 @@ from pathlib import Path
 import tkinter as tk
 
 KEY        = "#010203"          # transparent-colour key (nothing else uses this exact colour)
-RIGHT_GAP  = 28                 # px in from the right edge of the screen work area
-BOTTOM_GAP = 90                 # px up from the bottom (clear of the scale bar / Esri logo)
-BADGE_W, BADGE_H = 360, 120
+# v0.12: placed high on the right, well clear of the Esri navigation cluster in the
+# bottom-right. Position is a FRACTION of the work-area height from the top (scale-
+# independent, so no DPI guessing) plus a small margin in from the right. Nudge here:
+# raise TOP_FRACTION to move the badge down, lower it to move up.
+RIGHT_GAP   = 44               # px in from the right edge of the screen work area
+TOP_FRACTION = 0.22            # badge top sits this far down from the top (0 = top, 0.5 = middle)
+BADGE_W, BADGE_H = 190, 58     # half the v0.10 size, out of the control area
 
 
 class StatusOverlay:
@@ -91,27 +96,27 @@ class StatusOverlay:
 
         try:
             img = tk.PhotoImage(file=str(self.icon_path))
-            k = max(1, img.width() // 36)
+            k = max(1, img.width() // 20)                   # firetruck ~20 px
             self.img = img.subsample(k, k)
         except Exception:
             self.img = None
 
-        # presence pill (bottom): firetruck + "P25 TRACKER - running"
-        bx0, by0, bx1, by1 = 8, BADGE_H - 46, BADGE_W - 8, BADGE_H - 6
+        # presence pill (bottom): firetruck + "P25 TRACKER"
+        bx0, by0, bx1, by1 = 4, BADGE_H - 26, BADGE_W - 4, BADGE_H - 3
         cy = (by0 + by1) // 2
         c.create_rectangle(bx0, by0, bx1, by1, fill="#10233a", outline="#3f6ea5", width=2)
         if self.img is not None:
-            c.create_image(bx0 + 24, cy, image=self.img)
-        c.create_text(bx0 + 48, cy, anchor="w", text="P25 TRACKER  ·  running",
-                      font=("Segoe UI", 13, "bold"), fill="#e8f0f8")
+            c.create_image(bx0 + 14, cy, image=self.img)
+        c.create_text(bx0 + 28, cy, anchor="w", text="P25 TRACKER",
+                      font=("Segoe UI", 9, "bold"), fill="#e8f0f8")
 
         # alarm line (above the pill), hidden until an alarm
-        ax0, ay0, ax1, ay1 = 8, 6, BADGE_W - 8, by0 - 8
+        ax0, ay0, ax1, ay1 = 4, 3, BADGE_W - 4, by0 - 5
         self.alarm_bg = c.create_rectangle(ax0, ay0, ax1, ay1, fill="#5a0000",
                                            outline="#ff3b3b", width=2, state="hidden")
         self.alarm_txt = c.create_text((ax0 + ax1) // 2, (ay0 + ay1) // 2,
-                                       text="⚠  RADIO DISCONNECTED",
-                                       font=("Segoe UI", 14, "bold"), fill="#ffffff", state="hidden")
+                                       text="⚠ RADIO DISCONNECTED",
+                                       font=("Segoe UI", 9, "bold"), fill="#ffffff", state="hidden")
         w.update_idletasks()
         self._click_through(w)
         w.withdraw()
@@ -137,9 +142,9 @@ class StatusOverlay:
     def _track(self):
         if self.win is not None:
             try:
-                _, _, right, bottom = self._work_area()
+                left, top, right, bottom = self._work_area()
                 x = right - RIGHT_GAP - BADGE_W
-                y = bottom - BOTTOM_GAP - BADGE_H
+                y = top + int((bottom - top) * TOP_FRACTION)
                 self.win.geometry(f"{BADGE_W}x{BADGE_H}+{x}+{y}")
                 self.win.deiconify()
                 self.win.attributes("-topmost", True)

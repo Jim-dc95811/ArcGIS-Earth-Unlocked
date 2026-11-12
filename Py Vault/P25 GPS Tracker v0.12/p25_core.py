@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.9).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.12).
 
 v0.9: no engine change - the overlay badge anchors to the screen corner (v0.8's title match
 never matched: ArcGIS Earth titles its window after the open workspace, e.g. 'Legacy Workspace').

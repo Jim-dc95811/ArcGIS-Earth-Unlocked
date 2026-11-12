@@ -1,5 +1,7 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-11, v0.4).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-11, v0.5).
 
+v0.5: markers are firetrucks (red live / amber aging); the view no longer snaps to the first
+unit; and the trucks shrink as you zoom out and hide above 200000 ft so wide views stay clean.
 v0.4: the retirement time (how long an idle unit stays on the map) is chosen in
 the control panel instead of fixed at 2 hours; "Never" keeps units until Stop.
 Engine note: Tracker.expire_s may be set live by the GUI; 0 means never retire.
@@ -16,7 +18,7 @@ v0.3 hardening: keepalive, connection watchdog, visible staleness (amber marker 
 age label that ticks), coordinate sanity bounds, and a daily CSV track log.
 This module is the engine; the GUI drives run_bridge() in a worker thread.
 """
-import re, csv, json, time, socket, datetime
+import re, csv, json, time, math, socket, datetime
 from pathlib import Path
 from urllib import request, error
 
@@ -30,7 +32,7 @@ API_TIMEOUT_SECONDS = 3.0
 
 EXPIRE_SECONDS      = 2 * 60 * 60     # drop a unit's marker after 2 h of silence
 STALE_AFTER_MINUTES = 5              # mark a unit "aging" (amber + age label) after this
-CENTER_ON_FIRST     = True
+CENTER_ON_FIRST     = False   # v0.5: never move the operator's view; markers still plot at true location
 RECONNECT_SECONDS   = 4
 KEEPALIVE_SECONDS   = 20            # re-send SUBSCRIBE this often (0 = off)
 WATCHDOG_SECONDS    = 90            # no bytes at all for this long -> force reconnect
@@ -39,7 +41,12 @@ REFRESH_SECONDS     = 30            # re-draw aging units so the age/colour stay
 DRAWING_ID_PREFIX   = "AE_P25_"
 LABEL_SIZE          = 13
 LABEL_COLOR         = [255, 255, 255, 255]
-MARKER_SIZE_PX      = 40
+MARKER_SIZE_PX      = 40            # base / max on-screen size (zoomed in)
+# ---- LOD: the tracker shrinks the trucks as you zoom out and hides them when too high ----
+HIDE_ABOVE_FT       = 200000       # trucks disappear above this eye-altitude (0 = never hide)
+ICON_MIN_PX         = 16           # smallest size before they hide
+FULL_BELOW_FT       = 6000         # full size at / below this eye-altitude
+LOD_POLL_SECONDS    = 0.5          # how often to check your zoom (localhost GET; 0 = LOD off)
 # ===============================================================
 _HERE        = Path(__file__).resolve().parent
 MARKER_ICON  = _HERE / "marker.png"          # fresh (orange)
@@ -195,6 +202,8 @@ class Tracker:
         self.center_on_first = center_on_first
         self.units = {}
         self._centered = False
+        self.icon_px = MARKER_SIZE_PX   # current on-screen size (LOD)
+        self.hidden  = False            # True = zoomed out past the cutoff
 
     def _draw_id(self, unit):
         return f"{DRAWING_ID_PREFIX}{unit}"
@@ -221,11 +230,13 @@ class Tracker:
             "labelSymbol": {"type": "text", "color": LABEL_COLOR, "size": LABEL_SIZE},
         }
         if icon.is_file():
-            p["symbol"] = {"type": "picture-marker", "url": str(icon), "size": f"{MARKER_SIZE_PX}px"}
+            p["symbol"] = {"type": "picture-marker", "url": str(icon), "size": f"{self.icon_px}px"}
         return p
 
     def _draw(self, u):
         self.earth.delete_drawing(self._draw_id(u.unit), ignore_missing=True)
+        if self.hidden:                       # zoomed out past the cutoff: leave the map clean
+            return
         self.earth.post_drawing(self._payload(u))
 
     def report(self, r: Report):
@@ -266,6 +277,26 @@ class Tracker:
             self._centered = True
         except Exception:
             pass
+
+    def _size_for(self, alt_ft):
+        if alt_ft <= FULL_BELOW_FT:
+            return MARKER_SIZE_PX
+        hi = HIDE_ABOVE_FT or (FULL_BELOW_FT * 40)
+        f  = (math.log(alt_ft) - math.log(FULL_BELOW_FT)) / (math.log(hi) - math.log(FULL_BELOW_FT))
+        f  = max(0.0, min(1.0, f))
+        px = round(MARKER_SIZE_PX - f * (MARKER_SIZE_PX - ICON_MIN_PX))
+        return (px // 2) * 2                   # even px -> fewer redraws while zooming
+
+    def apply_lod(self, alt_ft):
+        """Resize / hide the trucks for the current eye-altitude. Redraws only on a real change."""
+        hide = bool(HIDE_ABOVE_FT) and alt_ft > HIDE_ABOVE_FT
+        px   = self._size_for(alt_ft)
+        if hide == self.hidden and px == self.icon_px:
+            return False                       # nothing changed -> no API traffic
+        self.hidden, self.icon_px = hide, px
+        for u in self.units.values():
+            self._draw(u)                      # redraw all at new size, or clear if now hidden
+        return True
 
     def sweep(self):
         if not self.expire_s:          # 0 / None = never retire (user chose "Never")
@@ -310,21 +341,26 @@ def run_bridge(tracker, stop_event, emit, redraw_q=None):
     """Connect/subscribe/parse/draw loop for a worker thread.
     emit(kind, *args): status | fix | stale | expire | log."""
     earth = tracker.earth
+    earth_state = {"ok": None}
+    def set_earth(ok):                     # drive the 'ArcGIS Earth API ready' light on change
+        if ok != earth_state["ok"]:
+            earth_state["ok"] = ok; emit("earth", ok)
+    emit("radio", False)
     try:
-        earth.ping(); emit("status", f"ArcGIS Earth reachable at {earth.base}")
+        earth.ping(); emit("status", f"ArcGIS Earth reachable at {earth.base}"); set_earth(True)
     except EarthUnreachable:
-        emit("status", "ArcGIS Earth not reachable yet - will keep trying")
+        emit("status", "ArcGIS Earth not reachable yet - will keep trying"); set_earth(False)
 
     while not stop_event.is_set():
         sock = None
         try:
-            emit("status", f"connecting to radio {RADIO_IP}:{RADIO_PORT} ...")
+            emit("status", f"connecting to radio {RADIO_IP}:{RADIO_PORT} ..."); emit("radio", False)
             sock = socket.create_connection((RADIO_IP, RADIO_PORT), timeout=6)
             sock.sendall(SUBSCRIBE); sock.settimeout(0.5)
-            emit("status", "connected - listening for GPS")
+            emit("status", "connected - listening for GPS"); emit("radio", True)
             parser = StreamParser()
             t0 = time.monotonic()
-            last_sweep = last_keep = last_refresh = last_data = t0
+            last_sweep = last_keep = last_refresh = last_data = last_lod = t0
             while not stop_event.is_set():
                 try:
                     data = sock.recv(65535)
@@ -341,7 +377,7 @@ def run_bridge(tracker, stop_event, emit, redraw_q=None):
                             csv_log(rpt)
                             emit("fix", rpt.unit, rpt.lat, rpt.lon, rpt.utc, kind)
                         except EarthUnreachable:
-                            emit("status", "ArcGIS Earth not reachable")
+                            emit("status", "ArcGIS Earth not reachable"); set_earth(False)
                         except Exception as exc:
                             emit("log", f"draw error for {rpt.unit}: {exc}")
                 elif _socket_closed(sock):
@@ -352,6 +388,18 @@ def run_bridge(tracker, stop_event, emit, redraw_q=None):
                             tracker.redraw(redraw_q.get_nowait())
                         except Exception:
                             break
+                if LOD_POLL_SECONDS and now - last_lod > LOD_POLL_SECONDS:
+                    try:
+                        cam = earth.get_camera()
+                        z = cam.get("position", {}).get("z") if isinstance(cam, dict) else None
+                        if z is not None:
+                            tracker.apply_lod(z * 3.28084)   # metres -> feet
+                        set_earth(True)
+                    except EarthUnreachable:
+                        set_earth(False)
+                    except Exception:
+                        pass
+                    last_lod = now
                 if now - last_refresh > REFRESH_SECONDS:
                     try:
                         for u in tracker.refresh():

@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-11, v0.3 hardened).
+"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.5).
 
 A single window that runs the live bridge (radio -> ArcGIS Earth), shows every unit
 the radio reports with a Live / Stale / Expired status, and lets you give each P25
@@ -147,6 +147,15 @@ class App:
         self._log(f"retirement time set to: {label}")
 
     def _build_ui(self):
+        # Status lights (top strip, above the controls/status)
+        ind = ttk.Frame(self.root, padding=(12, 6, 12, 0)); ind.pack(fill="x")
+        self.radio_dot = tk.Label(ind, text="●", font=("Segoe UI", 13), foreground="#c62828")
+        self.radio_dot.pack(side="left")
+        ttk.Label(ind, text="Radio connected").pack(side="left", padx=(4, 22))
+        self.earth_dot = tk.Label(ind, text="●", font=("Segoe UI", 13), foreground="#c62828")
+        self.earth_dot.pack(side="left")
+        ttk.Label(ind, text="ArcGIS Earth API ready").pack(side="left", padx=(4, 0))
+
         top = ttk.Frame(self.root, padding=(10, 8)); top.pack(fill="x")
         self.start_btn = ttk.Button(top, text="Start tracking", command=self._start)
         self.start_btn.pack(side="left")
@@ -271,12 +280,17 @@ class App:
             pass
         self.root.after(150, self._poll)
 
+    def _set_light(self, dot, ok):
+        dot.configure(foreground="#1a7f37" if ok else "#c62828")   # green / red
+
     def _handle(self, kind, args):
         if kind == "status":
             self.status.configure(text=args[0]); self._log(args[0])
             if args[0] == "stopped":
                 self.start_btn.configure(state="normal")
                 self.stop_btn.configure(state="disabled")
+                self._set_light(self.radio_dot, False)
+                self._set_light(self.earth_dot, False)
         elif kind == "fix":
             unit, lat, lon, utc, how = args
             self._ensure_row(unit)
@@ -290,7 +304,11 @@ class App:
             self._log(f"unit {args[0]} aging (no new fix)")
         elif kind == "expire":
             self._set_status(args[0], "Expired", "expired")
-            self._log(f"EXPIRE unit {args[0]} - 2 h silent, marker removed")
+            self._log(f"EXPIRE unit {args[0]} - idle past {self.retire_var.get()}, marker removed")
+        elif kind == "radio":
+            self._set_light(self.radio_dot, bool(args[0]))
+        elif kind == "earth":
+            self._set_light(self.earth_dot, bool(args[0]))
         elif kind == "log":
             self._log(args[0])
 

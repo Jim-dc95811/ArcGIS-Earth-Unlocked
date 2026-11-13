@@ -365,6 +365,38 @@ ArcGIS Earth     -> the common renderer
 
 ---
 
+### 3c. Garmin USB binary protocol — how the own-position reader works (durable reference, 2026-11-12)
+
+Reverse-engineered live on Jim's **Garmin GPS 18 USB** (USB id **091E:0003**) this session; proven with a real 3D fix on his location. This is the canonical write-up (the rolling header above will trim; this section stays). Code: `garmin_usb.py` (the P25-integrated reader) and `garmin_core.py` (the standalone tool) — same protocol. A Garmin USB puck does **not** expose a COM port and does **not** speak NMEA; it speaks Garmin's own binary framing through Garmin's own kernel driver (`grmnusb.sys`), so you talk to it with raw Win32 `DeviceIoControl`/`WriteFile` — pure Python `ctypes`, nothing installed, no driver change, read-only.
+
+**1. Find + open the device.**
+- Enumerate by Garmin's USB **interface GUID** `{2C9C45C2-8E7D-4C08-A12D-816BBAE722C0}` via SetupAPI: `SetupDiGetClassDevsW(guid, NULL, NULL, DIGCF_PRESENT|DIGCF_DEVICEINTERFACE=0x12)` → `SetupDiEnumDeviceInterfaces` → `SetupDiGetDeviceInterfaceDetailW` (call twice: first for size, then fill; the detail struct's `cbSize` must be **8** on 64-bit — written with `struct.pack("<I",8)`; the device path is the WCHAR string at `buf+4`). Destroy the list in a `finally`.
+- `CreateFileW(path, GENERIC_READ|GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL)` → device handle.
+- `device_present()` does the SetupAPI enum only (no CreateFile), so it's the idle "GPS connected" probe that never clashes with an open tracking session.
+
+**2. IOCTLs** (build with `CTL_CODE(dev=FILE_DEVICE_UNKNOWN=0x22, func, METHOD_BUFFERED=0, FILE_ANY_ACCESS=0)` = `(dev<<16)|(acc<<14)|(func<<2)|meth`):
+- `IOCTL_GARMIN_USB_INTERRUPT_IN`  = func `0x850` = **`0x222140`** — read one interrupt packet.
+- `IOCTL_GARMIN_USB_BULK_OUT_PACKET_SIZE` = func `0x851` = `0x222144` (not needed for PVT; documented for completeness).
+- Writes to the device go out with plain `WriteFile` (the bulk-out pipe), not an IOCTL.
+
+**3. Packet framing** — 12-byte header + data: `struct "<B3xH2xI"` = **packet_type @0** (1 byte), **packet_id @4** (uint16 LE), **data_size @8** (uint32 LE), then `data_size` bytes. Layers: `LAYER_TRANSPORT = 0`, `LAYER_APPL = 20`.
+
+**4. Handshake / start PVT:**
+- Start session: write `(type=0 transport, id=5 Start_Session)` → read until you get `(type=0, id=6 Session_Started)` whose 4-byte payload is the unit id.
+- Start position stream: write `(type=20 appl, id=10 Command_Data, data=struct "<H" of 49 Start_Pvt_Data)` → the unit then streams `(type=20, id=51 Pvt_Data)` **~1/sec on its own**. Stop with command `50`.
+
+**5. THE GOTCHA — reassemble interrupt reads.** A PVT record arrives on the **INTERRUPT pipe as a 64-byte chunk followed by a short (<64) chunk** (USB max-packet-size framing; a record that is an exact multiple of 64 is terminated by a zero-length packet). **You must loop `DeviceIoControl(INTERRUPT_IN)` reading 64-byte chunks and concatenate until one comes back `< 64` bytes.** A single 64-byte read truncates the record and silently loses longitude (this bit us during the first probe). No bulk-pipe reads are needed for PVT.
+
+**6. Decode the D800 PVT record** (64 bytes, `struct "<ffffhdddffffhi"`): `alt, epe, eph, epv` (float32), `fix` (int16), `tow` (double), **`lat, lon` (double, in RADIANS → ×180/π for degrees)**, `east, north, up` (float32 m/s velocity), `msl_hght` (float32), `leap` (int16), `wn` (int32). Notes: `fix` 0/1 = no fix, 2 = 2D, 3 = 3D, 4/5 = diff; **MSL altitude = `alt − msl_hght`** (`msl_hght` is the geoid separation, ≈ −31 m in NE Florida, *not* the altitude); horizontal speed = `hypot(east, north) × 2.236936` mph.
+
+**7. ctypes safety (don't skip):** load libs with `WinDLL("setupapi"/"kernel32", use_last_error=True)` and set `.restype`/`.argtypes` (`wintypes.HANDLE`, `c_void_p`, `DWORD`…) on **every** function — otherwise 64-bit handles get truncated to 32-bit ints and calls corrupt/fail. The handle is `c_void_p`; `INVALID_HANDLE_VALUE = c_void_p(-1).value`.
+
+**8. v0.14 hardening wrapped around the reader (in `run_garmin`, not the reader):** reject a fix whose coords are NaN / out of ±90/±180 / (0,0) before drawing (`_coords_ok`); after a *good* fix is lost for `GPS_STALE_SECONDS`=12 s, flip the GPS light red + fire the alarm ("position is stale"), clearing on the next good fix, gated by `had_fix` so a cold-start lock doesn't false-alarm. The reader stays dumb; the caller validates.
+
+**References used:** gpsbabel `gpsusbwin.c` (the Windows IOCTL numbers and the interrupt-reassembly rule) and the Garmin *Device Interface Specification* (protocols A010 link, A800 PVT, D800 PVT data type). Nothing is decrypted and the device is only ever read.
+
+---
+
 ## 4. Evidence and rights discipline
 
 - Do not claim the converter downloads imagery, or that file-format openness grants imagery rights.

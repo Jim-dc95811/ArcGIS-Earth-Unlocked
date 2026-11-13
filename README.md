@@ -86,6 +86,14 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 **TEST - not released yet.** The code and the homework-saver guide for building your own world are in the [Claude toolbox](tools/worlds/README.md). Street data (c) OpenStreetMap contributors; imagery under the windows: ArcGIS Earth basemap (Esri and its partners).
 
+## 🆕 New: Build your own realm - the instruction book
+
+Jim built the first realms - gates, signs, traps and whole picture worlds floating over the real map - working with his AI. The wish from the start was that **you** would do the same with yours. So there is now one page written to be handed straight to your AI helper:
+
+**📖 [The Realm - Instruction Book: branch your own universe](realm/INSTRUCTION_BOOK.md)**
+
+Paste it into Claude or ChatGPT and say *"help me build a realm using this."* It carries the gate file format with a real working example, the handful of facts about ArcGIS Earth that were learned by measuring (not guessing), the free tools that make gates for you, the sky-layout rules, and **The Void** as the example realm. No coding required - a free globe viewer, a few free tools, and a willingness to test.
+
 ## Try it in 2 minutes - no Python needed
 
 Install **[ArcGIS Earth](https://www.esri.com/en-us/arcgis/products/arcgis-earth/downloads)**, download one of these already constructed sample KML/KMZ files the tools make and drag it onto the map (or use the **+** Add data button). They are all near Jacksonville, Florida.

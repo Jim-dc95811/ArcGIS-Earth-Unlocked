@@ -12,6 +12,34 @@ Update this file whenever something durable changes: a release, an accepted test
 
 ---
 
+## 0. GRAND MAP - the whole family, and every continuity file to read
+
+**You (the AI reading this) are at the front door.** The public "Using AI assistance? Have the agent read the CLAUDE.md file first" blurb on every page points here. This section is the map of the entire project so nothing is missed. Two kinds of reader arrive:
+
+- **Building your OWN realm / universe** (gates, picture worlds, adventures over the real map, not continuing Jim's tools)? You do NOT need this whole file. Read the self-contained, hand-to-your-AI page instead: **[realm/INSTRUCTION_BOOK.md](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/realm/INSTRUCTION_BOOK.md)**.
+- **Continuing or working on these tools with Jim** (the usual case for a resuming Claude)? Read on. This file is the newest, highest-authority state. Then read the per-repo continuity files below for whatever repo your task touches, following the `## 1. Resume procedure`.
+
+**Precedence (when two sources disagree):** the **live repo** (actual files, `git show`) wins over any prose; **this CLAUDE.md** wins over the per-repo continuity files; the per-repo files win on repo-local detail this file doesn't carry. Many per-repo `CONTINUITY.md` / `MAPWORLD.md` files were written earlier by ChatGPT for ChatGPT - still valuable, but treat them as dated snapshots where they disagree with this file or the live code.
+
+**The family = 8 public repos** (owner `Jim-dc95811`; clone root this session = `/home/claude/repos/<Repo>`). Read each repo's continuity file(s) when your task touches it:
+
+| # | Repo | Role (one line) | Continuity file(s) to read |
+|---|---|---|---|
+| 1 | **ArcGIS-Earth-Unlocked** | Umbrella / front door / system map | **this file** (`CLAUDE.md`) · design journal [`realm/REALM_JOURNAL.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/realm/REALM_JOURNAL.md) · API reference [`tools/ARCGIS_EARTH_API.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/tools/ARCGIS_EARTH_API.md) · toolbox [`tools/README.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/tools/README.md) · world generators [`tools/worlds/README.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/blob/main/tools/worlds/README.md) |
+| 2 | **QGIS-Mbtile-to-ArcGIS-Earth-TPKX** | TPKX map production: mb2tpkx converter + Master 4 + Batch Factory | [`CONTINUITY.md`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/CONTINUITY.md) · [`TECHNICAL.md`](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/TECHNICAL.md) |
+| 3 | **ArcGIS-Earth-Map-Plotting** (renamed from `ArcGIS-Earth-Offline-Maps-Chartplotting`, which redirects; the local clone dir is still the old name) | Plot live positions: P25 GPS Tracker, PRAVE/ME tracker (+ trifecta), PRAVE/RMC tester | no dedicated continuity file - its state lives in **this file** + its `README.md` and `docs/` (esp. `docs/P25_GPS_TRACKER.md`, `docs/PRAVE_ME_TRACKER.md`) |
+| 4 | **EarthStick** | Joystick flight of the ArcGIS Earth camera (+ World Gate Maker, Gate Dropper) | [`CONTINUITY.md`](https://github.com/Jim-dc95811/EarthStick/blob/main/CONTINUITY.md) · [`docs/TECHNICAL_NOTES.md`](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/TECHNICAL_NOTES.md) |
+| 5 | **ArcGIS-Earth-Object-Factory** | Geographic object authoring: Objects, Batch, Sky Compass, Beacon | [`internal/CONTINUITY.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/internal/CONTINUITY.md) · [`internal/MAPWORLD.md`](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/internal/MAPWORLD.md) |
+| 6 | **Point-Maps** | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | [`CONTINUITY.md`](https://github.com/Jim-dc95811/Point-Maps/blob/main/CONTINUITY.md) · [`docs/TECHNICAL_NOTES.md`](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/TECHNICAL_NOTES.md) |
+| 7 | **Parcel100** | Master 4 box -> up to 100 parcel GeoJSON cells | [`CONTINUITY.md`](https://github.com/Jim-dc95811/Parcel100/blob/main/CONTINUITY.md) · [`TECHNICAL.md`](https://github.com/Jim-dc95811/Parcel100/blob/main/TECHNICAL.md) |
+| 8 | **Picture-World-Maker** (was `Rasta-Pyramid-Factory`) | Giant pictures -> MBTiles/TPKX picture worlds | [`docs/AI_CONTINUITY_RESTART_NOTE.md`](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/AI_CONTINUITY_RESTART_NOTE.md) · [`docs/TECHNICAL_ARCHITECTURE.md`](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/TECHNICAL_ARCHITECTURE.md) |
+
+Section 3 below has the same list with current versions and more detail; this table is the quick index so a resuming Claude reads the right continuity files and misses none.
+
+**Notation (Jim, 2026-11-13):** this file need not be human-pretty - compact agent shorthand is welcome where it saves space. One hard rule, because this file's whole job is to brief a COLD-START session with zero prior context: any shorthand must be **self-describing / decodable in place** (define a key where you use it). No undocumented binary or private cipher - a future Claude (possibly a different model) must be able to read it unaided, and the public "read CLAUDE.md first" blurb aims other people's AIs here too. The grand map above and section headings stay plain for that reason.
+
+---
+
 ## 1. Resume procedure
 
 1. Clone all eight public repos (list in section 3) into one working folder (this session used `/home/claude/repos/<Repo>`; `tools/linkcheck.py` expects that root).

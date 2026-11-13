@@ -3,7 +3,7 @@ representing those 10, should be at the top. 7 reference has to go').
 
 The 10 = the folders in downloads/ArcGIS_Earth_Unlocked_All_Tools.zip (tools/make_all_tools_zip.py), in that order.
 Pictures are the front-page tool pictures in images/. (2026-11-11: the PRAVE/RMC tester left the 10; the P25 GPS
-Tracker took slot 4, with the live two-unit map shot `p25_gps_tracker.jpg`. The tester-console tile code is kept
+Tracker took slot 4, with the live Jax 24 + My position map shot `p25_live_jax24_my_position.jpg`. The tester-console tile code is kept
 below only in case a future tile has no screenshot.)
 
     python3 tools/graphics/make_tools_montage.py      (run from the Unlocked repo root)
@@ -23,7 +23,7 @@ TOOLS = [  # (name, one line, picture, focus (x, y) 0-1 for the crop)
     ("MBTILES CONVERTER", "QGIS maps, offline in ArcGIS Earth", "mbtiles_converter.jpg", (0.5, 0.5)),
     ("MASTER 4 GRID MAKER", "100 numbered map cells", "master4_grid.jpg", (0.5, 0.5)),
     ("PRAVE / ME TRACKER", "radio units live on the map", "prave_me_tracker.jpg", (0.5, 0.5)),
-    ("P25 GPS TRACKER", "radio GPS live on the map", "p25_gps_tracker.jpg", (0.5, 0.5)),
+    ("P25 GPS TRACKER", "radio GPS live on the map", "p25_live_jax24_my_position.jpg", (0.52, 0.46)),
     ("EARTHSTICK", "fly the world with a joystick", "earthstick.jpg", (0.5, 0.5)),
     ("WORLD GATE MAKER", "your own gates, city to city", "world_gate_maker_v1.1_seattle.jpg", (0.5, 0.5)),
     ("OBJECT FACTORY", "beacons and objects in the sky", "object_factory.jpg", (0.5, 0.5)),

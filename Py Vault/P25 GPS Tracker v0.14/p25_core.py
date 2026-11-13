@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.13).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.14).
 
 v0.9: no engine change - the overlay badge anchors to the screen corner (v0.8's title match
 never matched: ArcGIS Earth titles its window after the open workspace, e.g. 'Legacy Workspace').
@@ -8,6 +8,8 @@ v0.7: no engine change - the package gains an on-screen overlay badge (overlay.p
 v0.6: the two status lights (radio / ArcGIS Earth) are larger and run even before Start
 tracking - radio_reachable() and earth_reachable() are read-only 'start ready' probes.
 v0.13: optional own-position source - reads a Garmin USB GPS (garmin_usb.py, if attached) in
+v0.14: hardens the Garmin side - rejects bad coordinates (#1), flips the GPS light red +
+       alarms when a good fix is lost for 12s (#2), and stays alarm-free during cold-start lock.
 its own thread and draws a blue "My position" marker; independent of the radio (either can fail
 and the other keeps going). A "Keep me centered" option re-centres the map on your own fixes.
 v0.5: markers are firetrucks (red live / amber aging); the view no longer snaps to the first
@@ -72,6 +74,22 @@ GARMIN_DRAW_ID   = "AE_P25_ME_GARMIN"
 GARMIN_MARKER    = _HERE / "marker_me.png"   # blue "you are here"
 GARMIN_LABEL     = "My position"
 GARMIN_MARKER_PX = 36
+GPS_STALE_SECONDS = 12          # v0.14: after a good fix is lost for this long, the GPS light
+                                # goes red + the GPS alarm fires (a frozen position is the danger)
+
+
+def _coords_ok(lat, lon):
+    """v0.14 (#1): reject a corrupt Garmin fix before it moves the marker or the camera."""
+    try:
+        if lat != lat or lon != lon:        # NaN
+            return False
+        if not (-90.0 <= lat <= 90.0) or not (-180.0 <= lon <= 180.0):
+            return False
+        if abs(lat) < 1e-6 and abs(lon) < 1e-6:   # null island (0,0) = no real fix
+            return False
+        return True
+    except Exception:
+        return False
 
 
 # ---------------- NMEA / frame parsing (frame-agnostic) ----------------
@@ -507,19 +525,34 @@ def run_garmin(state, stop_event, emit):
         try:
             emit("gps", False)
             gps.open()
-            emit("gps", True)
+            emit("gps", True)          # device open; "acquiring" until the first good fix
             gps.start_pvt()
         except garmin_usb.GarminError as exc:
             emit("gps", False)
             emit("log", f"GPS: {exc}")
             stop_event.wait(4.0)
             continue
+        # v0.14 (#2): a plugged-but-not-fixing unit must not look live. Once we've HAD a good
+        # fix, losing it for GPS_STALE_SECONDS flips the light red + fires the GPS alarm; a good
+        # fix clears it. Before the first fix we stay "acquiring" (green, no alarm, no marker),
+        # so a normal cold-start lock doesn't false-alarm. (#3 cheap half: the unit streams PVT
+        # ~1/sec even with no lock, so this loop keeps ticking; the thread is a daemon, so a
+        # truly silent-but-open unit can't block app close.)
+        had_fix = False
+        stale = False
+        last_good = time.monotonic()
         try:
             while not stop_event.is_set():
                 fix = gps.read_fix()
-                if not fix:
-                    continue
-                if fix["fix"] >= 2:
+                now = time.monotonic()
+                good = bool(fix) and fix["fix"] >= 2 and _coords_ok(fix["lat"], fix["lon"])  # (#1)
+                if good:
+                    last_good = now
+                    had_fix = True
+                    if stale:
+                        stale = False
+                        emit("gps", True)
+                        emit("log", "GPS: fix restored")
                     try:
                         _draw_me(earth, fix["lat"], fix["lon"])
                         if getattr(state, "center", False):
@@ -528,6 +561,10 @@ def run_garmin(state, stop_event, emit):
                         pass
                     except Exception:
                         pass
+                elif had_fix and not stale and now - last_good > GPS_STALE_SECONDS:
+                    stale = True
+                    emit("gps", False)
+                    emit("log", f"GPS: no fix for {GPS_STALE_SECONDS}s - position is stale")
         except garmin_usb.GarminError:
             emit("gps", False)
             emit("log", "GPS: lost - reconnecting")

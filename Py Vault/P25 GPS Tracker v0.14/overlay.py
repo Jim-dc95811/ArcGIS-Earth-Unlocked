@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.13).
+"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.14).
 
 A small click-through badge pinned to the bottom-right of the screen, above the Esri
 logo of a full-screen ArcGIS Earth. It is on screen the whole time the tracker is

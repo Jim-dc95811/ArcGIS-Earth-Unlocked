@@ -46,7 +46,7 @@ The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25
 
 *How a P25 radio's GPS reaches the map. ▶️ [Watch it work - BK Radio P25 GPS Map Plotter](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube).*
 
-**⭐ [Get P25 GPS Tracker — Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** (hardware tool - Drive only) · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
+**⭐ [Get P25 GPS Tracker — Google Drive](https://drive.google.com/drive/folders/1xNnCdhlnejT-6J3XOPTHB_LWHxO2WaBh)** (hardware tool - Drive only) · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
@@ -58,9 +58,9 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 *Everything you need, in 7 steps - click for full size. Extracted the zip and wondering what each file is? **[What's in the EarthStick folder](https://github.com/Jim-dc95811/EarthStick/blob/main/images/earthstick_whats_in_the_folder_full.png)**.*
 
-**⭐ [Get EarthStick v2.0 — Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
+**⭐ [Get EarthStick v2.0 — Google Drive](https://drive.google.com/drive/folders/1_IGSErufpI1iP1Y45UxgRgzGM_H16y3c)** · **📖 [How to fly the gates](https://github.com/Jim-dc95811/EarthStick#world-gates-13-round-the-world-tour-in-131)** · no joystick? **[Just look at the gates](https://github.com/Jim-dc95811/EarthStick/raw/main/gates/World_Gates_JAX_ATL_v21.kmz)** (drag onto ArcGIS Earth)
 
-**🛠️ Make your own gates:** **[⭐ World Gate Maker v2.0 — Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
+**🛠️ Make your own gates:** **[⭐ World Gate Maker v2.0 — Google Drive](https://drive.google.com/drive/folders/1P7KPYwCUdTd1ddwWbmmK1XKuF_E4FzLi)** (**[📖 manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**) - pick any two places, like home and Central Park, and it builds the pair of square gates between them.
 
 **🆕 Or drop them as you fly (EarthStick 1.3.6):** pull the trigger at one place and again at another - a pair of thin black gates appears in front of you, no typing. Hold the trigger to undo. **[How the Gate Dropper works](https://github.com/Jim-dc95811/EarthStick#drop-gates-as-you-fly-new-in-136)**
 
@@ -70,7 +70,7 @@ Fly through a golden gate over Jacksonville and come out over the Statue of Libe
 
 [![Sea, street, stone: one London photo seen from 61,246 ft floating on the ocean, from 4,203 ft at street level, and from 786 ft beside the bell tower of St Paul's](images/picture_world_sea_street_stone.jpg)](https://github.com/Jim-dc95811/Picture-World-Maker)
 
-**⭐ [Get Picture World Maker v2.1 — Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
+**⭐ [Get Picture World Maker v2.1 — Google Drive](https://drive.google.com/drive/folders/1vGuqo2UeT30mktCEjz4ft_6tyG9YFyhs)** · 📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)
 
 [![Babel to the Shard: Bruegel's treadwheel crane in the Tower of Babel (1563) beside the red tower cranes at the Shard - play the Short](images/babel_to_shard_short_thumb.jpg)](https://www.youtube.com/shorts/lxvZLMLe-IY)
 
@@ -127,7 +127,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⭐ [Get P25 GPS Tracker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get P25 GPS Tracker from Google Drive](https://drive.google.com/drive/folders/1xNnCdhlnejT-6J3XOPTHB_LWHxO2WaBh)**
 
 *Open the Drive folder, open **P25_GPS_Tracker_v0.14**, and run its one `.bat`. This tool reads radio/GPS hardware, so it is offered on Drive only - a brand-new unsigned zip can trip a Windows antivirus false alarm, and Drive avoids that entirely.*
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)**
@@ -138,7 +138,7 @@ Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth
 
 *How a P25 radio's GPS reaches the map. ▶️ [Watch the video](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting).*
 
-### **⭐ [Get the MBTiles to TPKX Converter from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get the MBTiles to TPKX Converter from Google Drive](https://drive.google.com/drive/folders/1jCBdgq0EXnN1WWaURIMEdhPfQq1On5o8)**
 
 *Easiest, no download warning: open the Drive folder, open **mb2tpkx_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/mb2tpkx.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/mb2tpkx_User_Manual.pdf)**
@@ -150,7 +150,7 @@ Turn a QGIS raster MBTiles map into a TPKX that opens offline in ArcGIS Earth.
 
 *A converted Bryceville, Florida, map open offline in ArcGIS Earth. ▶️ [Watch the video](https://www.youtube.com/watch?v=C71n8TAByuE) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
-### **⭐ [Get Master 4 Grid Maker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get Master 4 Grid Maker from Google Drive](https://drive.google.com/drive/folders/1psSeko18C2F8wog9WbNQw-81NNR8BibE)**
 
 *Easiest, no download warning: open the Drive folder, open **Master4_Grid_Maker_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/raw/main/Master4_Grid_Maker.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual (PDF)](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX/blob/main/Master4_Grid_Maker_User_Manual.pdf)**
@@ -174,7 +174,7 @@ ArcGIS Pro add-in that builds up to 10 satellite or road-overlay TPKX packages i
 
 *The Batch Factory window inside ArcGIS Pro. ▶️ [Watch the video](https://www.youtube.com/watch?v=KGckjaOu0hY) (YouTube). [More about this tool](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX).*
 
-### **⭐ [Get Picture World Maker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get Picture World Maker from Google Drive](https://drive.google.com/drive/folders/1vGuqo2UeT30mktCEjz4ft_6tyG9YFyhs)**
 
 *Easiest, no download warning: open the Drive folder, open **Picture_World_Maker_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/USER_MANUAL.md)**
@@ -186,7 +186,7 @@ Turn a giant picture - a city panorama, a scanned map, a schematic, artwork - in
 
 *A London panorama photo flown in ArcGIS Earth. A photo has no real location, so Picture World Maker parks it on the ocean off Jacksonville with simulated coordinates - every spot gets a latitude and longitude, so you can zoom to full detail and put gates on it. [More about this tool](https://github.com/Jim-dc95811/Picture-World-Maker).*
 
-### **⭐ [Get EarthStick from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get EarthStick from Google Drive](https://drive.google.com/drive/folders/1_IGSErufpI1iP1Y45UxgRgzGM_H16y3c)**
 
 *Easiest, no download warning: open the Drive folder, open **EarthStick_v2.0**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/EarthStick_v2.0.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/USER_GUIDE.md)**
@@ -198,7 +198,7 @@ Fly the real map in ArcGIS Earth with a Thrustmaster TCA Sidestick. One double-c
 
 *Flying low over the St. Johns River with a beacon and sky compass on the horizon. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/EarthStick).*
 
-### **⭐ [Get World Gate Maker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get World Gate Maker from Google Drive](https://drive.google.com/drive/folders/1P7KPYwCUdTd1ddwWbmmK1XKuF_E4FzLi)**
 
 *Easiest, no download warning: open the Drive folder, open **World_Gate_Maker_v2.0**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/EarthStick/raw/main/releases/World_Gate_Maker_v2.0.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/EarthStick/blob/main/docs/WORLD_GATE_MAKER.md)**
@@ -210,7 +210,7 @@ Make your own World Gates: pick any two places and it builds the pair of golden 
 
 *Jacksonville to Seattle and back with World Gate Maker 1.1: the "jax" gate home, seen from the side in Seattle - the legs show the way in at a glance. [More about this tool](https://github.com/Jim-dc95811/EarthStick#make-your-own-gates).*
 
-### **⭐ [Get Object Factory from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get Object Factory from Google Drive](https://drive.google.com/drive/folders/1XzqD33tIUec2cFDzWe4EeX4LkPEpi56v)**
 
 *Easiest, no download warning: open the Drive folder, open **Object_Factory_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/raw/main/releases/ArcGIS_Earth_Object_Factory_v2.1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory/blob/main/docs/OBJECT_FACTORY_USER_MANUAL.md)**
@@ -222,7 +222,7 @@ Put beacons, sky compass letters, icons and clickable objects into ArcGIS Earth,
 
 *A Jacksonville beacon and an airborne fire-truck object. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory).*
 
-### **⭐ [Get PointLayer from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get PointLayer from Google Drive](https://drive.google.com/drive/folders/1EgnQTU6NO0wI3LTQ35cd_uTfOcgORYNu)**
 
 *Easiest, no download warning: open the Drive folder, open **PointLayer_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/Point-Maps/raw/main/releases/PointLayer_v2.1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/USER_GUIDE.md)**
@@ -234,7 +234,7 @@ Turn a public ArcGIS point layer, such as fire hydrants, into a clean offline KM
 
 *Nassau County hydrants around Callahan, Florida, with one hydrant's details open. ▶️ [Watch the video](https://www.youtube.com/watch?v=5Wn14qlC7n4) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Point-Maps).*
 
-### **⭐ [Get Parcel100 from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get Parcel100 from Google Drive](https://drive.google.com/drive/folders/1nBgK7dy7Ojn4sEb4wY27r4SeaZdqCKjf)**
 
 *Easiest, no download warning: open the Drive folder, open **Parcel100_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/Parcel100/raw/main/downloads/Parcel100_v2.1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/Parcel100/blob/main/USER_MANUAL.md)**
@@ -246,7 +246,7 @@ Build up to 100 offline parcel files for one Master 4 box. Click a parcel to see
 
 *A St. Johns County parcel with its owner, address and acres. ▶️ [Watch the video](https://www.youtube.com/watch?v=_hMB_TOODOQ) (YouTube). [More about this tool](https://github.com/Jim-dc95811/Parcel100).*
 
-### **⭐ [Get PRAVE / ME Tracker from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)**
+### **⭐ [Get PRAVE / ME Tracker from Google Drive](https://drive.google.com/drive/folders/1Ffq0BjsU9AIZZCgz7ixhIdHVH1jUS7NY)**
 
 *Easiest, no download warning: open the Drive folder, open **PRAVE_ME_Tracker_v2.1**, and run its one `.bat`. Prefer GitHub? Developers can grab the [direct zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/PRAVE_ME_Tracker_v1.zip) - a direct download can trip a Windows antivirus false alarm, which Drive avoids.*
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/PRAVE_ME_TRACKER.md)**

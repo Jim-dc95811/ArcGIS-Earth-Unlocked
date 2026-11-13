@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.12).
+"""P25 GPS Tracker - core engine (Claude + Jim, 2026-11-12, v0.13).
 
 v0.9: no engine change - the overlay badge anchors to the screen corner (v0.8's title match
 never matched: ArcGIS Earth titles its window after the open workspace, e.g. 'Legacy Workspace').
@@ -7,6 +7,9 @@ tripped a Defender machine-learning false positive).
 v0.7: no engine change - the package gains an on-screen overlay badge (overlay.py, GUI only).
 v0.6: the two status lights (radio / ArcGIS Earth) are larger and run even before Start
 tracking - radio_reachable() and earth_reachable() are read-only 'start ready' probes.
+v0.13: optional own-position source - reads a Garmin USB GPS (garmin_usb.py, if attached) in
+its own thread and draws a blue "My position" marker; independent of the radio (either can fail
+and the other keeps going). A "Keep me centered" option re-centres the map on your own fixes.
 v0.5: markers are firetrucks (red live / amber aging); the view no longer snaps to the first
 unit; and the trucks shrink as you zoom out and hide above 200000 ft so wide views stay clean.
 v0.4: the retirement time (how long an idle unit stays on the map) is chosen in
@@ -28,6 +31,10 @@ This module is the engine; the GUI drives run_bridge() in a worker thread.
 import re, csv, json, time, math, socket, datetime
 from pathlib import Path
 from urllib import request, error
+try:
+    import garmin_usb                      # own-position source (optional; Windows only)
+except Exception:
+    garmin_usb = None
 
 # ============================ CONFIG ============================
 RADIO_IP            = "10.250.46.6"
@@ -59,6 +66,12 @@ _HERE        = Path(__file__).resolve().parent
 MARKER_ICON  = _HERE / "marker.png"          # fresh (orange)
 MARKER_STALE = _HERE / "marker_stale.png"    # aging (amber)
 LOG_DIR      = _HERE.parent / "Logs"
+
+# ---- own position from a Garmin USB GPS (optional second source) ----
+GARMIN_DRAW_ID   = "AE_P25_ME_GARMIN"
+GARMIN_MARKER    = _HERE / "marker_me.png"   # blue "you are here"
+GARMIN_LABEL     = "My position"
+GARMIN_MARKER_PX = 36
 
 
 # ---------------- NMEA / frame parsing (frame-agnostic) ----------------
@@ -458,3 +471,71 @@ def run_bridge(tracker, stop_event, emit, redraw_q=None):
         emit("status", f"reconnecting in {RECONNECT_SECONDS}s (markers stay) ...")
         stop_event.wait(RECONNECT_SECONDS)
     emit("status", "stopped")
+
+
+# ---------- own-position source: Garmin USB GPS (independent of the radio) ----------
+def _draw_me(earth, lat, lon):
+    earth.delete_drawing(GARMIN_DRAW_ID, ignore_missing=True)
+    p = {"id": GARMIN_DRAW_ID, "visible": True, "title": GARMIN_LABEL,
+         "geometry": {"x": lon, "y": lat, "spatialReference": {"wkid": 4326}},
+         "labelSymbol": {"type": "text", "color": LABEL_COLOR, "size": LABEL_SIZE}}
+    if GARMIN_MARKER.is_file():
+        p["symbol"] = {"type": "picture-marker", "url": str(GARMIN_MARKER), "size": f"{GARMIN_MARKER_PX}px"}
+    earth.post_drawing(p)
+
+
+def _recenter_me(earth, lat, lon):
+    try:
+        cam = earth.get_camera()
+        z = cam.get("position", {}).get("z", 2000) if isinstance(cam, dict) else 2000
+    except Exception:
+        z = 2000
+    earth.put_camera({"position": {"x": lon, "y": lat, "z": z, "spatialReference": {"wkid": 4326}},
+                      "heading": 0, "tilt": 0})
+
+
+def run_garmin(state, stop_event, emit):
+    """Read the Garmin USB GPS (if one is attached) and draw 'My position'. Runs in its
+    own thread: a Garmin failure never stops the P25 radio side, and vice versa. If no
+    Garmin module/device is present it simply reports the GPS light off and idles."""
+    if garmin_usb is None:
+        emit("gps", False)
+        return
+    earth = EarthClient()
+    while not stop_event.is_set():
+        gps = garmin_usb.GarminUSB()
+        try:
+            emit("gps", False)
+            gps.open()
+            emit("gps", True)
+            gps.start_pvt()
+        except garmin_usb.GarminError as exc:
+            emit("gps", False)
+            emit("log", f"GPS: {exc}")
+            stop_event.wait(4.0)
+            continue
+        try:
+            while not stop_event.is_set():
+                fix = gps.read_fix()
+                if not fix:
+                    continue
+                if fix["fix"] >= 2:
+                    try:
+                        _draw_me(earth, fix["lat"], fix["lon"])
+                        if getattr(state, "center", False):
+                            _recenter_me(earth, fix["lat"], fix["lon"])
+                    except EarthUnreachable:
+                        pass
+                    except Exception:
+                        pass
+        except garmin_usb.GarminError:
+            emit("gps", False)
+            emit("log", "GPS: lost - reconnecting")
+        finally:
+            gps.stop_pvt()
+            gps.close()
+        stop_event.wait(3.0)
+    try:
+        EarthClient().delete_drawing(GARMIN_DRAW_ID, ignore_missing=True)
+    except Exception:
+        pass

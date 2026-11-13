@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.12).
+"""P25 GPS Tracker - control panel (Claude + Jim, 2026-11-12, v0.13).
 
 A single window that runs the live bridge (radio -> ArcGIS Earth), shows every unit
 the radio reports with a Live / Stale / Expired status, and lets you give each P25
@@ -8,6 +8,7 @@ Aliases are saved in aliases.json next to this file. Standard Python 3 with Tk o
 """
 import json, queue, threading, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -80,7 +81,9 @@ class App:
         self.events = queue.Queue()
         self.redraw_q = queue.Queue()
         self.stop_event = threading.Event()
-        self.worker = None
+        self.worker = None                      # radio bridge thread
+        self.gps_worker = None                  # Garmin own-position thread (independent)
+        self.gstate = SimpleNamespace(center=False)   # "Keep me centered" for the Garmin source
         self.idle_stop = threading.Event()      # the 'start ready' probe (runs while not tracking)
         self.idle_thread = None
         self.rows = {}
@@ -109,6 +112,7 @@ class App:
         while not self.idle_stop.is_set():
             self._emit("radio", core.radio_reachable())
             self._emit("earth", core.earth_reachable(self.earth))
+            self._emit("gps", bool(core.garmin_usb and core.garmin_usb.device_present()))
             self.idle_stop.wait(2.0)
 
     def _start_idle(self):
@@ -194,6 +198,7 @@ class App:
         # glance whether the radio and ArcGIS Earth are both ready to go.
         ind = ttk.Frame(self.root, padding=(12, 10, 12, 4)); ind.pack(fill="x")
         self.radio_dot = self._light(ind, "Radio connected")
+        self.gps_dot = self._light(ind, "GPS connected")
         self.earth_dot = self._light(ind, "ArcGIS Earth API ready", padx=(6, 0))
 
         top = ttk.Frame(self.root, padding=(10, 8)); top.pack(fill="x")
@@ -212,6 +217,11 @@ class App:
         self.retire_cb.pack(side="right")
         self.retire_cb.bind("<<ComboboxSelected>>", self._on_retire_change)
         ttk.Label(top, text="Drop idle units after:").pack(side="right", padx=(0, 5))
+
+        # Keep me centered (for the Garmin own-position source)
+        self.center_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(top, text="Keep me centered", variable=self.center_var,
+                        command=self._on_center).pack(side="right", padx=(0, 22))
 
         mid = ttk.Frame(self.root, padding=(10, 4)); mid.pack(fill="both", expand=True)
         ttk.Label(mid, text="Units  (double-click a row to name it)").pack(anchor="w")
@@ -239,6 +249,9 @@ class App:
         self.logbox = tk.Text(lf, height=8, wrap="word", state="disabled",
                               font=("Consolas", 9), background="#111", foreground="#ddd")
         self.logbox.pack(fill="both", expand=True)
+
+    def _on_center(self):
+        self.gstate.center = bool(self.center_var.get())
 
     def _ensure_row(self, unit):
         if unit not in self.rows:
@@ -304,6 +317,12 @@ class App:
             args=(self.tracker, self.stop_event, self._emit, self.redraw_q),
             daemon=True)
         self.worker.start()
+        # independent own-position source: the Garmin GPS (its own thread, same stop_event)
+        self.gps_worker = threading.Thread(
+            target=core.run_garmin,
+            args=(self.gstate, self.stop_event, self._emit),
+            daemon=True)
+        self.gps_worker.start()
         self.start_btn.configure(state="disabled")
         self.stop_btn.configure(state="normal")
 
@@ -355,6 +374,10 @@ class App:
             self._set_light(self.radio_dot, bool(args[0]))
             if self.badge:
                 self.badge.set_radio(bool(args[0]))
+        elif kind == "gps":
+            self._set_light(self.gps_dot, bool(args[0]))
+            if self.badge:
+                self.badge.set_gps(bool(args[0]))
         elif kind == "earth":
             self._set_light(self.earth_dot, bool(args[0]))
         elif kind == "log":

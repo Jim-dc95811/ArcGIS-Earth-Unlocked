@@ -1,4 +1,4 @@
-"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.12).
+"""P25 GPS Tracker - on-screen overlay (Claude + Jim, 2026-11-12, v0.13).
 
 A small click-through badge pinned to the bottom-right of the screen, above the Esri
 logo of a full-screen ArcGIS Earth. It is on screen the whole time the tracker is
@@ -32,7 +32,7 @@ KEY        = "#010203"          # transparent-colour key (nothing else uses this
 # raise TOP_FRACTION to move the badge down, lower it to move up.
 RIGHT_GAP   = 44               # px in from the right edge of the screen work area
 TOP_FRACTION = 0.22            # badge top sits this far down from the top (0 = top, 0.5 = middle)
-BADGE_W, BADGE_H = 190, 58     # half the v0.10 size, out of the control area
+BADGE_W, BADGE_H = 190, 80     # pill + two alarm boxes (GPS over RADIO), out of the control area
 
 
 class StatusOverlay:
@@ -46,6 +46,7 @@ class StatusOverlay:
         self.win = self.canvas = self.img = None
         self.ok = False
         self.radio_ok = True
+        self.gps_ok = True
         self.tracking = False
         self._blink = False
         try:
@@ -77,6 +78,9 @@ class StatusOverlay:
     # ---- state the app feeds in ----
     def set_radio(self, ok):
         self.radio_ok = bool(ok)
+
+    def set_gps(self, ok):
+        self.gps_ok = bool(ok)
 
     def set_tracking(self, on):
         self.tracking = bool(on)
@@ -110,13 +114,16 @@ class StatusOverlay:
         c.create_text(bx0 + 28, cy, anchor="w", text="P25 TRACKER",
                       font=("Segoe UI", 9, "bold"), fill="#e8f0f8")
 
-        # alarm line (above the pill), hidden until an alarm
-        ax0, ay0, ax1, ay1 = 4, 3, BADGE_W - 4, by0 - 5
-        self.alarm_bg = c.create_rectangle(ax0, ay0, ax1, ay1, fill="#5a0000",
-                                           outline="#ff3b3b", width=2, state="hidden")
-        self.alarm_txt = c.create_text((ax0 + ax1) // 2, (ay0 + ay1) // 2,
-                                       text="⚠ RADIO DISCONNECTED",
-                                       font=("Segoe UI", 9, "bold"), fill="#ffffff", state="hidden")
+        # two alarm boxes above the pill, each hidden until its source drops.
+        # RADIO DISCONNECTED directly above the pill; GPS DISCONNECTED above that.
+        def alarm_box(y0, y1, text):
+            bg = c.create_rectangle(4, y0, BADGE_W - 4, y1, fill="#5a0000",
+                                    outline="#ff3b3b", width=2, state="hidden")
+            tx = c.create_text(BADGE_W // 2, (y0 + y1) // 2, text=text,
+                               font=("Segoe UI", 9, "bold"), fill="#ffffff", state="hidden")
+            return bg, tx
+        self.radio_bg, self.radio_txt = alarm_box(by0 - 24, by0 - 4, "⚠ RADIO DISCONNECTED")
+        self.gps_bg, self.gps_txt = alarm_box(by0 - 48, by0 - 28, "⚠ GPS DISCONNECTED")
         w.update_idletasks()
         self._click_through(w)
         w.withdraw()
@@ -153,12 +160,16 @@ class StatusOverlay:
         self.root.after(1000, self._track)
 
     def _blinker(self):
-        show = self.tracking and not self.radio_ok
-        self._blink = (not self._blink) if show else False
+        show_radio = self.tracking and not self.radio_ok
+        show_gps = self.tracking and not self.gps_ok
+        self._blink = (not self._blink) if (show_radio or show_gps) else False
         try:
-            st = "normal" if (show and self._blink) else "hidden"
-            self.canvas.itemconfigure(self.alarm_bg, state=st)
-            self.canvas.itemconfigure(self.alarm_txt, state=st)
+            r = "normal" if (show_radio and self._blink) else "hidden"
+            g = "normal" if (show_gps and self._blink) else "hidden"
+            self.canvas.itemconfigure(self.radio_bg, state=r)
+            self.canvas.itemconfigure(self.radio_txt, state=r)
+            self.canvas.itemconfigure(self.gps_bg, state=g)
+            self.canvas.itemconfigure(self.gps_txt, state=g)
         except Exception:
             pass
         self.root.after(600, self._blinker)

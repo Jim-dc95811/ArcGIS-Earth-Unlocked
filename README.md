@@ -42,7 +42,7 @@ The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25
 
 *How a P25 radio's GPS reaches the map. ▶️ [Watch it work - BK Radio P25 GPS Map Plotter](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube).*
 
-**⬇️ [Download P25 GPS Tracker v0.12](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.12.zip)** · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
+**⬇️ [Download P25 GPS Tracker v0.13](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.13.zip)** · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 
@@ -113,7 +113,7 @@ Every tool is free. Click **⬇️ Download** to get the zip, and **📖 User ma
 > 2. **Windows security warning:** Windows may warn about any program downloaded from the internet. Click **More info > Run anyway** (blue "Windows protected your PC" screen) or **Run**. To avoid the warning, right-click the zip > **Properties** > tick **Unblock** > **OK** before extracting.
 > 3. **Installing Python:** if the installer shows **"Add python.exe to PATH"**, tick it.
 
-### **⬇️ [DOWNLOAD P25 GPS TRACKER v0.12](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.12.zip)**
+### **⬇️ [DOWNLOAD P25 GPS TRACKER v0.13](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/P25_GPS_Tracker_v0.13.zip)**
 **📖 [User manual](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)**
 
 Live GPS from BK P25 radios, plotted as named units on your offline ArcGIS Earth maps. Reads the radio only - no cloud, no dongle.

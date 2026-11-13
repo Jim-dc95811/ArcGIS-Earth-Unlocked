@@ -12,7 +12,7 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and you get one folder per tool, each with its one `.bat` to double-click. Each `.bat` gets the PC ready first - it installs Python for you if it is missing (answer **Y**, no admin needed). The ArcGIS Pro Batch Factory add-in is not in it (it needs ArcGIS Pro) - get it from its own link under Download the tools.
 
-[![The 11 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 PRAVE / RMC Tester - bench test without a radio; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures; 11 Garmin USB GPS Tracker - your own GPS live on the map](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
+[![The 11 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 P25 GPS Tracker - P25 radio GPS live on the map; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures; 11 Garmin USB GPS Tracker - your own GPS live on the map](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
 
 *The 11 tools in action - all 11 are in the zip above. Each one's own download, manual and video are on its project page.*
 
@@ -21,7 +21,7 @@ Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and yo
 Each page has its own downloads, user manuals, pictures and videos:
 
 - **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter, Master 4 Grid Maker and the TPKX Batch Factory
-- **[ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)** - the new **P25 GPS Tracker** and PRAVE / ME Tracker
+- **[ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)** - the new **P25 GPS Tracker**, **Garmin USB GPS Tracker** and PRAVE / ME Tracker
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data

@@ -46,7 +46,7 @@ The original Holy Grail, achieved: pull GPS straight out of your agency's BK P25
 
 *How a P25 radio's GPS reaches the map. ▶️ [Watch it work - BK Radio P25 GPS Map Plotter](https://www.youtube.com/watch?v=AapMfnJY7z0) (YouTube).*
 
-**⭐ [Get P25 GPS Tracker — Google Drive](https://drive.google.com/drive/folders/1xNnCdhlnejT-6J3XOPTHB_LWHxO2WaBh)** (hardware tool - Drive only) · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
+**⭐ [Get P25 GPS Tracker — Google Drive](https://drive.google.com/drive/folders/1xNnCdhlnejT-6J3XOPTHB_LWHxO2WaBh)** (hardware tool - Drive only) · **▶️ [Watch the demo](https://www.youtube.com/watch?v=AapMfnJY7z0)** · **[System setup](https://www.youtube.com/watch?v=RekHyZVvB6c)** · **[60-sec Short](https://www.youtube.com/shorts/X2DJc22vsnw)** · **📖 [Operator guide](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/blob/main/docs/P25_GPS_TRACKER.md)** · live-tested on real radios (two portables through a base M150 relay, two named units, pinpoint).
 
 ## 🆕 New: World Gates - fly city to city through wormholes
 

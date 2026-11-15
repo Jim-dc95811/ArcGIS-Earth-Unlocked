@@ -38,7 +38,7 @@ Update this file whenever something durable changes: a release, an accepted test
 
 **Precedence (when two sources disagree):** the **live repo** (actual files, `git show`) wins over any prose; **this CLAUDE.md** wins over the per-repo continuity files; the per-repo files win on repo-local detail this file doesn't carry. Many per-repo `CONTINUITY.md` / `MAPWORLD.md` files were written earlier by ChatGPT for ChatGPT - still valuable, but treat them as dated snapshots where they disagree with this file or the live code.
 
-**The family = 8 public repos** (owner `Jim-dc95811`; clone root this session = `/home/claude/repos/<Repo>`). Read each repo's continuity file(s) when your task touches it:
+**The family = 9 public repos** (owner `Jim-dc95811`; clone root this session = `/home/claude/repos/<Repo>`). Read each repo's continuity file(s) when your task touches it:
 
 | # | Repo | Role (one line) | Continuity file(s) to read |
 |---|---|---|---|
@@ -50,6 +50,7 @@ Update this file whenever something durable changes: a release, an accepted test
 | 6 | **Point-Maps** | PointLayer: public ArcGIS point service -> offline KMZ/GeoJSON | [`CONTINUITY.md`](https://github.com/Jim-dc95811/Point-Maps/blob/main/CONTINUITY.md) · [`docs/TECHNICAL_NOTES.md`](https://github.com/Jim-dc95811/Point-Maps/blob/main/docs/TECHNICAL_NOTES.md) |
 | 7 | **Parcel100** | Master 4 box -> up to 100 parcel GeoJSON cells | [`CONTINUITY.md`](https://github.com/Jim-dc95811/Parcel100/blob/main/CONTINUITY.md) · [`TECHNICAL.md`](https://github.com/Jim-dc95811/Parcel100/blob/main/TECHNICAL.md) |
 | 8 | **Picture-World-Maker** (was `Rasta-Pyramid-Factory`) | Giant pictures -> MBTiles/TPKX picture worlds | [`docs/AI_CONTINUITY_RESTART_NOTE.md`](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/AI_CONTINUITY_RESTART_NOTE.md) · [`docs/TECHNICAL_ARCHITECTURE.md`](https://github.com/Jim-dc95811/Picture-World-Maker/blob/main/docs/TECHNICAL_ARCHITECTURE.md) |
+| 9 | **The-Lookout** (new 2026-11-14) | The Pi Bridge: Raspberry Pi GPS coordinate server — reads a telemetry radio, re-serves live positions to the whole LAN (`:10110` NMEA/TCP + `:8080` KML pull). The first realization of the pinned Pi-Bridge objective. | [`README.md`](https://github.com/Jim-dc95811/The-Lookout/blob/main/README.md) · [`docs/SETUP.md`](https://github.com/Jim-dc95811/The-Lookout/blob/main/docs/SETUP.md) (live state: this file's header) |
 
 Section 3 below has the same list with current versions and more detail; this table is the quick index so a resuming Claude reads the right continuity files and misses none.
 

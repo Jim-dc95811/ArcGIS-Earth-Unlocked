@@ -1,4 +1,4 @@
-**⭐ EASIEST WAY — [Get all 11 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB; open a tool's folder and run its one `.bat`.
+**⭐ EASIEST WAY — [Get all 12 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB; open a tool's folder and run its one `.bat`.
 
 # ArcGIS Earth Unlocked
 
@@ -26,7 +26,7 @@ Proven on a **GL-MT6000**: 46 GB of Z20 imagery served flawlessly — faster tha
 
 ---
 
-**⭐ EASIEST WAY — [Get all 11 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB. Open the folder, open the tool you want, and run its one `.bat`.
+**⭐ EASIEST WAY — [Get all 12 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB. Open the folder, open the tool you want, and run its one `.bat`.
 
 *Prefer GitHub, or want the source? Developers can grab the [direct zip of all 11 tools](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip). Note: a direct download can trip an over-eager Windows antivirus false alarm - the Google Drive folder above avoids it.*
 
@@ -34,7 +34,7 @@ Every tool, at its latest version, in one zip (about 0.4 MB): Extract All and yo
 
 [![The 12 tools in action: 1 MBTiles converter - QGIS maps offline in ArcGIS Earth; 2 Master 4 Grid Maker - 100 numbered map cells; 3 PRAVE / ME Tracker - radio units live on the map; 4 P25 GPS Tracker - P25 radio GPS live on the map; 5 EarthStick - fly the world with a joystick; 6 World Gate Maker - your own gates, city to city; 7 Object Factory - beacons and objects in the sky; 8 PointLayer - hydrants and public points offline; 9 Parcel100 - click a parcel for owner and address; 10 Picture World Maker - fly into giant pictures; 11 Garmin USB GPS Tracker - your own GPS live on the map; 12 Lookout Manager - one-click router setup](images/ten_tools_montage.jpg)](images/ten_tools_montage.jpg)
 
-*The 12 tools in action. The first 11 are in the one-click zip above; **Lookout Manager** (12) sets up The Lookout router — get it from [The Lookout](https://github.com/Jim-dc95811/The-Lookout). Each tool's own download, manual and video are on its project page.*
+*The 12 tools in action — all 12 are in the Google Drive folder above. (The direct GitHub zip holds the 11 self-contained map tools; **Lookout Manager** (12) sets up The Lookout router.) Each tool's own download, manual and video are on its project page.*
 
 ## The project pages
 

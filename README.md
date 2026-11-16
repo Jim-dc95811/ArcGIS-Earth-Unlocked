@@ -12,6 +12,8 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## 🛰️ The Lookout — a $170 router becomes a live map server
 
+[![The Lookout — the hardware: a BK radio, a GPS, and an SSD on a USB hub into a Wi-Fi router, serving the live map to any screen](images/the_lookout_hardware.png)](https://github.com/Jim-dc95811/The-Lookout)
+
 [![The Lookout, live: Z20 aerial — streets, homes, and cars at the intersection — served offline in a browser off a travel router](images/the_lookout_hero.jpg)](https://github.com/Jim-dc95811/The-Lookout)
 
 *Real screenshots, live off a $170 router: Z20 aerial in a plain browser — a neighborhood street-by-street up top, cars at the US‑17 intersection below. No app, no cloud. Imagery © Google.*

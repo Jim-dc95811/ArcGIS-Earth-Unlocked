@@ -24,7 +24,7 @@ Each page has its own downloads, user manuals, pictures and videos:
 
 - **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter, Master 4 Grid Maker and the TPKX Batch Factory
 - **[ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)** - the new **P25 GPS Tracker**, **Garmin USB GPS Tracker** and PRAVE / ME Tracker
-- **[The Lookout](https://github.com/Jim-dc95811/The-Lookout)** - one box (a Pi or a travel router) reads the radio and serves live units to **any browser**, phone or ArcGIS Earth - offline, nothing installed on the viewer
+- **[The Lookout](https://github.com/Jim-dc95811/The-Lookout)** - a travel router reads the radio and serves live units to **any browser**, phone or ArcGIS Earth - offline, nothing installed on the viewer
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data

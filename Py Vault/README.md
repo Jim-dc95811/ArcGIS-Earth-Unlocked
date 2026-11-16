@@ -31,5 +31,6 @@ To run a tool, download its zip from its project page - the zip has the one-clic
 | Picture World Maker | 2.1 | [START PICTURE WORLD MAKER.pyw](Picture%20World%20Maker%20v2.1/START%20PICTURE%20WORLD%20MAKER.pyw) | `d25a8c7654a8bab6...` | [Picture_World_Maker_v2.1.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) |
 | Garmin USB GPS Tracker | 0.1 | [garmin_core.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_core.py) | `91925d3da1c90618...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
 | Garmin USB GPS Tracker | 0.1 | [garmin_tracker_app.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_tracker_app.py) | `404087fa47c3044e...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
+| Lookout Manager | 2.0 | [lookout_manager.py](Lookout%20Manager%20v2.0/lookout_manager.py) | `3c07727925fbbca4...` | [Lookout_Manager_v2.0.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.0.zip) |
 
-24 scripts. Rebuilt by `tools/make_py_vault.py`.
+25 scripts. Rebuilt by `tools/make_py_vault.py`.

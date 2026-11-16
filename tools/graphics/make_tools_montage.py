@@ -31,6 +31,7 @@ TOOLS = [  # (name, one line, picture, focus (x, y) 0-1 for the crop)
     ("PARCEL100", "click a parcel: owner and address", "parcel100.jpg", (0.5, 0.5)),
     ("PICTURE WORLD MAKER", "fly into giant pictures", "picture_world_maker.jpg", (0.5, 0.5)),
     ("GARMIN USB GPS TRACKER", "your own GPS live on the map", "garmin_gps_tracker.jpg", (0.5, 0.42)),
+    ("LOOKOUT MANAGER", "one-click router setup", "lookout_manager.jpg", (0.5, 0.5)),
 ]
 
 W, COLS, PAD, GAP = 2000, 4, 24, 16

@@ -8,6 +8,22 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 > 🤖 **Using AI assistance?** Have the agent read the [CLAUDE.md](CLAUDE.md) file first.
 
+---
+
+## 🛰️ The Lookout — a $170 router becomes a live map server
+
+[![The Lookout — a travel router serves offline maps to any browser, phone or ArcGIS Earth, with live radio units on top](images/the_lookout_hero.png)](https://github.com/Jim-dc95811/The-Lookout)
+
+Take a cheap "gaming" travel router and turn it into something that shouldn't be possible: an **offline map server** that streams your own imagery to **any browser, phone or ArcGIS Earth** — no app, no install, no cloud. On its own, that's a monster.
+
+**Now plug in a BK P25 radio.** It becomes a **live tracking plotter** — your field units moving on your own offline maps in real time. A **$10,000 marine chartplotter's** worth of situational awareness, running **over land**, off a **$170 router**.
+
+Proven on a **GL-MT6000**: 46 GB of Z20 imagery served flawlessly — faster than ArcGIS Earth at the one job that matters, with the live units riding on top.
+
+👉 **[Open The Lookout →](https://github.com/Jim-dc95811/The-Lookout)**
+
+---
+
 **⭐ EASIEST WAY — [Get all 11 tools from Google Drive](https://drive.google.com/drive/folders/1jsxVTDsYdgJHibhCCeI9I69FsG0qMGgc?usp=sharing)** — no download warnings, the whole series is under 10 MB. Open the folder, open the tool you want, and run its one `.bat`.
 
 *Prefer GitHub, or want the source? Developers can grab the [direct zip of all 11 tools](https://github.com/Jim-dc95811/ArcGIS-Earth-Unlocked/raw/main/downloads/ArcGIS_Earth_Unlocked_All_Tools.zip). Note: a direct download can trip an over-eager Windows antivirus false alarm - the Google Drive folder above avoids it.*

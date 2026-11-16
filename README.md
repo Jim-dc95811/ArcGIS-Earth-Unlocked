@@ -12,7 +12,9 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## 🛰️ The Lookout — a $170 router becomes a live map server
 
-[![The Lookout — a travel router serves offline maps to any browser, phone or ArcGIS Earth, with live radio units on top](images/the_lookout_hero.png)](https://github.com/Jim-dc95811/The-Lookout)
+[![The Lookout, live: Z20 aerial — streets, homes, and cars at the intersection — served offline in a browser off a travel router](images/the_lookout_hero.jpg)](https://github.com/Jim-dc95811/The-Lookout)
+
+*Real screenshots, live off a $170 router: Z20 aerial in a plain browser — a neighborhood street-by-street up top, cars at the US‑17 intersection below. No app, no cloud. Imagery © Google.*
 
 Take a cheap "gaming" travel router and turn it into something that shouldn't be possible: an **offline map server** that streams your own imagery to **any browser, phone or ArcGIS Earth** — no app, no install, no cloud. On its own, that's a monster.
 

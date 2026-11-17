@@ -32,6 +32,7 @@ TOOLS = [  # (name, one line, picture, focus (x, y) 0-1 for the crop)
     ("PICTURE WORLD MAKER", "fly into giant pictures", "picture_world_maker.jpg", (0.5, 0.5)),
     ("GARMIN USB GPS TRACKER", "your own GPS live on the map", "garmin_gps_tracker.jpg", (0.5, 0.42)),
     ("LOOKOUT MANAGER", "one-click router setup", "lookout_manager.jpg", (0.5, 0.5)),
+    ("LOOKOUT QR MAKER", "scan a sticker, open the map", "lookout_qr_card.jpg", (0.5, 0.5)),
 ]
 
 W, COLS, PAD, GAP = 2000, 4, 24, 16
@@ -88,9 +89,12 @@ def main():
     tester_lines = tester_console(sys.argv[1]) if (any(t[2] is None for t in TOOLS) and len(sys.argv) > 1) else []
     out = Image.new("RGB", (W, H), NAVY)
     d = ImageDraw.Draw(out)
+    def row_x0(r):                                   # center a ragged final row
+        n = min(COLS, len(TOOLS) - r * COLS)
+        return (W - n * TW - (n - 1) * GAP) // 2
     for i, (name, line, pic, focus) in enumerate(TOOLS):
         r, c = divmod(i, COLS)
-        x, y = PAD + c * (TW + GAP), PAD + r * (PH + CH + GAP)
+        x, y = row_x0(r) + c * (TW + GAP), PAD + r * (PH + CH + GAP)
         tile = console_tile(tester_lines, TW, PH) if pic is None else crop(Image.open(IMG / pic).convert("RGB"), TW, PH, focus)
         out.paste(tile, (x, y))
         d.rectangle([x, y + PH, x + TW - 1, y + PH + 5], fill=GOLD)

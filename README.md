@@ -12,7 +12,7 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## 🛰️ The Lookout — a $170 router becomes a live map server
 
-[![The Lookout — the hardware: a BK radio, a GPS, and an SSD on a USB hub into a Wi-Fi router, serving the live map to any screen](images/the_lookout_hardware.png)](https://github.com/Jim-dc95811/The-Lookout)
+[![The Lookout — the hardware: a BK radio, a GPS, an SSD and a USB sound card on a hub into a Wi-Fi router, serving the live map and live radio audio to any screen](images/the_lookout_hardware.png)](https://github.com/Jim-dc95811/The-Lookout)
 
 [![The Lookout, live: Z20 aerial — streets, homes, and cars at the intersection — served offline in a browser off a travel router](images/the_lookout_hero.jpg)](https://github.com/Jim-dc95811/The-Lookout)
 
@@ -21,6 +21,8 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 Take a cheap "gaming" travel router and turn it into something that shouldn't be possible: an **offline map server** that streams your own imagery to **any browser, phone or ArcGIS Earth** — no app, no install, no cloud. On its own, that's a monster.
 
 **Now plug in a BK P25 radio.** It becomes a **live tracking plotter** — your field units moving on your own offline maps in real time. A **$10,000 marine chartplotter's** worth of situational awareness, running **over land**, off a **$170 router**.
+
+**And now it hears, too.** Add a USB sound card and the browser map grows a **🔊 Listen** button — the crew hears the radio net while watching the units move, still with nothing installed.
 
 Proven on a **GL-MT6000**: 46 GB of Z20 imagery served flawlessly — faster than ArcGIS Earth at the one job that matters, with the live units riding on top.
 

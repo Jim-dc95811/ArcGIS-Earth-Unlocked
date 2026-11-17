@@ -10,23 +10,11 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ---
 
-## 🛰️ The Lookout — a $170 router becomes a live map server
+## 🛰️ The Lookout — now its own project
 
-[![The Lookout — the hardware: a BK radio, a GPS, an SSD and a USB sound card on a hub into a Wi-Fi router, serving the live map and live radio audio to any screen](images/the_lookout_hardware.png)](https://github.com/Jim-dc95811/The-Lookout)
+**The Lookout** grew up and moved out. A pocket router that serves your maps and live radio units to **any browser, phone or ArcGIS Earth** — offline, nothing installed — it now has its own home:
 
-[![The Lookout, live: Z20 aerial — streets, homes, and cars at the intersection — served offline in a browser off a travel router](images/the_lookout_hero.jpg)](https://github.com/Jim-dc95811/The-Lookout)
-
-*Real screenshots, live off a $170 router: Z20 aerial in a plain browser — a neighborhood street-by-street up top, cars at the US‑17 intersection below. No app, no cloud. Imagery © Google.*
-
-Take a cheap "gaming" travel router and turn it into something that shouldn't be possible: an **offline map server** that streams your own imagery to **any browser, phone or ArcGIS Earth** — no app, no install, no cloud. On its own, that's a monster.
-
-**Now plug in a BK P25 radio.** It becomes a **live tracking plotter** — your field units moving on your own offline maps in real time. A **$10,000 marine chartplotter's** worth of situational awareness, running **over land**, off a **$170 router**.
-
-**And now it hears, too.** Add a USB sound card and the browser map grows a **🔊 Listen** button — the crew hears the radio net while watching the units move, still with nothing installed.
-
-Proven on a **GL-MT6000**: 46 GB of Z20 imagery served flawlessly — faster than ArcGIS Earth at the one job that matters, with the live units riding on top.
-
-👉 **[Open The Lookout →](https://github.com/Jim-dc95811/The-Lookout)**
+👉 **[The Lookout → jim-dc95811.github.io/The-Lookout](https://jim-dc95811.github.io/The-Lookout/)**
 
 ---
 
@@ -46,7 +34,7 @@ Each page has its own downloads, user manuals, pictures and videos:
 
 - **[MBTiles to TPKX - offline maps](https://github.com/Jim-dc95811/QGIS-Mbtile-to-ArcGIS-Earth-TPKX)** - MBTiles converter, Master 4 Grid Maker and the TPKX Batch Factory
 - **[ArcGIS Earth Map Plotting](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting)** - the new **P25 GPS Tracker**, **Garmin USB GPS Tracker** and PRAVE / ME Tracker
-- **[The Lookout](https://github.com/Jim-dc95811/The-Lookout)** - a travel router reads the radio and serves live units to **any browser**, phone or ArcGIS Earth - offline, nothing installed on the viewer
+- **[The Lookout](https://jim-dc95811.github.io/The-Lookout/)** *(its own site)* - a travel router serves live units and your maps to **any browser**, phone or ArcGIS Earth - offline, nothing installed
 - **[EarthStick](https://github.com/Jim-dc95811/EarthStick)** - fly ArcGIS Earth with a joystick
 - **[Object Factory](https://github.com/Jim-dc95811/ArcGIS-Earth-Object-Factory)** - beacons, sky compass and clickable objects
 - **[Point Maps / PointLayer](https://github.com/Jim-dc95811/Point-Maps)** - hydrants and other public point data

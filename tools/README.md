@@ -2,7 +2,7 @@
 
 Working tools Claude built while maintaining the ArcGIS Earth Unlocked project family. They are kept here so a new Claude session can reuse them instead of rebuilding them. They are maintenance aids, not part of any tool Jim distributes.
 
-All of them assume the seven repositories are cloned side by side under `/home/claude/repos/` (change the path argument if not).
+Most of them assume the family repositories are cloned side by side under `/home/claude/repos/` (change the path argument if not). The family is now **9 public repos** (8 projects + this umbrella; **The Lookout** was added 2026-11-15) — see [`../CLAUDE.md`](../CLAUDE.md) section 0 for the full list. The maintenance helpers below live here under `tools/`; the newer from-scratch building blocks from the Lookout work live in the `The-Lookout` repo and are indexed in their own section at the bottom.
 
 | Tool | What it does | Run |
 |---|---|---|
@@ -29,5 +29,19 @@ All of them assume the seven repositories are cloned side by side under `/home/c
 | `graphics/earthstick_getting_started.html` | Source of the 'Fly the real world in 7 steps' pictogram (own SVG icons, no logos). Edit the HTML, then render with Playwright at 1600x1000, deviceScaleFactor 2 -> EarthStick `images/earthstick_getting_started_full.png` (3200x2000) and a 1600x1000 copy. | open in Playwright, screenshot |
 | `graphics/earthstick_whats_in_the_folder.html` | Source of the EarthStick 'What's in the folder?' sheet (hand-made, 1600x1100). Render like the 7-steps picture -> EarthStick `images/earthstick_whats_in_the_folder(.png/_full.png)`. | open in Playwright, screenshot |
 | `graphics/make_zip_sheets.py` | 'What's in the zip' sheets for the other nine packages (Jim, 2026-11-04). Facts per card live in `SHEETS`; update the card list whenever a zip's contents change. Dashed green cards = what the tool makes, not in the zip. Copies live in each repo's images/assets folder as `<tool>_whats_in_the_zip(.png/_full.png)`, linked under every download heading, on the front page and in each manual (PDFs rebuilt). | `python3 make_zip_sheets.py OUTDIR [keys...]` |
+
+## The Lookout — reusable building blocks (2026-11-14 → 17)
+
+These live in the **`The-Lookout`** repo (a sibling family repo you clone on resume), not under `tools/`, but they are the from-scratch pieces most likely to be rebuilt by accident. Reuse them instead of re-deriving them.
+
+| Building block | Where (in `The-Lookout`) | What it is / the lesson so you don't repeat the work |
+|---|---|---|
+| **Pure-Python QR encoder** | `lookout_qr_maker/System Files/lookout_qr.py` | QR from scratch: byte mode, versions 1–4, single data block (no RS interleaving), level **M** stepping down to **L** for longer URLs. Pillow only draws; `cv2` (OpenCV) decode-verifies every build. **PyPI `qrcode` AND `segno` are BOTH blocked in this sandbox — do not chase them.** |
+| **Esri `.tpkx` tile reader (Compact Cache V2)** | `units_kml.py` | Serves the *same* `.tpkx` ArcGIS Earth opens, by direct file-seek into the bundle (no `sqlite3`, no conversion); also serves `.mbtiles`. Proven at 46 GB Z20 off an SSD. Writer side = `MBTiles_to_TPKX_v0_3_0.py` (Picture-World-Maker); `tpkx_compare.py` (above) checks output. |
+| **Stdlib WebSocket + browser audio** | `lookout_audio.py` + `map.html` | A hand-rolled WebSocket server (SHA1 accept, binary opcode 0x2 unmasked, 7/16/64-bit length framing, lock-free fan-out, per-client send timeout) streaming raw PCM, played by the browser's **Web Audio API** — zero dependencies, no codec. Full engineering record: `docs/AUDIO_BENCH.md`. |
+| **Garmin GPS over libusb in pure ctypes (Linux)** | `garmin_linux.py` | Garmin **D800 binary protocol** over `libusb-1.0` in ctypes on OpenWrt — **discover the USB endpoints from the device descriptor, do NOT hardcode them** (hardcoded `0x02` failed `rc=-1`). Windows twin: `garmin_usb.py` (Map-Plotting). Full protocol write-up: [`../CLAUDE.md`](../CLAUDE.md) §3c. |
+| **Offline slippy map in a plain browser** | `map.html` | Leaflet bundled (no CDN) over the router's own offline tiles, live units on top, a Maps menu, a Listen button — no install, no internet. The 2D heart of ArcGIS Earth in any browser. |
+| **GL-MT6000 / OpenWrt deploy rules** | `openwrt/`, `docs/`, CLAUDE.md header | procd init scripts (`START=95/96/97`, respawn). Hard-won: **end every deploy with `sync`** (overlay writes revert on a hard power-pull otherwise); **fetch by commit-SHA** (raw.githubusercontent branch URLs cache ~5 min and ignore `?v=`); **name each file explicitly in a nested-ssh `wget`** (the `$f` gremlin eats shell vars). `kmod-usb-audio` installs from **GL's own signed kmod feed**, no firmware rebuild. |
+| **Device-mockup compositing** | technique (PIL) | To drop a phone/screen onto a product diagram: crop the on-screen map region, build a rounded-rect body holding a portrait crop of it, add a soft blurred shadow, composite. Used for `the_lookout_hardware.png`. |
 
 Which PDF comes from which manual, the page layout standard, and the video for each tool are listed in [`../CLAUDE.md`](../CLAUDE.md) (section 2a).

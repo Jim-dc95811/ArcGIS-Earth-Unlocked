@@ -29,7 +29,7 @@ RELEASES = [
     ("Parcel100", "Parcel100", "downloads/Parcel100_v2.1.zip"),
     ("Picture World Maker", "Picture-World-Maker", "releases/Picture_World_Maker_v2.1.zip"),
     ("Garmin USB GPS Tracker", "ArcGIS-Earth-Map-Plotting", "downloads/Garmin_USB_GPS_Tracker_v0.1.zip"),
-    ("Lookout Manager", "The-Lookout", "Lookout_Manager_v2.0.zip"),
+    ("Lookout Manager", "The-Lookout", "Lookout_Manager_v2.4.zip"),
     ("Lookout QR Maker", "The-Lookout", "Lookout_QR_Maker_v1.1.zip"),
 ]
 

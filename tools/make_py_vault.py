@@ -31,6 +31,7 @@ RELEASES = [
     ("Garmin USB GPS Tracker", "ArcGIS-Earth-Map-Plotting", "downloads/Garmin_USB_GPS_Tracker_v0.1.zip"),
     ("Lookout Manager", "The-Lookout", "Lookout_Manager_v2.4.zip"),
     ("Lookout QR Maker", "The-Lookout", "Lookout_QR_Maker_v1.1.zip"),
+    ("Traveler Manager", "The-Lookout", "Traveler_Manager_v1.1.zip"),
 ]
 
 

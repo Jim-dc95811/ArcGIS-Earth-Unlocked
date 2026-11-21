@@ -31,8 +31,18 @@ To run a tool, download its zip from its project page - the zip has the one-clic
 | Picture World Maker | 2.1 | [START PICTURE WORLD MAKER.pyw](Picture%20World%20Maker%20v2.1/START%20PICTURE%20WORLD%20MAKER.pyw) | `d25a8c7654a8bab6...` | [Picture_World_Maker_v2.1.zip](https://github.com/Jim-dc95811/Picture-World-Maker/raw/main/releases/Picture_World_Maker_v2.1.zip) |
 | Garmin USB GPS Tracker | 0.1 | [garmin_core.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_core.py) | `91925d3da1c90618...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
 | Garmin USB GPS Tracker | 0.1 | [garmin_tracker_app.py](Garmin%20USB%20GPS%20Tracker%20v0.1/garmin_tracker_app.py) | `404087fa47c3044e...` | [Garmin_USB_GPS_Tracker_v0.1.zip](https://github.com/Jim-dc95811/ArcGIS-Earth-Map-Plotting/raw/main/downloads/Garmin_USB_GPS_Tracker_v0.1.zip) |
+| Lookout Manager | 2.4 | [bk_bridge.py](Lookout%20Manager%20v2.4/bk_bridge.py) | `2225161c5a38b4d9...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
+| Lookout Manager | 2.4 | [garmin_linux.py](Lookout%20Manager%20v2.4/garmin_linux.py) | `1c9a588cb97cfebd...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
+| Lookout Manager | 2.4 | [gps_source.py](Lookout%20Manager%20v2.4/gps_source.py) | `7300cec5c829680d...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
+| Lookout Manager | 2.4 | [lookout_audio.py](Lookout%20Manager%20v2.4/lookout_audio.py) | `92682a8069b715a9...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
+| Lookout Manager | 2.4 | [units_kml.py](Lookout%20Manager%20v2.4/units_kml.py) | `d221cbbc10a140fd...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
 | Lookout Manager | 2.4 | [lookout_manager.py](Lookout%20Manager%20v2.4/lookout_manager.py) | `6c864292391eef53...` | [Lookout_Manager_v2.4.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_Manager_v2.4.zip) |
 | Lookout QR Maker | 1.1 | [LOOKOUT_QR_SELF_TEST.py](Lookout%20QR%20Maker%20v1.1/LOOKOUT_QR_SELF_TEST.py) | `bd7b0c40d0aa5c7f...` | [Lookout_QR_Maker_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_QR_Maker_v1.1.zip) |
 | Lookout QR Maker | 1.1 | [lookout_qr.py](Lookout%20QR%20Maker%20v1.1/lookout_qr.py) | `ab532fd87a011013...` | [Lookout_QR_Maker_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Lookout_QR_Maker_v1.1.zip) |
+| Traveler Manager | 1.1 | [bk_bridge.py](Traveler%20Manager%20v1.1/bk_bridge.py) | `2225161c5a38b4d9...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
+| Traveler Manager | 1.1 | [garmin_linux.py](Traveler%20Manager%20v1.1/garmin_linux.py) | `1c9a588cb97cfebd...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
+| Traveler Manager | 1.1 | [gps_source.py](Traveler%20Manager%20v1.1/gps_source.py) | `7300cec5c829680d...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
+| Traveler Manager | 1.1 | [units_kml.py](Traveler%20Manager%20v1.1/units_kml.py) | `d221cbbc10a140fd...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
+| Traveler Manager | 1.1 | [traveler_manager.py](Traveler%20Manager%20v1.1/traveler_manager.py) | `79853a4716e52a85...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
 
-27 scripts. Rebuilt by `tools/make_py_vault.py`.
+37 scripts. Rebuilt by `tools/make_py_vault.py`.

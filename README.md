@@ -12,7 +12,7 @@ Free Windows tools for building offline maps, flying the map with a joystick, ad
 
 ## 🛰️ The Lookout — now its own project
 
-**The Lookout** grew up and moved out. A pocket router that serves your maps and live radio units to **any browser, phone or ArcGIS Earth** — offline, nothing installed — it now has its own home:
+**The Lookout** grew up and moved out. A pocket router that serves your maps and live radio units to **any browser, phone or ArcGIS Earth** — offline, nothing installed — it now has its own home. And it has a portable companion — **the Lookout Traveler**, a man-packable, battery-powered version you carry on foot for one person at one incident, with a locked split-screen map:
 
 👉 **[The Lookout → jim-dc95811.github.io/The-Lookout](https://jim-dc95811.github.io/The-Lookout/)**
 

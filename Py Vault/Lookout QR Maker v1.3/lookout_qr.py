@@ -7,7 +7,7 @@
 # types 192.168.8.1:8080 lands on nothing. A QR encodes http:// explicitly, so a
 # camera scan opens the Lookout map directly. Print the card, tape it to the box.
 
-VERSION = "1.1"   # 1.1: deep links up to 78 chars (v1-4, single block); URL line auto-fits the card
+VERSION = "1.3"   # 1.3: card shows the full http:// address (the typeable form that works). 1.2: encode exactly what you type (no forced :8080); "Just the QR" bare-code option
 
 # ---------- QR parameters (single data block only) ----------
 # Each entry: (version, modules/side, EC codewords, DATA codewords,
@@ -168,15 +168,25 @@ def encode_matrix(text):
 
 # ---------- address normalizing ----------
 def normalize(addr):
+    # Encode EXACTLY what the user types, adding only the invisible http:// scheme.
+    # No forced :8080 and no forced trailing slash - the shortest address you type is
+    # the shortest URL the QR carries. (The map's port is the user's to include:
+    # needed only while the map is on :8080, and gone after the port-flip to :80.)
+    # The http:// is what makes a *scan* deterministic - the camera opens it directly
+    # with no "search-vs-URL / force-https" guessing - so it stays, invisibly.
     s = (addr or "").strip()
-    if not s: raise ValueError("Enter the router address, for example  192.168.8.1")
-    if "://" not in s: s = "http://" + s
+    if not s:
+        raise ValueError("Enter the router address, for example  a.lan:8080  or  192.168.8.1:8080")
+    if "://" not in s:
+        s = "http://" + s
     scheme, rest = s.split("://", 1)
-    if "/" in rest: auth, path = rest.split("/", 1); path = "/" + path
-    else: auth, path = rest, "/"
-    if ":" not in auth: auth = auth + ":8080"       # the Lookout serves on :8080
-    if path == "": path = "/"
-    return scheme.lower() + "://" + auth + path
+    return scheme.lower() + "://" + rest
+
+def pretty(url):
+    # The human-readable form - what you'd type and hit enter (scheme + a bare
+    # trailing slash dropped). Shown on the card; never what the QR encodes.
+    import re
+    return re.sub(r"^https?://", "", url).rstrip("/") or url
 
 # ---------- card rendering ----------
 def _font(sz, bold=False):
@@ -190,7 +200,7 @@ def _font(sz, bold=False):
         except Exception: pass
     return ImageFont.load_default()
 
-def make_card(url, box_name=""):
+def make_card(url, box_name="", minimal=False):
     from PIL import Image, ImageDraw
     mod, ver = encode_matrix(url)
     S = len(mod); QZ = 4; SC = 16
@@ -202,15 +212,33 @@ def make_card(url, box_name=""):
                 px = (x+QZ)*SC; py = (y+QZ)*SC
                 dq.rectangle([px, py, px+SC-1, py+SC-1], fill="black")
 
+    # Show the FULL address incl. http:// - this line is a typing instruction, and
+    # the only form that works when typed is http://a.lan (bare a.lan gets
+    # https-upgraded / search-boxed). So the http:// belongs on the card.
+    show = url
+
+    # ----- bare mode: just the code (keeps its quiet zone) + the clean address -----
+    if minimal:
+        uf = _font(36, True)
+        meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+        uw = meas.textbbox((0, 0), show, font=uf)[2]
+        W = max(dim, uw + 40); H = dim + 64
+        img = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(img)
+        img.paste(qr, ((W-dim)//2, 0))
+        w = d.textbbox((0, 0), show, font=uf)[2]
+        d.text(((W-w)//2, dim + 14), show, font=uf, fill=(0, 0, 0))
+        return img, ver
+
+    # ----- full card -----
     title_f = _font(64, True); sub_f = _font(28); box_f = _font(30, True)
     title = "THE LOOKOUT"; sub = "Scan with your phone camera to open the live map"
-    # URL line shrinks to fit, and the card widens to hold it, so a long deep
+    # Address line shrinks to fit, and the card widens to hold it, so even a long
     # link is never clipped by the card edge.
     meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
     usz = 32; url_f = _font(usz, True)
-    while usz > 15 and meas.textbbox((0, 0), url, font=url_f)[2] > max(dim, 540):
+    while usz > 15 and meas.textbbox((0, 0), show, font=url_f)[2] > max(dim, 540):
         usz -= 1; url_f = _font(usz, True)
-    uw = meas.textbbox((0, 0), url, font=url_f)[2]
+    uw = meas.textbbox((0, 0), show, font=url_f)[2]
     W = max(dim + 140, uw + 96, 760)
     pad = 58; th = 86; gap = 26; uh = 50; sh = 44; bh = 70
     H = pad + th + gap + dim + gap + uh + 8 + sh + gap + bh + pad
@@ -221,7 +249,7 @@ def make_card(url, box_name=""):
     y = pad
     ctr(title, title_f, y, (11, 61, 110)); y += th + gap
     img.paste(qr, ((W-dim)//2, y)); y += dim + gap
-    ctr(url, url_f, y, (0, 0, 0)); y += uh + 8
+    ctr(show, url_f, y, (0, 0, 0)); y += uh + 8
     ctr(sub, sub_f, y, (90, 90, 90)); y += sh + gap
     label = ("Box:  " + box_name) if box_name.strip() else "Box:  ____________________"
     ctr(label, box_f, y, (60, 60, 60))
@@ -256,7 +284,7 @@ def main():
     from tkinter import messagebox
     root = tk.Tk(); root.title("Lookout QR Maker  v" + VERSION)
     root.configure(bg="white")
-    try: root.geometry("460x300")
+    try: root.geometry("460x360")
     except Exception: pass
     pad = {"padx": 16, "pady": 6}
     tk.Label(root, text="Lookout QR Maker", font=("Segoe UI", 18, "bold"),
@@ -267,9 +295,13 @@ def main():
     frm = tk.Frame(root, bg="white"); frm.pack(pady=10)
     tk.Label(frm, text="Router address:", font=("Segoe UI", 11), bg="white").grid(row=0, column=0, sticky="e")
     addr = tk.Entry(frm, font=("Segoe UI", 12), width=24); addr.grid(row=0, column=1, padx=8, pady=4)
-    addr.insert(0, "192.168.8.1")
+    addr.insert(0, "192.168.8.1:8080")
     tk.Label(frm, text="Box name (optional):", font=("Segoe UI", 11), bg="white").grid(row=1, column=0, sticky="e")
     name = tk.Entry(frm, font=("Segoe UI", 12), width=24); name.grid(row=1, column=1, padx=8, pady=4)
+
+    minimal_var = tk.IntVar(value=0)
+    tk.Checkbutton(root, text="Just the QR code (no card)", variable=minimal_var,
+                   bg="white", font=("Segoe UI", 10)).pack(pady=2)
 
     status = tk.Label(root, text="", font=("Segoe UI", 10), fg="#0b3d6e", bg="white", wraplength=420, justify="center")
     status.pack(pady=4)
@@ -277,8 +309,9 @@ def main():
     def go():
         try:
             url = normalize(addr.get())
-            img, ver = make_card(url, name.get())
-            out = os.path.join(desktop_dir(), "Lookout_QR_%s.png" % safe_slug(url))
+            img, ver = make_card(url, name.get(), minimal=bool(minimal_var.get()))
+            tag = "_bare" if minimal_var.get() else ""
+            out = os.path.join(desktop_dir(), "Lookout_QR_%s%s.png" % (safe_slug(url), tag))
             img.save(out, "PNG")
             status.config(text="Saved to your Desktop:\n%s\n(QR version %d)" % (os.path.basename(out), ver))
             try: os.startfile(out)

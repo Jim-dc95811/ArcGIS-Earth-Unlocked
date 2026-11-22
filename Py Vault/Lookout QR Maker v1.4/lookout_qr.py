@@ -1,5 +1,5 @@
 # Lookout QR Maker - makes a print-ready QR card for a router address.
-# Pure-Python QR encoder (byte mode, versions 1-3, error-correction level M,
+# Pure-Python QR encoder (byte mode, versions 1-4, error-correction level M,
 # single data block) + Pillow for the card. No external QR library, no internet.
 # The GUI needs only tkinter (ships with Python) and Pillow.
 #
@@ -7,7 +7,7 @@
 # types 192.168.8.1:8080 lands on nothing. A QR encodes http:// explicitly, so a
 # camera scan opens the Lookout map directly. Print the card, tape it to the box.
 
-VERSION = "1.3"   # 1.3: card shows the full http:// address (the typeable form that works). 1.2: encode exactly what you type (no forced :8080); "Just the QR" bare-code option
+VERSION = "1.4"   # 1.4: Wi-Fi-join QR (standard WIFI: payload) + a "Join + open" two-code card. 1.3: card shows the full http:// address. 1.2: encode exactly what you type; "Just the QR" bare-code option
 
 # ---------- QR parameters (single data block only) ----------
 # Each entry: (version, modules/side, EC codewords, DATA codewords,
@@ -169,24 +169,47 @@ def encode_matrix(text):
 # ---------- address normalizing ----------
 def normalize(addr):
     # Encode EXACTLY what the user types, adding only the invisible http:// scheme.
-    # No forced :8080 and no forced trailing slash - the shortest address you type is
-    # the shortest URL the QR carries. (The map's port is the user's to include:
-    # needed only while the map is on :8080, and gone after the port-flip to :80.)
-    # The http:// is what makes a *scan* deterministic - the camera opens it directly
-    # with no "search-vs-URL / force-https" guessing - so it stays, invisibly.
     s = (addr or "").strip()
     if not s:
-        raise ValueError("Enter the router address, for example  a.lan:8080  or  192.168.8.1:8080")
+        raise ValueError("Enter the router address, for example  192.168.8.1:8080")
     if "://" not in s:
         s = "http://" + s
     scheme, rest = s.split("://", 1)
     return scheme.lower() + "://" + rest
 
 def pretty(url):
-    # The human-readable form - what you'd type and hit enter (scheme + a bare
-    # trailing slash dropped). Shown on the card; never what the QR encodes.
     import re
     return re.sub(r"^https?://", "", url).rstrip("/") or url
+
+# ---------- Wi-Fi join payload (standard WIFI: QR) ----------
+def wifi_payload(ssid, password, open_net=False, hidden=False):
+    """Build the standard WIFI:T:...;S:...;P:...;; string a phone camera reads to join."""
+    def esc(s):
+        out = ""
+        for ch in s:
+            if ch in '\\;,:"':
+                out += "\\" + ch
+            else:
+                out += ch
+        return out
+    ssid = (ssid or "").strip()
+    if not ssid:
+        raise ValueError("Enter the Wi-Fi network name (SSID).")
+    # Match Android's own "Share Wi-Fi" field order exactly (S first, then T, P, H) —
+    # some phone parsers (e.g. Moto G) only join when the order matches theirs, even
+    # though the spec says order shouldn't matter. H is always present (true/false).
+    body = "S:%s;" % esc(ssid)
+    if open_net:
+        body += "T:nopass;"
+    else:
+        if not password:
+            raise ValueError("Enter the Wi-Fi password (or tick 'Open network').")
+        body += "T:WPA;P:%s;" % esc(password)
+    body += "H:true;" if hidden else "H:false;"
+    s = "WIFI:" + body + ";"
+    if len(s) > MAX_BYTES:
+        raise ValueError("Network name + password are too long for this encoder (%d of max %d characters)." % (len(s), MAX_BYTES))
+    return s
 
 # ---------- card rendering ----------
 def _font(sz, bold=False):
@@ -200,6 +223,20 @@ def _font(sz, bold=False):
         except Exception: pass
     return ImageFont.load_default()
 
+def _qr_img(text, SC=16, QZ=4):
+    """Render just the QR (with quiet zone) as a PIL image. Returns (img, version, dim)."""
+    from PIL import Image, ImageDraw
+    mod, ver = encode_matrix(text)
+    S = len(mod)
+    dim = (S + 2*QZ) * SC
+    im = Image.new("RGB", (dim, dim), "white"); d = ImageDraw.Draw(im)
+    for y in range(S):
+        for x in range(S):
+            if mod[y][x]:
+                px = (x+QZ)*SC; py = (y+QZ)*SC
+                d.rectangle([px, py, px+SC-1, py+SC-1], fill="black")
+    return im, ver, dim
+
 def make_card(url, box_name="", minimal=False):
     from PIL import Image, ImageDraw
     mod, ver = encode_matrix(url)
@@ -211,13 +248,7 @@ def make_card(url, box_name="", minimal=False):
             if mod[y][x]:
                 px = (x+QZ)*SC; py = (y+QZ)*SC
                 dq.rectangle([px, py, px+SC-1, py+SC-1], fill="black")
-
-    # Show the FULL address incl. http:// - this line is a typing instruction, and
-    # the only form that works when typed is http://a.lan (bare a.lan gets
-    # https-upgraded / search-boxed). So the http:// belongs on the card.
     show = url
-
-    # ----- bare mode: just the code (keeps its quiet zone) + the clean address -----
     if minimal:
         uf = _font(36, True)
         meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
@@ -228,12 +259,8 @@ def make_card(url, box_name="", minimal=False):
         w = d.textbbox((0, 0), show, font=uf)[2]
         d.text(((W-w)//2, dim + 14), show, font=uf, fill=(0, 0, 0))
         return img, ver
-
-    # ----- full card -----
     title_f = _font(64, True); sub_f = _font(28); box_f = _font(30, True)
     title = "THE LOOKOUT"; sub = "Scan with your phone camera to open the live map"
-    # Address line shrinks to fit, and the card widens to hold it, so even a long
-    # link is never clipped by the card edge.
     meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
     usz = 32; url_f = _font(usz, True)
     while usz > 15 and meas.textbbox((0, 0), show, font=url_f)[2] > max(dim, 540):
@@ -243,7 +270,7 @@ def make_card(url, box_name="", minimal=False):
     pad = 58; th = 86; gap = 26; uh = 50; sh = 44; bh = 70
     H = pad + th + gap + dim + gap + uh + 8 + sh + gap + bh + pad
     img = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(img)
-    d.rectangle([6, 6, W-7, H-7], outline=(11, 61, 110), width=3)   # cut border
+    d.rectangle([6, 6, W-7, H-7], outline=(11, 61, 110), width=3)
     def ctr(t, f, y, fill):
         w = d.textbbox((0,0), t, font=f)[2]; d.text(((W-w)//2, y), t, font=f, fill=fill)
     y = pad
@@ -255,13 +282,83 @@ def make_card(url, box_name="", minimal=False):
     ctr(label, box_f, y, (60, 60, 60))
     return img, ver
 
+def make_wifi_card(wifi_s, ssid, minimal=False):
+    """A single card whose QR joins the Wi-Fi."""
+    from PIL import Image, ImageDraw
+    qr, ver, dim = _qr_img(wifi_s, SC=16)
+    show = "Wi-Fi:  " + ssid
+    if minimal:
+        uf = _font(34, True)
+        meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+        uw = meas.textbbox((0, 0), show, font=uf)[2]
+        W = max(dim, uw + 40); H = dim + 60
+        img = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(img)
+        img.paste(qr, ((W-dim)//2, 0))
+        w = d.textbbox((0, 0), show, font=uf)[2]
+        d.text(((W-w)//2, dim + 12), show, font=uf, fill=(0, 0, 0))
+        return img, ver
+    title_f = _font(58, True); sub_f = _font(26); ssid_f = _font(30, True)
+    title = "JOIN THE WI-FI"; sub = "Scan with your phone camera to join"
+    meas = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    W = max(dim + 140, meas.textbbox((0, 0), title, font=title_f)[2] + 96, 760)
+    pad = 58; th = 80; gap = 26; uh = 48; sh = 42
+    H = pad + th + gap + dim + gap + uh + 8 + sh + pad
+    img = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(img)
+    d.rectangle([6, 6, W-7, H-7], outline=(46, 157, 107), width=3)
+    def ctr(t, f, y, fill):
+        w = d.textbbox((0,0), t, font=f)[2]; d.text(((W-w)//2, y), t, font=f, fill=fill)
+    y = pad
+    ctr(title, title_f, y, (46, 157, 107)); y += th + gap
+    img.paste(qr, ((W-dim)//2, y)); y += dim + gap
+    ctr(show, ssid_f, y, (0, 0, 0)); y += uh + 8
+    ctr(sub, sub_f, y, (90, 90, 90))
+    return img, ver
+
+def make_combo_card(wifi_s, map_url, ssid):
+    """One card, two codes: (1) join the Wi-Fi, (2) open the map."""
+    from PIL import Image, ImageDraw
+    q1, v1, d1 = _qr_img(wifi_s, SC=12)
+    q2, v2, d2 = _qr_img(map_url, SC=12)
+    qh = max(d1, d2)
+    title_f = _font(54, True); sub_f = _font(24); lab_f = _font(26, True); small_f = _font(20); badge_f = _font(26, True)
+    pad = 54; gap = 72
+    colw = max(d1, d2, 300)
+    W = pad + colw + gap + colw + pad
+    th = 68; sh = 38; labh = 96
+    H = pad + th + 8 + sh + 30 + qh + 18 + labh + pad
+    img = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(img)
+    d.rectangle([6, 6, W-7, H-7], outline=(11, 61, 110), width=3)
+    def ctr(t, f, y, fill, cx):
+        w = d.textbbox((0,0), t, font=f)[2]; d.text((cx - w//2, y), t, font=f, fill=fill)
+    y = pad
+    ctr("THE LOOKOUT", title_f, y, (11, 61, 110), W//2); y += th + 8
+    ctr("Scan both:  join the Wi-Fi, then open the map", sub_f, y, (90, 90, 90), W//2); y += sh + 30
+    c1x = pad + colw//2
+    c2x = pad + colw + gap + colw//2
+    qy = y
+    img.paste(q1, (c1x - d1//2, qy)); img.paste(q2, (c2x - d2//2, qy))
+    y = qy + qh + 18
+    def step(cx, n, label, sub, col):
+        r = 18
+        lw = d.textbbox((0,0), label, font=lab_f)[2]
+        total = r*2 + 10 + lw
+        x0 = cx - total//2
+        d.ellipse([x0, y, x0+2*r, y+2*r], fill=col)
+        nw = d.textbbox((0,0), str(n), font=badge_f)[2]
+        d.text((x0 + r - nw//2, y + r - 18), str(n), font=badge_f, fill=(255,255,255))
+        d.text((x0 + 2*r + 10, y + r - 16), label, font=lab_f, fill=col)
+        sw = d.textbbox((0,0), sub, font=small_f)[2]
+        d.text((cx - sw//2, y + 2*r + 8), sub, font=small_f, fill=(90,90,90))
+    step(c1x, 1, "JOIN WI-FI", ssid, (46, 157, 107))
+    step(c2x, 2, "OPEN THE MAP", pretty(map_url), (11, 61, 110))
+    return img, max(v1, v2)
+
 def desktop_dir():
     import os, ctypes
     from ctypes import wintypes
     try:
         buf = ctypes.c_wchar_p()
         FOLDERID_Desktop = ctypes.create_string_buffer(16)
-        # {B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
         import uuid
         g = uuid.UUID("B4BFCC3A-DB2C-424C-B029-7FE99A87C641").bytes_le
         ctypes.memmove(FOLDERID_Desktop, g, 16)
@@ -284,36 +381,68 @@ def main():
     from tkinter import messagebox
     root = tk.Tk(); root.title("Lookout QR Maker  v" + VERSION)
     root.configure(bg="white")
-    try: root.geometry("460x360")
+    try: root.geometry("480x500")
     except Exception: pass
-    pad = {"padx": 16, "pady": 6}
     tk.Label(root, text="Lookout QR Maker", font=("Segoe UI", 18, "bold"),
-             fg="#0b3d6e", bg="white").pack(**pad)
-    tk.Label(root, text="Makes a printable QR card that opens the map on a phone.",
-             font=("Segoe UI", 10), fg="#444", bg="white").pack(padx=16)
+             fg="#0b3d6e", bg="white").pack(pady=(14, 2))
+    tk.Label(root, text="Makes a printable QR card.", font=("Segoe UI", 10),
+             fg="#444", bg="white").pack()
 
-    frm = tk.Frame(root, bg="white"); frm.pack(pady=10)
-    tk.Label(frm, text="Router address:", font=("Segoe UI", 11), bg="white").grid(row=0, column=0, sticky="e")
-    addr = tk.Entry(frm, font=("Segoe UI", 12), width=24); addr.grid(row=0, column=1, padx=8, pady=4)
-    addr.insert(0, "192.168.8.1:8080")
-    tk.Label(frm, text="Box name (optional):", font=("Segoe UI", 11), bg="white").grid(row=1, column=0, sticky="e")
-    name = tk.Entry(frm, font=("Segoe UI", 12), width=24); name.grid(row=1, column=1, padx=8, pady=4)
+    mode = tk.StringVar(value="Open the map")
+    tk.Label(root, text="What should the card do?", font=("Segoe UI", 11, "bold"),
+             bg="white", fg="#0b3d6e").pack(pady=(12, 2))
+    tk.OptionMenu(root, mode, "Open the map", "Join the Wi-Fi", "Join + open (one card)").pack()
 
-    minimal_var = tk.IntVar(value=0)
-    tk.Checkbutton(root, text="Just the QR code (no card)", variable=minimal_var,
-                   bg="white", font=("Segoe UI", 10)).pack(pady=2)
+    body = tk.Frame(root, bg="white"); body.pack(pady=8, fill="x", padx=20)
+    openv = tk.IntVar(value=0); hidev = tk.IntVar(value=0); minv = tk.IntVar(value=0)
 
-    status = tk.Label(root, text="", font=("Segoe UI", 10), fg="#0b3d6e", bg="white", wraplength=420, justify="center")
+    def make_row(label):
+        f = tk.Frame(body, bg="white")
+        tk.Label(f, text=label, font=("Segoe UI", 11), bg="white", width=16, anchor="e").pack(side="left", padx=(0, 8))
+        e = tk.Entry(f, font=("Segoe UI", 12))
+        e.pack(side="left", fill="x", expand=True)
+        return f, e
+
+    r_addr, addr = make_row("Map address:"); addr.insert(0, "192.168.8.1:8080")
+    r_ssid, ssid = make_row("Wi-Fi name:")
+    r_pw,   pw   = make_row("Wi-Fi password:")
+    r_name, name = make_row("Box name (optional):")
+    r_open = tk.Checkbutton(body, text="Open network (no password)", variable=openv, bg="white", font=("Segoe UI", 10), anchor="w")
+    r_hide = tk.Checkbutton(body, text="Hidden network", variable=hidev, bg="white", font=("Segoe UI", 10), anchor="w")
+    r_min  = tk.Checkbutton(body, text="Just the QR code (no card)", variable=minv, bg="white", font=("Segoe UI", 10), anchor="w")
+    allrows = [r_addr, r_ssid, r_pw, r_open, r_hide, r_name, r_min]
+
+    def show(*which):
+        for w in allrows: w.pack_forget()
+        for w in which: w.pack(fill="x", pady=3)
+    def on_mode(*_):
+        m = mode.get()
+        if m == "Open the map": show(r_addr, r_name, r_min)
+        elif m == "Join the Wi-Fi": show(r_ssid, r_pw, r_open, r_hide, r_min)
+        else: show(r_ssid, r_pw, r_open, r_hide, r_addr)
+    mode.trace_add("write", on_mode); on_mode()
+
+    status = tk.Label(root, text="", font=("Segoe UI", 10), fg="#0b3d6e", bg="white", wraplength=440, justify="center")
     status.pack(pady=4)
 
     def go():
         try:
-            url = normalize(addr.get())
-            img, ver = make_card(url, name.get(), minimal=bool(minimal_var.get()))
-            tag = "_bare" if minimal_var.get() else ""
-            out = os.path.join(desktop_dir(), "Lookout_QR_%s%s.png" % (safe_slug(url), tag))
+            m = mode.get()
+            if m == "Open the map":
+                url = normalize(addr.get())
+                img, ver = make_card(url, name.get(), minimal=bool(minv.get()))
+                out = os.path.join(desktop_dir(), "Lookout_QR_%s%s.png" % (safe_slug(url), "_bare" if minv.get() else ""))
+            elif m == "Join the Wi-Fi":
+                w = wifi_payload(ssid.get(), pw.get(), open_net=bool(openv.get()), hidden=bool(hidev.get()))
+                img, ver = make_wifi_card(w, ssid.get().strip(), minimal=bool(minv.get()))
+                out = os.path.join(desktop_dir(), "Lookout_WiFi_%s%s.png" % (safe_slug(ssid.get() or "wifi"), "_bare" if minv.get() else ""))
+            else:
+                w = wifi_payload(ssid.get(), pw.get(), open_net=bool(openv.get()), hidden=bool(hidev.get()))
+                url = normalize(addr.get())
+                img, ver = make_combo_card(w, url, ssid.get().strip())
+                out = os.path.join(desktop_dir(), "Lookout_Join_and_Open_%s.png" % safe_slug(ssid.get() or "lookout"))
             img.save(out, "PNG")
-            status.config(text="Saved to your Desktop:\n%s\n(QR version %d)" % (os.path.basename(out), ver))
+            status.config(text="Saved to your Desktop:\n%s\n(QR version %s)" % (os.path.basename(out), ver))
             try: os.startfile(out)
             except Exception: pass
         except Exception as e:
@@ -321,7 +450,7 @@ def main():
 
     tk.Button(root, text="Make QR card", font=("Segoe UI", 12, "bold"),
               bg="#0b3d6e", fg="white", activebackground="#12568f",
-              command=go, padx=18, pady=6).pack(pady=8)
+              command=go, padx=18, pady=6).pack(pady=10)
     root.mainloop()
 
 if __name__ == "__main__":

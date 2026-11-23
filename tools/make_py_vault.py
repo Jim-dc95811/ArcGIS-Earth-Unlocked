@@ -59,6 +59,29 @@ def main():
                 link = f"{folder.name}/{name}".replace(" ", "%20")
                 rows.append(f"| {tool} | {version} | [{name}]({link}) | `{sha[:16]}...` | [{rel.split('/')[-1]}]({GH}/{repo}/raw/main/{rel}) |")
                 count += 1
+    # --- standalone add-on: RNDIS NMEA Logger (from the standalone P25-GPS-Decode repo) ---
+    # Deliberately NOT in RELEASES, so the family vault/all-tools build never DEPENDS on
+    # that standalone repo (make_all_tools_zip reads RELEASES, so the logger also stays out
+    # of the public all-tools bundle / front page). Included here only if the repo happens to
+    # be beside us; the try/except means a missing sibling can never break the rebuild.
+    try:
+        _zip = REPOS / "P25-GPS-Decode" / "RNDIS_NMEA_Logger_v1.0.zip"
+        if _zip.exists():
+            with zipfile.ZipFile(_zip) as z:
+                top = z.namelist()[0].split("/")[0]
+                version = top.split("_v")[-1] if "_v" in top else "-"
+                folder = VAULT / f"RNDIS NMEA Logger v{version}"
+                folder.mkdir(exist_ok=True)
+                for n in sorted(x for x in z.namelist() if x.lower().endswith((".py", ".pyw"))):
+                    data = z.read(n); name = n.split("/")[-1]
+                    (folder / name).write_bytes(data)
+                    sha = hashlib.sha256(data).hexdigest()
+                    link = f"{folder.name}/{name}".replace(" ", "%20")
+                    rows.append(f"| RNDIS NMEA Logger | {version} | [{name}]({link}) | `{sha[:16]}...` | [RNDIS_NMEA_Logger_v{version}.zip]({GH}/P25-GPS-Decode/raw/main/RNDIS_NMEA_Logger_v{version}.zip) |")
+                    count += 1
+    except Exception:
+        pass
+
     (VAULT / "README.md").write_text(
         "# Py Vault\n\n"
         "Every Python script in the ArcGIS Earth Unlocked family, in one place - copied byte for byte from the "

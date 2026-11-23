@@ -44,5 +44,6 @@ To run a tool, download its zip from its project page - the zip has the one-clic
 | Traveler Manager | 1.1 | [gps_source.py](Traveler%20Manager%20v1.1/gps_source.py) | `7300cec5c829680d...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
 | Traveler Manager | 1.1 | [units_kml.py](Traveler%20Manager%20v1.1/units_kml.py) | `d221cbbc10a140fd...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
 | Traveler Manager | 1.1 | [traveler_manager.py](Traveler%20Manager%20v1.1/traveler_manager.py) | `79853a4716e52a85...` | [Traveler_Manager_v1.1.zip](https://github.com/Jim-dc95811/The-Lookout/raw/main/Traveler_Manager_v1.1.zip) |
+| RNDIS NMEA Logger | 1.0 | [rndis_nmea_logger.py](RNDIS%20NMEA%20Logger%20v1.0/rndis_nmea_logger.py) | `25b153e93dc0340e...` | [RNDIS_NMEA_Logger_v1.0.zip](https://github.com/Jim-dc95811/P25-GPS-Decode/raw/main/RNDIS_NMEA_Logger_v1.0.zip) |
 
-37 scripts. Rebuilt by `tools/make_py_vault.py`.
+38 scripts. Rebuilt by `tools/make_py_vault.py`.
